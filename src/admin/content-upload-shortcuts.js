@@ -5,7 +5,7 @@ import { createRoot } from "react-dom/client";
 import { flushSync } from "react-dom";
 import { Text } from "@keystar/ui/typography";
 import { DirectionIndicator } from "@keystar/ui/overlays";
-import { localizeCMS } from "./cms-localization.js";
+import { localizeCMS, updateEditorBreadcrumb } from "./cms-localization.js";
 
 const categoryLabels = { project: "项目", article: "写作", photo: "摄影" };
 const acceptedFiles = {
@@ -392,6 +392,8 @@ observer.observe(document.documentElement, {
   attributes: true, attributeFilter: ["aria-label", "title", "placeholder", "disabled"],
 });
 window.addEventListener("popstate", addUploadShortcuts);
+document.addEventListener("input", updateEditorBreadcrumb);
+document.addEventListener("change", updateEditorBreadcrumb);
 window.addEventListener("resize", hideDisabledTooltip);
 document.addEventListener("scroll", hideDisabledTooltip, true);
 document.addEventListener("pointerdown", hideDisabledTooltip, true);

@@ -62,7 +62,12 @@ export default config({
   storage: { kind: "local" },
   locale: "zh-CN",
   ui: {
-    brand: { name: "不息 · 内容管理" },
+    brand: {
+      name: "内容管理",
+      mark: () => createElement("img", {
+        src: "/favicon.svg?v=f9fb16d0d39c", alt: "", width: 32, height: 32,
+      }),
+    },
     navigation: { "内容": ["projects", "articles", "photos"], "照片组件": ["homeFan", "homeDrag", "textHover"] },
   },
   singletons: {

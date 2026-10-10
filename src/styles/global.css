@@ -146,6 +146,17 @@
     --logo-preview-travel: var(--space-8);
     --logo-preview-rotation: 12deg;
     --delay-logo-preview: 40ms;
+    --garden-flower-width: var(--space-8);
+    --garden-flower-height: var(--space-12);
+    --garden-flower-spread: var(--space-6);
+    --garden-flower-rotation: 8deg;
+    --duration-garden-stem: 300ms;
+    --duration-garden-leaf: 140ms;
+    --duration-garden-petals: 600ms;
+    --duration-garden-center: 70ms;
+    --delay-garden-leaf: 160ms;
+    --delay-garden-flower: 70ms;
+    --ease-garden-grow: linear;
     --cursor-figma: url("/assets/cursors/figma.svg") 4 3, default;
     --inline-photo-stack-width: calc(var(--space-16) * 2 + var(--space-6));
     --inline-photo-stack-height: calc(var(--space-16) * 2 + var(--space-4));

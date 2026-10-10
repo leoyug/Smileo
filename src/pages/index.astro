@@ -4,6 +4,7 @@ import ContentRow from "../components/ContentRow.astro";
 import DraggablePhotoStack from "../components/DraggablePhotoStack.astro";
 import PhotoFanStack from "../components/PhotoFanStack.astro";
 import ProjectCard from "../components/ProjectCard.astro";
+import DashedUnderline from "../components/DashedUnderline.astro";
 import TextLink from "../components/TextLink.astro";
 import { getCollection, getEntry } from "astro:content";
 import { getProjects, projectPreview } from "../lib/projects";
@@ -29,7 +30,7 @@ const homeFanPhotos = fanPhotos.map((photo) => ({
     <h1 class="sr-only">Leo 的个人网站</h1>
     <img class="hero__signature" src="/assets/figma/leo-mark.svg" alt="Leo" width="64" height="48" data-route-enter />
     <div class="hero__copy">
-      <p data-route-enter>这里是 <TextLink href="/about">Leo</TextLink> 的数字花园。</p>
+      <p data-route-enter>这里是 <TextLink href="/about">Leo</TextLink> 的<DashedUnderline effect="flowers">数字花园</DashedUnderline>。</p>
       <p data-route-enter>在这里，你可以看到我正在折腾的<TextLink href="/projects">项目</TextLink>，也可以探索我记录的<TextLink href="/writing">文字</TextLink>与<TextLink href="/photos">影像</TextLink>—关于生活、工作、兴趣，以及那些尚未想明白的问题。</p>
       {/* <p data-route-enter>你可以在 {x && <TextLink href={x}>X</TextLink>}、{github && <TextLink href={github} rel="me">GitHub</TextLink>}、{xiaohongshu && <TextLink href={xiaohongshu}>小红书</TextLink>}上找到我，也可以<TextLink href={`mailto:${resume.data.email}`}>给我发邮件</TextLink>。</p> */}
     </div>

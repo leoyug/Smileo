@@ -93,7 +93,26 @@ function isContent(element) {
   return !!element.closest(contentContext) && !element.closest(".ProseMirror-placeholder");
 }
 
+// The native editor uses the stable URL slug in its breadcrumb. Present the
+// editable content name while keeping that URL and the collection link intact.
+export function updateEditorBreadcrumb() {
+  const route = location.pathname.match(/^\/keystatic\/collection\/(projects|articles|photos)\/item\/[^/]+\/?$/);
+  if (!route) return;
+  const form = document.querySelector("#item-edit-form");
+  const breadcrumb = document.querySelector('#keystatic-main-panel > header [aria-current="page"]');
+  if (!form || !breadcrumb) return;
+  const isPhoto = route[1] === "photos";
+  const label = [...form.querySelectorAll("label")].find(element =>
+    element.childNodes[0]?.textContent.trim() === (isPhoto ? "画面描述" : "标题"));
+  const input = label && document.getElementById(label.htmlFor);
+  if (!input || !("value" in input)) return;
+  const name = input.value.trim() || (isPhoto ? "未填写画面描述" : "未填写标题");
+  if (breadcrumb.textContent !== name) breadcrumb.textContent = name;
+  if (breadcrumb.getAttribute("title") !== name) breadcrumb.setAttribute("title", name);
+}
+
 export function localizeCMS() {
+  updateEditorBreadcrumb();
   const isPhotoEditor = /^\/keystatic\/collection\/photos\/(?:create|item\/[^/]+)\/?$/.test(location.pathname);
   const translateLabel = (text) => isPhotoEditor && /^(?:Regenerate|regenerate|重新生成)$/.test(text.trim())
     ? text.replace(text.trim(), "根据描述生成")

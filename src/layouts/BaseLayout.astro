@@ -15,7 +15,7 @@ interface Props {
 }
 
 const {
-  title = "Rush Leo｜设计工程与长期记录",
+  title = "leo's digital garden",
   description = "一个关于设计工程、写作与摄影的长期个人档案。",
   wide = false,
   socialImage = "/og-ian-inspired.png",
@@ -40,8 +40,8 @@ const isDetailRoute = /^\/(?:projects|writing)\/[^/]+\/?$/.test(Astro.url.pathna
       document.documentElement.dataset.themePreference = themePreference;
       document.documentElement.dataset.theme = themePreference === "system" ? (matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light") : themePreference;
     </script>
-    <link rel="icon" href="/favicon-leo.png?v=20261010" type="image/png" sizes="240x240" />
-    <link rel="apple-touch-icon" href="/favicon-leo.png?v=20261010" />
+    <link rel="icon" href="/favicon.svg?v=f9fb16d0d39c" type="image/svg+xml" />
+    <link rel="apple-touch-icon" href="/favicon-leo.png?v=f9fb16d0d39c" />
     <link rel="canonical" href={canonical} />
     <meta property="og:type" content="website" />
     <meta property="og:locale" content="zh_CN" />

@@ -2033,10 +2033,10 @@
   .resume__section:has(.resume-projects) { height: auto; }
   .resume__section:has(.resume-skills) { height: auto; }
 
-  .resume-projects article { gap: 12px; }
-  .resume-projects h3 { color: var(--color-copy); font-size: var(--text-subhead); line-height: var(--space-6); }
+  .resume-projects article { gap: var(--space-2); }
+  .resume-projects h3 { color: var(--color-ink); font-size: var(--text-subhead); line-height: var(--space-6); }
   .resume-projects p { margin-top: 0; color: var(--color-faint); line-height: var(--space-6); text-align: justify; }
-  .resume-projects ul { margin-top: 0; }
+  .resume-projects ul { margin-top: var(--space-1); }
   .resume-projects li { padding: var(--space-1) calc(var(--space-2) + var(--space-1) / 2); font-family: "Geist Mono", var(--font-sans); color: var(--color-faint); line-height: calc(var(--space-4) + var(--space-1) / 2); }
 
   .resume-skills {
