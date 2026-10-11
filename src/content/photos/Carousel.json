@@ -1,0 +1,14 @@
+{
+  "src": "/media/photos/Carousel/src.webp",
+  "size": "tall",
+  "orientation": "portrait",
+  "alt": "旋转木马",
+  "order": 67,
+  "draft": false,
+  "width": 1366,
+  "height": 2048,
+  "publicMetadata": {
+    "capturedAt": "2026-01-20",
+    "place": "上海"
+  }
+}

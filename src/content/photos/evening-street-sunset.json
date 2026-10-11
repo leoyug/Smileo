@@ -1,0 +1,20 @@
+{
+  "src": "/media/photos/evening-street-sunset/src.webp",
+  "size": "tall",
+  "orientation": "portrait",
+  "alt": "夜色街道晚霞",
+  "order": 90,
+  "draft": false,
+  "width": 1601,
+  "height": 2400,
+  "publicMetadata": {
+    "capturedAt": "2022-09-10",
+    "place": "上海",
+    "camera": "SONY ILCE-7RM3",
+    "lens": "24-70mm F2.8 DG DN | Art 019",
+    "focalLength": "55.1 mm",
+    "aperture": "f/2.8",
+    "shutterSpeed": "1/30 s",
+    "iso": 800
+  }
+}

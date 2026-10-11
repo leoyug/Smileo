@@ -24,7 +24,7 @@ const flowerPaths = [
   },
   {
     stem: "M32 84 C29 77 35 66 34 57 C34 46 27 40 28 32",
-    leaf: "M34 66 C35 59 43 53 44 52 C46 50 43 57 42 57 M41 58 C39 61 36 62 34 64",
+    leaf: "M34 66 C35 59 43 53 44 52 C46 50 43 57 42 57 M41 58 C39 61 36 62 34 64 M33 73 C28 71 22 69 20 65 C25 64 30 67 33 71",
     petals: "M28 29 C21 20 23 11 26 10 L28 11 M30 13 C37 20 33 27 31 29 C37 25 45 25 48 27 C51 30 47 34 44 34 C39 36 33 33 31 32 C31 35 37 38 34 40 C30 44 27 40 27 33 M26 28 C21 23 15 28 14 32 C13 35 15 36 17 35 M20 36 C23 35 25 33 27 31",
     center: "M29 28 C26 29 28 32 30 31 C32 30 30 27 29 28",
   },
@@ -209,7 +209,7 @@ const flowerPaths = [
   .dashed-underline__flower:nth-child(2) {
     width: calc(var(--garden-flower-width) + var(--space-2));
     height: calc(var(--garden-flower-height) + var(--space-3));
-    margin-left: calc(-1 * var(--space-1));
+    transform: scaleX(-1);
   }
 
   .dashed-underline__flower-stroke {

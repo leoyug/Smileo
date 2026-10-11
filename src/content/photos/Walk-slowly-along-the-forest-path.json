@@ -1,0 +1,20 @@
+{
+  "src": "/media/photos/Walk-slowly-along-the-forest-path/src.webp",
+  "size": "tall",
+  "orientation": "portrait",
+  "alt": "林间小路慢慢走",
+  "order": 62,
+  "draft": false,
+  "width": 1601,
+  "height": 2400,
+  "publicMetadata": {
+    "capturedAt": "2017-06-08",
+    "place": "成都",
+    "camera": "SONY ILCE-7RM3",
+    "lens": "Sony FE 24-70mm F2.8 GM II (SEL2470GM2)",
+    "focalLength": "36 mm",
+    "aperture": "f/2.8",
+    "shutterSpeed": "1/500 s",
+    "iso": 500
+  }
+}

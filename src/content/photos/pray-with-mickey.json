@@ -1,0 +1,20 @@
+{
+  "src": "/media/photos/pray-with-mickey/src.webp",
+  "size": "tall",
+  "orientation": "portrait",
+  "alt": "和米奇一起祈祷",
+  "order": 85,
+  "draft": false,
+  "width": 1601,
+  "height": 2400,
+  "publicMetadata": {
+    "capturedAt": "2025-01-20",
+    "place": "香港",
+    "camera": "SONY ILCE-7RM3",
+    "lens": "Sony FE 24-105mm F4 G OSS (SEL24105G)",
+    "focalLength": "44 mm",
+    "aperture": "f/4.5",
+    "shutterSpeed": "1/125 s",
+    "iso": 200
+  }
+}

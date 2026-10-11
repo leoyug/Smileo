@@ -5,6 +5,7 @@ import react from "@astrojs/react";
 import keystatic from "@keystatic/astro";
 import { preparePhotos } from "./scripts/photos/prepare.mjs";
 import { localContentImport } from "./scripts/import/vite-plugin.mjs";
+import { localPhotoSlugs } from "./scripts/photo-slug/vite-plugin.mjs";
 
 const require = createRequire(import.meta.url);
 
@@ -28,7 +29,7 @@ export default defineConfig({
   redirects: {
     "/photos/the-pier-under-the-blue-night": "/photos/the-pier-under-the-blue-night-sky",
   },
-  integrations: process.env.NODE_ENV === "production" ? [] : [react(), keystatic(), localContentImport()],
+  integrations: process.env.NODE_ENV === "production" ? [] : [react(), keystatic(), localContentImport(), localPhotoSlugs()],
   vite: {
     // Keep check/build from replacing the running dev server's optimized dependencies.
     cacheDir: fileURLToPath(new URL(`./node_modules/.vite/${process.argv[2] ?? "astro"}/`, import.meta.url)),

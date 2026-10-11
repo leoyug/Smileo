@@ -1,0 +1,20 @@
+{
+  "src": "/media/photos/birds-and-clouds-in-the-sky/src.webp",
+  "size": "short",
+  "orientation": "landscape",
+  "alt": "天空飞鸟与云",
+  "order": 93,
+  "draft": false,
+  "width": 2400,
+  "height": 1601,
+  "publicMetadata": {
+    "capturedAt": "2022-07-23",
+    "place": "青岛",
+    "camera": "SONY ILCE-7RM3",
+    "lens": "FE 24-70mm F2.8 GM II",
+    "focalLength": "60 mm",
+    "aperture": "f/2.8",
+    "shutterSpeed": "1/1000 s",
+    "iso": 100
+  }
+}

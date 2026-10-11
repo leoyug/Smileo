@@ -1,0 +1,20 @@
+{
+  "src": "/media/photos/leaping-on-a-skateboard/src.webp",
+  "size": "short",
+  "orientation": "landscape",
+  "alt": "踩着滑板跃起",
+  "order": 75,
+  "draft": false,
+  "width": 2400,
+  "height": 1601,
+  "publicMetadata": {
+    "capturedAt": "2022-09-10",
+    "place": "上海",
+    "camera": "SONY ILCE-7RM3",
+    "lens": "FE 85mm F1.8",
+    "focalLength": "85 mm",
+    "aperture": "f/1.8",
+    "shutterSpeed": "1/80 s",
+    "iso": 800
+  }
+}

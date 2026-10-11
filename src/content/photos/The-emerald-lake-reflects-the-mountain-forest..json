@@ -1,0 +1,19 @@
+{
+  "src": "/media/photos/The-emerald-lake-reflects-the-mountain-forest./src.webp",
+  "size": "tall",
+  "orientation": "portrait",
+  "alt": "碧湖映山林",
+  "order": 61,
+  "draft": false,
+  "width": 1601,
+  "height": 2400,
+  "publicMetadata": {
+    "capturedAt": "2026-02-03",
+    "camera": "SONY ILCE-7RM3",
+    "lens": "Sony FE 24-70mm F2.8 GM II (SEL2470GM2)",
+    "focalLength": "70 mm",
+    "aperture": "f/6.3",
+    "shutterSpeed": "1/4000 s",
+    "iso": 4000
+  }
+}

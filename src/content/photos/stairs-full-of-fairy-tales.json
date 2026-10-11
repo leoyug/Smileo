@@ -1,0 +1,20 @@
+{
+  "src": "/media/photos/stairs-full-of-fairy-tales/src.webp",
+  "size": "short",
+  "orientation": "landscape",
+  "alt": "楼梯开满童话",
+  "order": 81,
+  "draft": false,
+  "width": 2400,
+  "height": 1601,
+  "publicMetadata": {
+    "capturedAt": "2025-01-21",
+    "place": "香港",
+    "camera": "SONY ILCE-7RM3",
+    "lens": "Sony FE 24-105mm F4 G OSS (SEL24105G)",
+    "focalLength": "40 mm",
+    "aperture": "f/4",
+    "shutterSpeed": "1/25 s",
+    "iso": 125
+  }
+}

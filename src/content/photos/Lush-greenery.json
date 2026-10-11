@@ -1,0 +1,20 @@
+{
+  "src": "/media/photos/Lush-greenery/src.webp",
+  "size": "short",
+  "orientation": "landscape",
+  "alt": "绿意盎然",
+  "order": 60,
+  "draft": false,
+  "width": 2400,
+  "height": 1601,
+  "publicMetadata": {
+    "capturedAt": "2025-05-03",
+    "place": "宁波",
+    "camera": "SONY ILCE-7RM3",
+    "lens": "Sony FE 24-105mm F4 G OSS (SEL24105G)",
+    "focalLength": "24 mm",
+    "aperture": "f/4",
+    "shutterSpeed": "1/1600 s",
+    "iso": 100
+  }
+}

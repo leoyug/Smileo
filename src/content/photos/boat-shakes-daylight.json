@@ -1,0 +1,20 @@
+{
+  "src": "/media/photos/boat-shakes-daylight/src.webp",
+  "size": "short",
+  "orientation": "landscape",
+  "alt": "小船摇碎日光",
+  "order": 96,
+  "draft": false,
+  "width": 2400,
+  "height": 1600,
+  "publicMetadata": {
+    "capturedAt": "2024-10-04",
+    "place": "扬州",
+    "camera": "SONY ILCE-7RM3",
+    "lens": "Sony FE 24-105mm F4 G OSS (SEL24105G)",
+    "focalLength": "82 mm",
+    "aperture": "f/4",
+    "shutterSpeed": "1/8000 s",
+    "iso": 1250
+  }
+}

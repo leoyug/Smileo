@@ -3,18 +3,18 @@
   "size": "short",
   "orientation": "landscape",
   "alt": "傍晚安静的城市街道",
-  "order": 3,
-  "draft": true,
+  "order": 1,
+  "draft": false,
   "width": 2400,
   "height": 1600,
   "publicMetadata": {
     "capturedAt": "2022-12-17",
+    "place": "上海",
     "camera": "SONY ILCE-7RM3",
     "lens": "FE 85mm F1.8",
     "focalLength": "85 mm",
     "aperture": "f/1.8",
     "shutterSpeed": "1/100 s",
-    "iso": 100,
-    "place": "上海"
+    "iso": 100
   }
 }
