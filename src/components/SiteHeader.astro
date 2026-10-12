@@ -16,6 +16,7 @@ const isCurrent = (href: string) => {
       <a
         href={item.href}
         class:list={["floating-nav__link", { "is-active": isCurrent(item.href) }]}
+        data-hover-sound
         aria-label={item.label}
         aria-current={isCurrent(item.href) ? "page" : undefined}
       >
@@ -27,7 +28,7 @@ const isCurrent = (href: string) => {
   ))}
   <span class="floating-nav__divider floating-nav__divider--theme" aria-hidden="true"></span>
   <div class="preferences-control">
-    <button class="preferences-toggle" type="button" data-preferences-toggle aria-controls="preferences-panel" aria-expanded="false" aria-label="偏好">
+    <button class="preferences-toggle" type="button" data-preferences-toggle data-hover-sound aria-controls="preferences-panel" aria-expanded="false" aria-label="偏好">
       <img src="/assets/figma/preferences/sliders.svg" alt="" width="24" height="24" />
       <span class="floating-nav__tooltip" aria-hidden="true">偏好</span>
     </button>

@@ -178,6 +178,18 @@
     --wave-underline-height: var(--space-2);
     --duration-wave-underline: 550ms;
     --duration-micro: 80ms; --duration-quick: 150ms; --duration-fast: 250ms; --duration-project-attribute: 300ms; --duration-photo-fan: 420ms; --duration-label-character: 300ms; --duration-text-link: 600ms; --duration-very-slow: 500ms; --duration-highlight-draw: 600ms; --duration-highlight-glint: 200ms; --delay-highlight-glint-first: 420ms; --delay-highlight-glint-second: 480ms; --delay-highlight-glint-third: 540ms; --delay-highlight-glint-fourth: 600ms; --ease-smooth-out: cubic-bezier(.22, 1, .36, 1); --ease-highlight-draw: ease-in-out;
+    --copy-icon-size: .875em;
+    --copy-icon-gap: var(--space-1);
+    --copy-feedback-duration: 1500ms;
+    --icon-swap-dur: var(--duration-fast);
+    --icon-swap-blur: calc(var(--space-1) / 2);
+    --icon-swap-start-scale: .25;
+    --icon-swap-ease: ease-in-out;
+    --text-soft-dur: 200ms;
+    --text-soft-blur: calc(var(--space-1) / 2);
+    --text-soft-ease: ease-in-out;
+    --text-soft-resize-dur: 240ms;
+    --text-soft-resize-ease: var(--ease-smooth-out);
     --dropdown-open-dur: 250ms; --dropdown-close-dur: 150ms; --dropdown-pre-scale: .97; --dropdown-closing-scale: .99; --dropdown-ease: cubic-bezier(.22, 1, .36, 1);
     --dock-border-width: 1px; --dock-control-size: 44px; --dock-icon-size: 24px; --dock-control-icon-gutter: 10px; --dock-icon-edge-gap: 20px; --dock-item-gap: 20px; --dock-middle-icon-gap: 24px;
     --dock-container-padding-inline: calc(var(--dock-icon-edge-gap) - var(--dock-border-width));

@@ -301,6 +301,128 @@
     text-decoration: none;
   }
 
+  .text-link--copy {
+    position: relative;
+    display: inline-flex;
+    align-items: baseline;
+    vertical-align: baseline;
+    white-space: nowrap;
+    text-decoration-line: none;
+  }
+
+  .text-link--copy::before {
+    content: "";
+    position: absolute;
+    top: 50%;
+    left: min(0px, calc((100% - var(--dock-control-size)) / 2));
+    width: max(100%, var(--copy-hover-width, 0px));
+    min-width: var(--dock-control-size);
+    height: var(--dock-control-size);
+    transform: translateY(-50%);
+  }
+
+  .text-link__copy-label {
+    text-decoration-line: underline;
+    text-decoration-color: inherit;
+    text-decoration-thickness: 1px;
+    text-underline-offset: 4px;
+  }
+
+  .text-link__copy-icon {
+    flex: 0 0 auto;
+    width: 0;
+    height: var(--copy-icon-size);
+    margin-inline-end: 0;
+    overflow: hidden;
+    align-self: center;
+    transition: width var(--duration-fast) var(--ease-smooth-out), margin-inline-end var(--duration-fast) var(--ease-smooth-out);
+  }
+
+  .text-link__copy-icon svg {
+    display: block;
+    width: var(--copy-icon-size);
+    height: var(--copy-icon-size);
+  }
+
+  .text-link--copy:is(:focus-visible, [data-copy-state="copied"], [data-copy-state="error"]) .text-link__copy-icon {
+    width: var(--copy-icon-size);
+    margin-inline-end: var(--copy-icon-gap);
+  }
+
+  @media (hover: hover) and (pointer: fine) {
+    .text-link--copy:hover .text-link__copy-icon {
+      width: var(--copy-icon-size);
+      margin-inline-end: var(--copy-icon-gap);
+    }
+  }
+
+  @media (hover: none), (pointer: coarse), (prefers-reduced-motion: reduce) {
+    .text-link__copy-icon {
+      width: var(--copy-icon-size);
+      margin-inline-end: var(--copy-icon-gap);
+      transition: none;
+    }
+  }
+
+  .t-icon-swap {
+    position: relative;
+    display: inline-grid;
+  }
+  .t-icon-swap .t-icon {
+    grid-area: 1 / 1;
+    transition:
+      opacity   var(--icon-swap-dur) var(--icon-swap-ease),
+      filter    var(--icon-swap-dur) var(--icon-swap-ease),
+      transform var(--icon-swap-dur) var(--icon-swap-ease);
+    /* No will-change: it would freeze each icon's raster at its 0.25 start
+       scale, so a large icon scales up blurry and pixelated. */
+  }
+  .t-icon-swap[data-state="a"] .t-icon[data-icon="a"],
+  .t-icon-swap[data-state="b"] .t-icon[data-icon="b"] {
+    opacity: 1;
+    filter: blur(0);
+    transform: scale(1);
+  }
+  .t-icon-swap[data-state="a"] .t-icon[data-icon="b"],
+  .t-icon-swap[data-state="b"] .t-icon[data-icon="a"] {
+    opacity: 0;
+    filter: blur(var(--icon-swap-blur));
+    transform: scale(var(--icon-swap-start-scale));
+  }
+
+  /* Both texts share one grid cell, so they cross-blur in place; the
+     cell's width eases between them. */
+  .t-text-soft {
+    display: inline-grid;
+    justify-items: var(--text-soft-align, start);
+    transition: width var(--text-soft-resize-dur) var(--text-soft-resize-ease);
+  }
+  .t-text-soft > span {
+    grid-area: 1 / 1;
+    white-space: pre;
+    transition:
+      filter  var(--text-soft-dur) var(--text-soft-ease),
+      opacity var(--text-soft-dur) var(--text-soft-ease);
+  }
+  .t-text-soft-new {
+    opacity: 0;
+    filter: blur(var(--text-soft-blur));
+  }
+  .t-text-soft.is-swapping .t-text-soft-old {
+    opacity: 0;
+    filter: blur(var(--text-soft-blur));
+  }
+  .t-text-soft.is-swapping .t-text-soft-new {
+    opacity: 1;
+    filter: blur(0);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .t-icon-swap .t-icon { transition: none !important; }
+    .t-text-soft,
+    .t-text-soft > span { transition: none !important; }
+  }
+
   .text-link__arrow {
     display: inline-block;
     width: 0;

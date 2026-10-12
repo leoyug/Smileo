@@ -1,13 +1,16 @@
 ---
 import type { HTMLAttributes } from "astro/types";
 import ArrowUpRight from "./icons/ArrowUpRight.astro";
+import Copy from "./icons/Copy.astro";
+import Check from "./icons/Check.astro";
 
 interface Props extends HTMLAttributes<"a"> {
   href: string;
   underline?: "fade" | "reveal";
+  copyText?: string;
 }
 
-const { href, underline = "fade", class: className, ...attributes } = Astro.props;
+const { href, underline = "fade", copyText, class: className, ...attributes } = Astro.props;
 const destination = new URL(href, Astro.url);
 const isExternal = destination.protocol === "mailto:" || (
   ["http:", "https:"].includes(destination.protocol) &&
@@ -15,4 +18,8 @@ const isExternal = destination.protocol === "mailto:" || (
 );
 ---
 
-<a href={href} class:list={["text-link", `text-link--${underline}`, { "text-link--external": isExternal }, className]} {...attributes}><slot />{isExternal && <span class="text-link__arrow" aria-hidden="true"><ArrowUpRight /></span>}</a>
+<a href={href} class:list={["text-link", `text-link--${underline}`, { "text-link--external": isExternal && !copyText, "text-link--copy": !!copyText }, className]} data-copy-text={copyText} data-copy-state={copyText ? "idle" : undefined} {...attributes}>{copyText ? <><span class="text-link__copy-icon t-icon-swap" data-state="a" aria-hidden="true"><span class="t-icon" data-icon="a"><Copy /></span><span class="t-icon" data-icon="b"><Check /></span></span><span class="text-link__copy-label t-text-soft" data-copy-label><slot /></span><span class="sr-only" data-copy-status role="status" aria-live="polite" aria-atomic="true"></span></> : <><slot />{isExternal && <span class="text-link__arrow" aria-hidden="true"><ArrowUpRight /></span>}</>}</a>
+
+<script>
+  import "../scripts/copy-text";
+</script>

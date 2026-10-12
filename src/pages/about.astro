@@ -24,7 +24,7 @@ const xiaohongshu = resume.data.links.find((link) => link.label === "小红书")
         <p>你好，我是Leo，一名 <AnimatedHighlight>设计工程师</AnimatedHighlight>。</p>
         <p>我使用 <DashedUnderline effect="selection">Figma</DashedUnderline> 进行设计，使用 <DashedUnderline effect="pixel-person">Codex</DashedUnderline> 和 Cursor 进行构建。我也喜欢探索流畅、有趣的<DashedUnderline effect="wave">动效</DashedUnderline>，以及所有用心创作的事物。最近，我开始更多地借助 <DashedUnderline effect="logos" logos={aiLogos}>AI</DashedUnderline> 来实现自己的想法，并尝试将其融入日常工作流中。</p>
         <p>工作之余，我会和万万一起带着相机到处<DashedUnderline effect="photo-stack" photos={stackPhotos}>走走拍拍</DashedUnderline>，也享受创作、游戏、漫画和电影带来的乐趣。</p>
-        <p>目前我正在寻找全职工作，这是我的<TextLink href="/resume">简历</TextLink>页面。你可以在 {x && <TextLink href={x}>X</TextLink>}、{github && <TextLink href={github} rel="me">GitHub</TextLink>}、{xiaohongshu && <TextLink href={xiaohongshu}>小红书</TextLink>}上找到我，或随时给我发送<TextLink href={`mailto:${resume.data.email}`}>邮件</TextLink>。</p>
+        <p>目前我正在寻找全职工作，这是我的<TextLink href="/resume">简历</TextLink>页面。你可以在 {x && <TextLink href={x}>X</TextLink>}、{github && <TextLink href={github} rel="me">GitHub</TextLink>}、{xiaohongshu && <TextLink href={xiaohongshu}>小红书</TextLink>}上找到我，或随时给我发送<TextLink href={`mailto:${resume.data.email}`} copyText={resume.data.email}>邮件</TextLink>。</p>
       </div>
       <ParticlePortrait class="about-portrait" src="/assets/figma-v03/about/portrait-light.webp" alt="Leo 的海边插画肖像，黑发、黑色上衣，肩上斜挎背带，身后是蓝天和海面" darkSrc="/assets/figma-v03/about/portrait-particles.webp" darkAlt="Leo 的像素风肖像" />
     </div>
