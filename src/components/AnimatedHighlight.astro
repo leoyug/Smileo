@@ -7,7 +7,11 @@ interface Props {
 const { class: className } = Astro.props;
 ---
 
-<span class:list={["animated-highlight", className]} tabindex="0"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path pathLength="1" d="M9.037 9.69a.498.498 0 0 1 .653-.653l11 4.5a.5.5 0 0 1-.074.949l-4.349 1.041a1 1 0 0 0-.74.739l-1.04 4.35a.5.5 0 0 1-.95.074Z" /><path pathLength="1" d="M14 4.1 12 6" /><path pathLength="1" d="m5.1 8-2.9-.8" /><path pathLength="1" d="m6 12-1.9 2" /><path pathLength="1" d="M7.2 2.2 8 5.1" /></svg><slot /></span>
+<span class:list={["animated-highlight", className]} tabindex="0" data-animated-highlight><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path pathLength="1" d="M9.037 9.69a.498.498 0 0 1 .653-.653l11 4.5a.5.5 0 0 1-.074.949l-4.349 1.041a1 1 0 0 0-.74.739l-1.04 4.35a.5.5 0 0 1-.95.074Z" /><path pathLength="1" d="M14 4.1 12 6" /><path pathLength="1" d="m5.1 8-2.9-.8" /><path pathLength="1" d="m6 12-1.9 2" /><path pathLength="1" d="M7.2 2.2 8 5.1" /></svg><slot /></span>
+
+<script>
+  import "../scripts/animated-highlight";
+</script>
 
 <style>
   .animated-highlight {
@@ -34,30 +38,11 @@ const { class: className } = Astro.props;
   .animated-highlight path:nth-child(3) { --draw-delay: var(--delay-highlight-glint-second); }
   .animated-highlight path:nth-child(4) { --draw-delay: var(--delay-highlight-glint-third); }
   .animated-highlight path:nth-child(5) { --draw-delay: var(--delay-highlight-glint-fourth); }
-  .animated-highlight:focus-visible { background-color: var(--color-highlight-wash); }
-  .animated-highlight:focus-visible path {
-    animation: highlight-stroke var(--duration-highlight-draw) var(--ease-highlight-draw) both;
-  }
-  .animated-highlight:focus-visible path + path {
-    animation-duration: var(--duration-highlight-glint);
-    animation-delay: var(--draw-delay);
-  }
+  .animated-highlight:focus-visible { background-color: var(--color-highlight-wash); transition: none; }
   @media (hover: hover) and (pointer: fine) {
     .animated-highlight:hover { background-color: var(--color-highlight-wash); }
-    .animated-highlight:hover path {
-      animation: highlight-stroke var(--duration-highlight-draw) var(--ease-highlight-draw) both;
-    }
-    .animated-highlight:hover path + path {
-      animation-duration: var(--duration-highlight-glint);
-      animation-delay: var(--draw-delay);
-    }
-  }
-  @keyframes highlight-stroke {
-    from { stroke-dashoffset: 1; opacity: 0; }
-    to { stroke-dashoffset: 0; opacity: 1; }
   }
   @media (prefers-reduced-motion: reduce) {
     .animated-highlight { transition: none; }
-    .animated-highlight:is(:hover, :focus-visible) path { animation: none; }
   }
 </style>

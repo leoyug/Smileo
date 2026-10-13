@@ -71,14 +71,14 @@ const serialized = JSON.stringify(photos).replaceAll("<", "\\u003c");
     pointer-events: none;
     transform: translateX(calc(-50% + var(--stack-offset, 0px))) scale(.96);
     transform-origin: center bottom;
-    transition: opacity var(--duration-quick) var(--ease-smooth-out), transform var(--duration-quick) var(--ease-smooth-out), filter var(--duration-quick) var(--ease-smooth-out), visibility 0s var(--duration-quick);
+    transition: opacity var(--duration-fast) var(--ease-smooth-out), transform var(--duration-fast) var(--ease-smooth-out), filter var(--duration-fast) var(--ease-smooth-out), visibility 0s var(--duration-fast);
   }
   .photo-stack-gallery__preview::after { content: ""; position: absolute; inset: 100% 0 auto; height: var(--space-3); }
   .photo-stack-gallery[data-preview="true"] .photo-stack-gallery__preview { visibility: visible; opacity: 1; filter: none; pointer-events: auto; transform: translateX(calc(-50% + var(--stack-offset, 0px))); transition-duration: var(--duration-very-slow), var(--duration-very-slow), var(--duration-very-slow), 0s; transition-delay: 0s; }
   .photo-stack-gallery[data-placement="below"] .photo-stack-gallery__preview { bottom: auto; top: 100%; transform-origin: center top; }
   .photo-stack-gallery[data-placement="below"] .photo-stack-gallery__preview::after { top: calc(-1 * var(--space-3)); }
   .photo-stack-gallery__dialog[data-moving="true"] .photo-stack-gallery__stage, .photo-stack-gallery__dialog[data-moving="true"] .photo-stack-gallery__detail { pointer-events: none; }
-  .photo-stack-gallery__compact { position: absolute; bottom: var(--space-2); left: 50%; width: var(--inline-photo-card-width); aspect-ratio: 3 / 4; transform: translateX(-50%); transition: transform var(--duration-quick) var(--ease-smooth-out); }
+  .photo-stack-gallery__compact { position: absolute; bottom: var(--space-2); left: 50%; width: var(--inline-photo-card-width); aspect-ratio: 3 / 4; transform: translateX(-50%); transition: transform var(--duration-fast) var(--ease-smooth-out); }
   .photo-stack-gallery__compact:nth-child(1) { --compact-lift: calc(-1 * var(--space-2)); --card-rotation: -9deg; z-index: 1; }
   .photo-stack-gallery__compact:nth-child(2) { --compact-lift: 0px; --card-rotation: 1deg; z-index: 3; }
   .photo-stack-gallery__compact:nth-child(3) { --compact-lift: calc(-1 * var(--space-2)); --card-rotation: 9deg; z-index: 2; }

@@ -126,14 +126,18 @@ const flowerPaths = [
     overflow: hidden;
     color: var(--color-wave-underline);
     visibility: hidden;
+    opacity: 0;
     clip-path: inset(0 100% 0 0);
     pointer-events: none;
+    transition: opacity var(--duration-quick) var(--ease-smooth-out), clip-path var(--duration-quick) var(--ease-smooth-out), visibility 0s var(--duration-quick);
   }
 
   .dashed-underline__wave svg {
     display: block;
     width: calc(100% + var(--wave-underline-period));
     height: 100%;
+    animation: underline-wave var(--duration-wave-underline) linear infinite;
+    animation-play-state: paused;
   }
 
   .dashed-underline--wave:focus-visible {
@@ -142,12 +146,9 @@ const flowerPaths = [
 
   .dashed-underline--wave:focus-visible .dashed-underline__wave {
     visibility: visible;
+    opacity: 1;
     clip-path: inset(0);
-    transition: clip-path var(--duration-fast) var(--ease-smooth-out);
-  }
-
-  .dashed-underline--wave:focus-visible .dashed-underline__wave svg {
-    animation: underline-wave var(--duration-wave-underline) linear infinite;
+    transition: none;
   }
 
   @keyframes underline-wave {
@@ -270,11 +271,13 @@ const flowerPaths = [
     .dashed-underline--wave:hover { text-decoration-color: transparent; }
     .dashed-underline--wave:hover .dashed-underline__wave {
       visibility: visible;
+      opacity: 1;
       clip-path: inset(0);
-      transition: clip-path var(--duration-fast) var(--ease-smooth-out);
+      transition-duration: var(--duration-fast), var(--duration-fast), 0s;
+      transition-delay: 0s;
     }
     .dashed-underline--wave:hover .dashed-underline__wave svg {
-      animation: underline-wave var(--duration-wave-underline) linear infinite;
+      animation-play-state: running;
     }
     .dashed-underline--logos:hover .dashed-underline__logos {
       visibility: visible;

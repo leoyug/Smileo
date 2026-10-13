@@ -310,15 +310,36 @@
     text-decoration-line: none;
   }
 
+  .text-link.text-link--copy { text-decoration-color: var(--color-contact-underline); }
+  .text-link--copy:is([data-copy-hovering], :focus-visible) { text-decoration-color: var(--color-contact-underline-active); }
+
   .text-link--copy::before {
     content: "";
     position: absolute;
     top: 50%;
     left: min(0px, calc((100% - var(--dock-control-size)) / 2));
-    width: max(100%, var(--copy-hover-width, 0px));
+    width: 100%;
     min-width: var(--dock-control-size);
     height: var(--dock-control-size);
     transform: translateY(-50%);
+  }
+
+  /* Preserve the original pointer target when the longer label wraps. */
+  .text-link--copy[data-copy-hovering]::after {
+    content: "";
+    position: fixed;
+    left: var(--copy-origin-left);
+    top: var(--copy-origin-top);
+    width: var(--copy-origin-width);
+    height: var(--dock-control-size);
+  }
+
+  .text-link--copy[data-copy-hovering][data-copy-feedback-hitbox]::before {
+    position: fixed;
+    left: var(--copy-feedback-left);
+    top: var(--copy-feedback-top);
+    width: var(--copy-feedback-width);
+    transform: none;
   }
 
   .text-link__copy-label {
@@ -350,7 +371,7 @@
   }
 
   @media (hover: hover) and (pointer: fine) {
-    .text-link--copy:hover .text-link__copy-icon {
+    .text-link--copy[data-copy-hovering] .text-link__copy-icon {
       width: var(--copy-icon-size);
       margin-inline-end: var(--copy-icon-gap);
     }
@@ -390,29 +411,29 @@
     transform: scale(var(--icon-swap-start-scale));
   }
 
-  /* Both texts share one grid cell, so they cross-blur in place; the
-     cell's width eases between them. */
+  /* Retain every text layer so a reversal continues from its current opacity. */
   .t-text-soft {
     display: inline-grid;
+    min-width: 0;
+    grid-template-columns: minmax(0, 1fr);
     justify-items: var(--text-soft-align, start);
     transition: width var(--text-soft-resize-dur) var(--text-soft-resize-ease);
   }
   .t-text-soft > span {
     grid-area: 1 / 1;
+    width: max-content;
+    justify-self: start;
     white-space: pre;
+    pointer-events: none;
     transition:
       filter  var(--text-soft-dur) var(--text-soft-ease),
       opacity var(--text-soft-dur) var(--text-soft-ease);
   }
-  .t-text-soft-new {
+  .text-link__copy-layer {
     opacity: 0;
     filter: blur(var(--text-soft-blur));
   }
-  .t-text-soft.is-swapping .t-text-soft-old {
-    opacity: 0;
-    filter: blur(var(--text-soft-blur));
-  }
-  .t-text-soft.is-swapping .t-text-soft-new {
+  .text-link__copy-layer.is-current {
     opacity: 1;
     filter: blur(0);
   }
