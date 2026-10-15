@@ -63,7 +63,7 @@ export default config({
   locale: "zh-CN",
   ui: {
     brand: {
-      name: "内容管理",
+      name: "Smileo",
       mark: () => createElement("img", {
         src: "/favicon.svg?v=f9fb16d0d39c", alt: "", width: 32, height: 32,
       }),

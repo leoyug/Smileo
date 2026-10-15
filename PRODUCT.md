@@ -12,7 +12,7 @@ web
 
 ## Product Purpose
 
-“不息”是一份以长期记录为首要目标、兼顾职业展示的中文个人出版物。成功意味着文章、项目、摄影与职业信息都有稳定地址，内容可以多年持续积累，同时保持克制、可信和可维护。
+Smileo是一份以长期记录为首要目标、兼顾职业展示的中文个人出版物。成功意味着文章、项目、摄影与职业信息都有稳定地址，内容可以多年持续积累，同时保持克制、可信和可维护。
 
 ## Positioning
 
@@ -33,7 +33,7 @@ web
 
 ## Brand Commitments
 
-名称为“不息”，公开身份使用 Leo。语言克制、直接、诚实，不虚构成果或把示例内容描述为真实记录。既有视觉身份由 `PERSONAL_SITES_DESIGN_SYSTEM.md` 与 `src/styles/global.css` 约束。
+名称为Smileo，公开身份使用 Leo。语言克制、直接、诚实，不虚构成果或把示例内容描述为真实记录。既有视觉身份由 `PERSONAL_SITES_DESIGN_SYSTEM.md` 与 `src/styles/global.css` 约束。
 
 ## Evidence on Hand
 
