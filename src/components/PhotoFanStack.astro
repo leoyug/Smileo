@@ -1,4 +1,5 @@
 ---
+import { mediaUrl } from "../lib/media-url";
 import type { Photo } from "../lib/photos";
 
 export interface PhotoFanItem {
@@ -39,7 +40,7 @@ const interpolate = (values: number[], index: number) => {
             <span style={`--label-delay:calc(${characterIndex / Math.max(1, [...photoLabel].length - 1)} * var(--duration-very-slow))`}>{character}</span>
           ))}
         </span>
-        <img src={photo.src} alt={photo.alt} draggable="false" loading="lazy" />
+        <img src={mediaUrl(photo.src)} alt={photo.alt} draggable="false" loading="lazy" />
       </span>
     </button>
   ))}

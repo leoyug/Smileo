@@ -1,32 +1,37 @@
 import { defineConfig } from "astro/config";
+import { loadEnv } from "vite";
 import { createRequire } from "node:module";
 import { fileURLToPath } from "node:url";
 import react from "@astrojs/react";
 import keystatic from "@keystatic/astro";
 import { collectionSearch } from "./scripts/admin-search/vite-plugin.mjs";
 import { preparePhotos } from "./scripts/photos/prepare.mjs";
+import { prepareMediaManifest } from "./scripts/media/manifest.mjs";
 import { localContentImport } from "./scripts/import/vite-plugin.mjs";
 import { localPhotoSlugs } from "./scripts/photo-slug/vite-plugin.mjs";
 
 const require = createRequire(import.meta.url);
+const environment = loadEnv(process.argv[2] === "dev" ? "development" : "production", process.cwd(), "");
 
 const prepareUploadedPhotos = () => ({
   name: "prepare-uploaded-photos",
   configureServer(server) {
     let timer;
     const schedule = (file) => {
-      if (!file.includes("/public/media/photos/") && !file.includes("/src/content/photos/")) return;
+      if (/-preview-(480|222)\.webp$/.test(file)) return;
+      if (!file.includes("/public/media/") && !file.includes("/src/content/")) return;
       clearTimeout(timer);
-      timer = setTimeout(() => { preparePhotos().catch((error) => server.config.logger.error(String(error))); }, 800);
+      timer = setTimeout(() => { preparePhotos().then(() => prepareMediaManifest()).catch((error) => server.config.logger.error(String(error))); }, 800);
     };
     server.watcher.on("add", schedule);
     server.watcher.on("change", schedule);
+    server.watcher.on("unlink", schedule);
   },
 });
 
 export default defineConfig({
   output: "static",
-  site: "https://incessantleo.com",
+  site: environment.SITE_URL || "https://smileoleo.com",
   redirects: {
     "/photos/entry-f02d3fccf3": "/photos/walk-slowly-along-the-forest-path",
     "/photos/the-pier-under-the-blue-night": "/photos/the-pier-under-the-blue-night-sky",

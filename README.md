@@ -19,6 +19,8 @@ npm run build         # 准备照片、生成字体子集、检查并构建静�
 npm run preview       # 本地预览构建产物
 npm run photos:prepare # 更新照片尺寸并清除上传图片中的敏感元数据
 npm run photos:audit  # 单独检查摄影图片尺寸、引用和敏感元数据
+npm run media:prepare # 准备照片预览和已发布媒体清单
+npm run media:sync -- --dry-run # 查看图片同步计划，不上传
 ```
 
 开发环境的 `/design-system` 展示正在使用的设计规则和组件；生产环境不公开该页面。`npm run build` 自动重新生成寒蝉宋体子集，完整 OTF 只保存在 `scripts/fonts/source/`，不会作为公开资源发布。
@@ -81,3 +83,30 @@ scripts/photos/audit.ts         # 发布图片审计
 - [设计说明](./DESIGN.md)
 
 当前图片和部分文章、职业信息仍需作者逐项核实后才能作为正式内容对外发布。历史版本记录保留在 `docs/releases/`。
+
+## 图片托管（R2）
+
+本站主地址为 `https://smileoleo.com`，图片域名为 `https://photos.smileoleo.com`，对应 R2 桶 `smileoleo-media`。主站选择 Workers Static Assets；本节的同步命令只处理图片，网站部署另行执行。
+
+Keystatic 和批量导入仍把文件写入 `public/media/`，内容仍保存 `/media/...`。构建会生成 480px、222px 宽的照片预览及 `src/data/media-manifest.json`；预览可以重新生成，不进入 Git。清单只包含已发布内容引用的图片，摄影、文章和项目草稿独占文件均不上传。照片源文件与清单暂时继续保留在 Git。
+
+复制 `.env.example` 为 `.env.local`，填写配置。`SITE_URL` 独立控制 canonical、RSS 与分享链接；`PUBLIC_MEDIA_BASE` 留空时使用本地图片，构建 R2 版本时设为 `https://photos.smileoleo.com`。这些地址在构建时确定，修改后需要重新构建。
+
+推荐将 `PUBLIC_MEDIA_BASE=https://photos.smileoleo.com` 单独写入已忽略的 `.env.production.local`；这样生产构建使用 R2，本地开发继续使用 `.env.local` 中留空的媒体地址。
+
+在 Cloudflare 的 **R2 对象存储 → 概览 → API Tokens → 管理** 中创建 R2 API Token，选择 **Object Read & Write**，范围只选 `smileoleo-media`。将创建结果的 **Access Key ID**、**Secret Access Key** 分别填入 `.env.local` 中的 `R2_ACCESS_KEY_ID`、`R2_SECRET_ACCESS_KEY`，并填写账号 ID 和桶名；无需把 API Token 本身填入。密钥仅用于本机上传，不需要提供给浏览器或普通静态构建环境。环境文件已忽略，不要提交密钥。
+
+日常流程：Keystatic 编辑并确认公开内容 → `npm run publish:prepare` → 检查图片 → 提交内容与清单、推送 → 部署网站。`publish:prepare` 依次构建和同步图片，任一步失败即停止，不自动提交、推送或部署。
+
+```bash
+npm run media:sync -- --dry-run # 有凭证时与 R2 对比；无凭证时明确列出本地计划
+npm run publish:prepare        # 构建并同步图片，不部署主站
+```
+
+同步使用带内容哈希的远端文件名，跳过已经存在的 key；换图会生成新地址，并保留旧对象。仅带哈希的资源设置一年 immutable 缓存。同步按顺序上传，出错即停，可修复后重新执行；不支持远端删除或孤立对象管理。
+
+正文目前支持普通 `![说明](/media/...)`、图片链接及带引号的 HTML `img src`，在构建后的 HTML 中统一改写。引用式图片和 `srcset` 尚未纳入本地引用收集，出现这些写法时会明确报错；复杂 MDX 等有实际内容需求后再扩展。
+
+新环境的 R2 配置顺序是：创建桶 → 生成桶范围凭证 → 在桶的 **Custom Domains** 中连接媒体域名。自定义域名所在 zone 须在同一 Cloudflare 账号下，无需开启 `r2.dev`。之后迁移域名时只调整 `SITE_URL` / `PUBLIC_MEDIA_BASE` 并重新构建。官方参考：[R2 自定义域名](https://developers.cloudflare.com/r2/buckets/public-buckets/)、[R2 凭证](https://developers.cloudflare.com/r2/api/tokens/)。
+
+本阶段不停止跟踪 `public/media/`、不清理 Git 历史，也不从部署包中移除已发布的本地媒体。需要回退时清空 `PUBLIC_MEDIA_BASE` 后重新构建即可。草稿保护仍会从构建结果中移除未发布或未引用的媒体文件。

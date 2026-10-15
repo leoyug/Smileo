@@ -101,17 +101,24 @@ test("photo deletion moves records and unshared assets out of public and retains
     "src/content/photos/b.json": '{"order":2,"draft": false,"src":"/media/photos/shared/src.jpg"}',
     "src/content/photos/c.json": '{"order":3,"draft": false,"src":"/media/photos/shared/src.jpg"}',
     "public/media/photos/a/src.jpg": "A image",
+    "public/media/photos/a/src-preview-480.webp": "A preview",
+    "public/media/photos/a/src-preview-222.webp": "A compact preview",
     "public/media/photos/shared/src.jpg": "shared image",
+    "public/media/photos/shared/src-preview-480.webp": "shared preview",
   });
   const before = await store.snapshot("photos");
   await store.apply("photos", { action: "delete", keys: ["a", "b"], version: before.version });
   await assert.rejects(read("src/content/photos/a.json"), { code: "ENOENT" });
   await assert.rejects(read("public/media/photos/a/src.jpg"), { code: "ENOENT" });
   assert.equal(await read("public/media/photos/shared/src.jpg"), "shared image");
+  await assert.rejects(read("public/media/photos/a/src-preview-480.webp"), { code: "ENOENT" });
+  await assert.rejects(read("public/media/photos/a/src-preview-222.webp"), { code: "ENOENT" });
+  assert.equal(await read("public/media/photos/shared/src-preview-480.webp"), "shared preview");
   assert.deepEqual((await store.snapshot("photos")).entries.map(entry => entry.slug), ["c"]);
   assert.equal(JSON.parse(await read("src/content/photos/c.json")).order, 1);
   const [backup] = await readdir(path.join(root, "private/content-trash"));
   assert.equal(await read(`private/content-trash/${backup}/public/media/photos/a/src.jpg`), "A image");
+  assert.equal(await read(`private/content-trash/${backup}/public/media/photos/a/src-preview-480.webp`), "A preview");
 });
 
 test("deletion refuses linked content without removing any selected record", async t => {

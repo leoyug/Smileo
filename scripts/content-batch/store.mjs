@@ -1,6 +1,7 @@
 import { createHash, randomUUID } from "node:crypto";
 import { readdir, readFile, writeFile, mkdir, unlink, lstat, realpath } from "node:fs/promises";
 import { renameSync, writeFileSync } from "node:fs";
+import { thumbnailPath, thumbnailWidths } from "../media/paths.mjs";
 import path from "node:path";
 import matter from "gray-matter";
 import { withContentLock } from "../content-order/lock.mjs";
@@ -98,6 +99,15 @@ export function createBatchStore(root) {
         const expected = path.join(await realpath(publicRoot), path.relative(publicRoot, absolute));
         if (!info.isFile() || info.isSymbolicLink() || await realpath(absolute) !== expected) throw new Error("照片资产不是普通本地文件。");
         paths.add(absolute);
+        if (src.startsWith("/media/photos/")) for (const width of thumbnailWidths) {
+          const preview = path.join(root, "public", thumbnailPath(src, width));
+          try {
+            const previewInfo = await lstat(preview);
+            const expectedPreview = path.join(await realpath(publicRoot), path.relative(publicRoot, preview));
+            if (!previewInfo.isFile() || previewInfo.isSymbolicLink() || await realpath(preview) !== expectedPreview) throw new Error("照片预览不是普通本地文件。");
+            paths.add(preview);
+          } catch (error) { if (error.code !== "ENOENT") throw error; }
+        }
       } catch (error) { if (error.code !== "ENOENT") throw error; }
     }
     const backup = path.join(root, "private/content-trash", randomUUID());

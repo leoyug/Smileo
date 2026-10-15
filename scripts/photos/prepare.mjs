@@ -3,6 +3,7 @@ import path from "node:path";
 import { fileURLToPath } from "node:url";
 import sharp from "sharp";
 import { readPublicPhotoMetadata } from "../import/photo-metadata.mjs";
+import { preparePhotoPreviews } from "../media/previews.mjs";
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "../..");
 const contentDirectory = path.join(root, "src/content/photos");
@@ -25,6 +26,7 @@ export function preparePhotos() {
 }
 
 async function prepare() {
+  const photos = [];
   for (const name of (await readdir(contentDirectory)).filter((name) => name.endsWith(".json"))) {
     const recordPath = path.join(contentDirectory, name);
     const photo = JSON.parse(await readFile(recordPath, "utf8"));
@@ -83,7 +85,9 @@ async function prepare() {
       await writeFile(recordPath, `${JSON.stringify(photo, null, 2)}\n`);
       console.log(`已准备照片：${name}`);
     }
+    photos.push(photo);
   }
+  await preparePhotoPreviews(root, photos);
 }
 
 if (process.argv[1] && path.resolve(process.argv[1]) === fileURLToPath(import.meta.url)) {

@@ -1,4 +1,5 @@
 ---
+import { mediaUrl } from "../lib/media-url";
 import TextLink from "./TextLink.astro";
 import { projectStatuses } from "../lib/project-status";
 
@@ -20,7 +21,7 @@ const linkLabel = ["查看项目", title, label, year].filter(Boolean).join("，
     <span class:list={["project-card__visual", status && `status-${status}`]}>
       {label && <span class="project-card__attribute" aria-hidden="true"><span class="project-card__attribute-dot"></span>{label}</span>}
       <span class="project-card__media">
-        {image ? <img src={image} alt="" loading="lazy" /> : (
+        {image ? <img src={mediaUrl(image)} alt="" loading="lazy" /> : (
           <span class="project-card__preview">
             <span class="project-card__chrome"></span>
             <span class="project-card__screen">
