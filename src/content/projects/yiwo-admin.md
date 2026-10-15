@@ -3,12 +3,11 @@ title: 亦我家装后台
 description: 帮助家装企业管理资产与人员的后台界面。
 publishedAt: 2026-09-30
 updatedAt: 2026-10-10
-draft: false
+draft: true
 period: 2023-2025
 projectType: 后台
-website: https://example.com/yiwo-admin
 status: ongoing
-role: 待确认
+role: UI 设计师
 featured: false
 order: 6
 cover: /media/projects/yiwo-admin/cover.png
@@ -18,7 +17,7 @@ archiveImages:
   - /media/projects/yiwo-admin/archiveImages/2.png
 relatedArticles: []
 ---
-以下内容依据现有项目名称与简介整理，是待核对的展示文案；具体职责、上线时间与项目结果应以实际资料为准。项目时间与网址为虚拟示例，待真实案例资料上传后替换。
+以下内容依据现有项目名称与简介整理，是待核对的展示文案；具体职责、上线时间与项目结果应以实际资料为准。项目时间为虚拟示例，待真实案例资料上传后替换。
 
 ## 项目概览
 

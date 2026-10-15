@@ -6,6 +6,7 @@ import { projectStackStyle } from "../lib/project-stack";
 import { getProjects, projectPreview } from "../lib/projects";
 
 const projects = await getProjects();
+if (projects.length === 0) return Astro.redirect("/", 302);
 const featuredProjectPreviews = projects.filter((project) => project.data.featured).map(projectPreview);
 const archiveProjectPreviews = projects.map((project) => ({
   source: project.id,

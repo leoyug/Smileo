@@ -3,11 +3,11 @@ title: 宅畅想 App
 description: 家装公司全链路解决方案。
 publishedAt: 2026-09-30
 updatedAt: 2026-10-10
-draft: false
+draft: true
 period: 2022-2025
 projectType: App
 status: launched
-role: 待确认
+role: UI 设计师
 featured: true
 order: 2
 cover: /media/projects/homagine-app/cover.png

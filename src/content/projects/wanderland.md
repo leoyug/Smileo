@@ -3,7 +3,7 @@ title: Wanderland
 description: 更好地展示与整理收藏内容。
 publishedAt: 2026-09-30
 updatedAt: 2026-10-10
-draft: false
+draft: true
 period: '2026'
 projectType: 插件
 status: ongoing
@@ -21,7 +21,7 @@ relatedArticles: []
 
 ## 项目概览
 
-灵感集关注收藏之后的使用体验。图片、链接和想法往往来自不同地方；如果只按保存时间排列，内容会很快变成难以重新访问的清单。
+Wanderland 关注收藏之后的使用体验。图片、链接和想法往往来自不同地方；如果只按保存时间排列，内容会很快变成难以重新访问的清单。
 
 ## 设计重点
 

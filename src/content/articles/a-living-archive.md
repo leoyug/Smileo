@@ -1,6 +1,6 @@
 ---
 order: 2
-draft: false
+draft: true
 title: 我如何整理一座不断生长的个人档案
 description: 关于稳定地址、内容关系，以及为什么个人网站值得慢慢做。
 publishedAt: 2026-07-18

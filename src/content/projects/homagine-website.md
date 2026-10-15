@@ -3,12 +3,12 @@ title: 宅畅想官网
 description: 介绍宅畅想并帮助访客理解产品与服务的网站。
 publishedAt: 2026-09-30
 updatedAt: 2026-10-10
-draft: false
+draft: true
 period: '2025'
 projectType: 网页
 website: https://zhaichangxiang.com
 status: archive
-role: 待确认
+role: UI 设计师
 featured: false
 order: 5
 cover: /media/projects/homagine-website/cover.png
