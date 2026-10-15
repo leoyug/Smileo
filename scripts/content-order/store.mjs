@@ -5,6 +5,7 @@ import path from "node:path";
 import matter from "gray-matter";
 import { moveEntries } from "../../src/admin/collection-order.js";
 import { withContentLock } from "./lock.mjs";
+import { renamedPhotoReferences } from "../photos/component-references.mjs";
 
 const formats = { projects: ".md", photos: ".json", articles: ".md" };
 const conflict = () => Object.assign(new Error("内容已在其他页面修改，请刷新列表后重试。"), { status: 409 });
@@ -101,12 +102,17 @@ export function createOrderStore(root) {
       const collectionOf = value => typeof value === "string" ? value.match(/^src\/content\/(projects|photos|articles)\/[^/]+\.(md|json)$/)?.[1] : undefined;
       if (!Array.isArray(updates?.additions) || !Array.isArray(updates?.deletions)) return save(updates);
       const touched = [...new Set([...updates.additions, ...updates.deletions].map(file => collectionOf(file?.path)).filter(Boolean))].sort();
+      const locks = [...touched];
+      if (touched.includes("photos") || [...updates.additions, ...updates.deletions].some(file =>
+        /^src\/data\/photo-components\/(home-fan|home-drag|text-hover)\.json$/.test(file?.path))) locks.push("photo-components");
+      locks.sort();
       const run = async () => {
         const additions = new Map(updates.additions.map(file => [file.path, file]));
         const deleted = new Set(updates.deletions.map(file => file.path));
         for (const collection of touched) {
           const snapshot = await read(collection);
           const originals = new Map(snapshot.files.map(file => [path.relative(root, file.filepath), file]));
+          if (collection === "photos") for (const change of await renamedPhotoReferences(root, updates, originals)) additions.set(change.path, change);
           const files = new Map([...originals].filter(([name]) => !deleted.has(name)));
           let ordered = snapshot.entries.map(entry => `src/content/${collection}/${entry.slug}${formats[collection]}`).filter(name => files.has(name));
           for (const addition of updates.additions.filter(file => collectionOf(file.path) === collection)) {
@@ -132,7 +138,7 @@ export function createOrderStore(root) {
         return save({ ...updates, additions: [...additions.values()] });
       };
       // Match lock order for saves that touch more than one collection.
-      const locked = index => index === touched.length ? run() : mutate(touched[index], () => locked(index + 1));
+      const locked = index => index === locks.length ? run() : mutate(locks[index], () => locked(index + 1));
       return locked(0);
     },
     async snapshot(collection) {

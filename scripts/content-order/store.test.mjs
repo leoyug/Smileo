@@ -69,6 +69,68 @@ test("native CMS save returns hashes for the final shifted files", async t => {
   assert.equal(response.body, tree.body);
 });
 
+test("native photo rename keeps all component selections and their returned file hashes", async t => {
+  const { makeGenericAPIRouteHandler } = await import("@keystatic/core/api/generic");
+  const { fields } = await import("@keystatic/core");
+  const { store, folder } = await fixture(t, "photos", {
+    "old.json": document("photos", 1, "林间小路慢慢走"),
+    "keep.json": document("photos", 2, "保留照片"),
+  });
+  const root = path.resolve(folder, "../../..");
+  const components = ["home-fan", "home-drag", "text-hover"];
+  const config = { storage: { kind: "local" }, collections: { photos: {
+    path: "src/content/photos/*", format: "json", schema: { order: fields.integer({ label: "顺序" }) },
+  } }, singletons: Object.fromEntries(components.map(name => [name, {
+    path: `src/data/photo-components/${name}`, format: "json",
+    schema: { photos: fields.array(fields.relationship({ label: "照片", collection: "photos" }), { label: "选图" }) },
+  }])) };
+  await mkdir(path.join(root, "src/data/photo-components"), { recursive: true });
+  for (const name of components) await writeFile(path.join(root, `src/data/photo-components/${name}.json`),
+    JSON.stringify({ photos: ["keep", "old"] }));
+  const handler = makeGenericAPIRouteHandler({ localBaseDirectory: root, config });
+  const updates = { additions: [addition("photos", "new", document("photos", 1, "林间小路慢慢走"))],
+    deletions: [{ path: "src/content/photos/old.json" }] };
+  // Preparing dependent updates must not write anything before the native save.
+  await assert.rejects(store.update(updates, async () => { throw new Error("保存失败"); }), /保存失败/);
+  assert.deepEqual(JSON.parse(await readFile(path.join(root, "src/data/photo-components/home-drag.json"), "utf8")).photos, ["keep", "old"]);
+  const response = await store.update(updates, changes => handler(new Request("http://localhost/api/keystatic/update", {
+    method: "POST", headers: { "content-type": "application/json", "no-cors": "1" }, body: JSON.stringify(changes),
+  })));
+  assert.equal(response.status, 200);
+  for (const name of components) {
+    const data = JSON.parse(await readFile(path.join(root, `src/data/photo-components/${name}.json`), "utf8"));
+    assert.deepEqual(data.photos, ["keep", "new"]);
+  }
+  await assert.rejects(readFile(path.join(folder, "old.json")), { code: "ENOENT" });
+  const tree = await handler(new Request("http://localhost/api/keystatic/tree", { headers: { "no-cors": "1" } }));
+  assert.equal(response.body, tree.body);
+});
+
+test("photo selection saves and photo renames share a lock", async t => {
+  const { store, folder } = await fixture(t, "photos", { "old.json": document("photos", 1, "旧照片") });
+  const root = path.resolve(folder, "../../..");
+  const { withContentLock } = await import("./lock.mjs");
+  await withContentLock(root, "photo-components", async () => {
+    const save = () => { throw new Error("不应调用保存"); };
+    await assert.rejects(store.update({ additions: [addition("photos", "new", document("photos", 1, "旧照片"))],
+      deletions: [{ path: "src/content/photos/old.json" }] }, save), { status: 409 });
+    await assert.rejects(store.update({ additions: [{ path: "src/data/photo-components/home-drag.json", contents: "e30" }], deletions: [] }, save), { status: 409 });
+  });
+});
+
+test("ordinary photo edits and deletion do not rewrite component selections", async t => {
+  const { store, folder } = await fixture(t, "photos", { "old.json": document("photos", 1, "旧照片") });
+  const raw = '{ "photos": ["old"] }\n';
+  const selection = path.resolve(folder, "../../data/photo-components/home-drag.json");
+  await mkdir(path.dirname(selection), { recursive: true });
+  await writeFile(selection, raw);
+  const save = writer(folder);
+  await store.update({ additions: [addition("photos", "old", document("photos", 1, "新描述"))], deletions: [] }, save);
+  assert.equal(await readFile(selection, "utf8"), raw);
+  await store.update({ additions: [], deletions: [{ path: "src/content/photos/old.json" }] }, save);
+  assert.equal(await readFile(selection, "utf8"), raw);
+});
+
 async function fixture(t, collection, documents) {
   const root = await mkdtemp(path.join(tmpdir(), "content-order-"));
   t.after(() => rm(root, { recursive: true, force: true }));

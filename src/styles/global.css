@@ -60,6 +60,7 @@
     --color-link: #242424;
     --color-muted: #646464;
     --color-faint: #6b6b6b;
+    --color-signature: #716a65;
     --color-contact: var(--color-link);
     --color-on-dark: #fafafa;
 
@@ -181,6 +182,7 @@
     --copy-icon-size: .875em;
     --copy-icon-gap: var(--space-1);
     --copy-feedback-duration: 1500ms;
+    --duration-signature-write: 1500ms;
     --icon-swap-dur: var(--duration-fast);
     --icon-swap-blur: calc(var(--space-1) / 2);
     --icon-swap-start-scale: .25;
@@ -225,6 +227,10 @@
     --duration-article-image-close: 300ms;
     --blur-article-image: var(--blur-detail-background);
     --color-article-image-backdrop: color-mix(in srgb, var(--color-canvas) 12%, transparent);
+  }
+
+  @supports (color: color(display-p3 0 0 0)) {
+    :root { --color-signature: color(display-p3 0.4431 0.4157 0.3961); }
   }
 
   :root[data-theme="dark"] {

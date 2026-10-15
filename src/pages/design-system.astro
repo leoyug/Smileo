@@ -16,6 +16,7 @@ import SectionHeading from "../components/SectionHeading.astro";
 import TextLink from "../components/TextLink.astro";
 import AnimatedHighlight from "../components/AnimatedHighlight.astro";
 import DashedUnderline from "../components/DashedUnderline.astro";
+import SignatureMark from "../components/SignatureMark.astro";
 import { aiLogos } from "../data/site";
 import { getPhotos } from "../lib/photos";
 import { getPhotoStackPhotos } from "../lib/photo-stack";
@@ -45,6 +46,7 @@ const colorGroups = [
       ["link", "正文内可点击链接"],
       ["muted", "区块小标题与辅助信息"],
       ["faint", "低优先级元数据"],
+      ["signature", "手写签名，保留原资产颜色"],
       ["contact", "联系模块链接"],
       ["on-dark", "深色背景上的反白文字"],
     ],
@@ -89,6 +91,11 @@ const fanPhotos = photos.slice(0, 7).map((photo) => ({ photo, label: photo.alt }
     <p>从项目调研中提取的暖纸色、克制排版与低层级表面。这个页面只在开发环境呈现，用于验证变量和组件复用。</p>
   </header>
   <div class="ds-stack wide-column">
+    <section>
+      <SectionHeading title="手写签名 · SignatureMark" description="保持首页签名的颜色与 64×48px 尺寸；进入页面时按自然节奏书写一次，时长 1.5 秒。笔画边缘使用固定的轻微 Melt 纹理，减少动态效果时直接显示完整签名。" />
+      <SignatureMark />
+      <code>&lt;SignatureMark class="hero__signature" /&gt;</code>
+    </section>
     <section>
       <SectionHeading title="颜色系统" description="按表面、内容、边界与交互分层；切换外观后，色块与实际值会同步更新。" />
       <div class="color-groups">

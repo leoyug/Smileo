@@ -3,6 +3,7 @@ import { createRequire } from "node:module";
 import { fileURLToPath } from "node:url";
 import react from "@astrojs/react";
 import keystatic from "@keystatic/astro";
+import { collectionSearch } from "./scripts/admin-search/vite-plugin.mjs";
 import { preparePhotos } from "./scripts/photos/prepare.mjs";
 import { localContentImport } from "./scripts/import/vite-plugin.mjs";
 import { localPhotoSlugs } from "./scripts/photo-slug/vite-plugin.mjs";
@@ -27,13 +28,14 @@ export default defineConfig({
   output: "static",
   site: "https://incessantleo.com",
   redirects: {
+    "/photos/entry-f02d3fccf3": "/photos/walk-slowly-along-the-forest-path",
     "/photos/the-pier-under-the-blue-night": "/photos/the-pier-under-the-blue-night-sky",
   },
   integrations: process.env.NODE_ENV === "production" ? [] : [react(), keystatic(), localContentImport(), localPhotoSlugs()],
   vite: {
     // Keep check/build from replacing the running dev server's optimized dependencies.
     cacheDir: fileURLToPath(new URL(`./node_modules/.vite/${process.argv[2] ?? "astro"}/`, import.meta.url)),
-    plugins: [prepareUploadedPhotos()],
+    plugins: [prepareUploadedPhotos(), collectionSearch()],
     // Keep CMS adapters live while prebundling their underlying native controls.
     optimizeDeps: {
       exclude: ["@keystar/ui/table", "@keystar/ui/list-view", "@keystar/ui/text-field", "@keystar/ui/number-field", "@keystar/ui/picker", "@keystar/ui/combobox"],
