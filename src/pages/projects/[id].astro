@@ -1,14 +1,15 @@
 ---
 import { mediaUrl } from "../../lib/media-url";
 import type { CollectionEntry } from "astro:content";
-import { getCollection, render } from "astro:content";
+import { render } from "astro:content";
+import { getProjects } from "../../lib/projects";
 import DetailToc from "../../components/DetailToc.astro";
 import BaseLayout from "../../layouts/BaseLayout.astro";
 import ArticleImageZoom from "../../components/ArticleImageZoom.astro";
 import TextLink from "../../components/TextLink.astro";
 
 export async function getStaticPaths() {
-  const projects = await getCollection("projects", ({ data }) => !data.draft);
+  const projects = await getProjects();
   return projects.map((entry) => ({ params: { id: entry.id }, props: { entry } }));
 }
 interface Props { entry: CollectionEntry<"projects">; }

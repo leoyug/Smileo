@@ -2,8 +2,8 @@
 import { navigation } from "../data/site";
 import ProgressiveBlur from "./ProgressiveBlur.astro";
 import { getProjects } from "../lib/projects";
-const hasPublishedProjects = (await getProjects()).length > 0;
-const visibleNavigation = navigation.filter((item) => item.href !== "/projects" || hasPublishedProjects);
+const hasProjects = (await getProjects()).length > 0;
+const visibleNavigation = navigation.filter((item) => item.href !== "/projects" || hasProjects);
 const currentPath = Astro.url.pathname;
 const isCurrent = (href: string) => {
   if (href === "/") return currentPath === "/";
