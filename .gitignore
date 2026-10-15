@@ -1,6 +1,8 @@
 node_modules/
 dist/
 .astro/
+.wrangler/
+.dev.vars*
 .DS_Store
 
 # 照片原件永不进入版本管理或公开构建。

@@ -20,7 +20,9 @@
     "media:prepare": "node scripts/media/prepare.mjs",
     "media:sync": "npm run media:prepare && npm run photos:audit && node scripts/media/sync-r2.mjs",
     "test:media": "node --test scripts/media/media.test.mjs",
-    "publish:prepare": "npm run build && npm run media:sync"
+    "publish:prepare": "npm run build && npm run media:sync",
+    "deploy:check": "wrangler deploy --dry-run --outdir output/workers-dry-run",
+    "deploy:site": "wrangler deploy"
   },
   "dependencies": {
     "@astrojs/check": "^0.9.4",
@@ -45,6 +47,7 @@
   },
   "devDependencies": {
     "@types/node": "^24.3.0",
-    "vite": "^7.3.7"
+    "vite": "^7.3.7",
+    "wrangler": "4.151.0"
   }
 }

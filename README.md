@@ -110,3 +110,24 @@ npm run publish:prepare        # 构建并同步图片，不部署主站
 新环境的 R2 配置顺序是：创建桶 → 生成桶范围凭证 → 在桶的 **Custom Domains** 中连接媒体域名。自定义域名所在 zone 须在同一 Cloudflare 账号下，无需开启 `r2.dev`。之后迁移域名时只调整 `SITE_URL` / `PUBLIC_MEDIA_BASE` 并重新构建。官方参考：[R2 自定义域名](https://developers.cloudflare.com/r2/buckets/public-buckets/)、[R2 凭证](https://developers.cloudflare.com/r2/api/tokens/)。
 
 本阶段不停止跟踪 `public/media/`、不清理 Git 历史，也不从部署包中移除已发布的本地媒体。需要回退时清空 `PUBLIC_MEDIA_BASE` 后重新构建即可。草稿保护仍会从构建结果中移除未发布或未引用的媒体文件。
+
+## 主站托管（Workers Static Assets）
+
+`wrangler.jsonc` 将 `dist/` 作为纯静态资产发布到 `smileo`，通过 Custom Domain 连接 `smileoleo.com`。不需要 Astro 服务端适配器、Worker 代码或运行时密钥；`workers.dev` 和版本预览地址关闭。未知路径使用 `404.html` 并返回 404，目录页保留末尾斜杠，与构建的 canonical 一致。`public/_redirects` 提供旧照片地址的 301 和生产设计系统页的 302。
+
+首次部署前使用 `npx wrangler login` 登录具有该账号 Workers 和域名权限的 Cloudflare 账号。构建仍在本机完成，沿用 Node.js、Python 3（`fonttools`、`brotli`）和现有照片审计依赖，不引入远程构建。
+
+```bash
+# 内容、公开范围和生产地址确认后，构建并同步媒体。
+SITE_URL=https://smileoleo.com PUBLIC_MEDIA_BASE=https://photos.smileoleo.com npm run publish:prepare
+npm run deploy:check # 只验证配置和产物，不上传、不修改域名
+npm run deploy:site  # 将当前 dist 上传并绑定主域名，不重新构建或同步媒体
+```
+
+`deploy:site` 会公开当前构建；首次上线前须确认发布内容，并完成 PR 审阅及合并。构建后若修改内容或环境变量，重新执行准备步骤，避免发布旧产物。R2 上传凭证仅由本机同步工具使用，不写入 Wrangler 配置或 Workers 变量。
+
+`www.smileoleo.com` 在 Cloudflare zone 中配置 Single Redirect：匹配 `http.host eq "www.smileoleo.com"`，以 301 跳转到 `concat("https://smileoleo.com", http.request.uri.path)`，开启保留查询参数；为 `www` 添加指向 `192.0.2.1` 的代理 A 记录以承接跳转。此规则独立于静态资产，因为 `_redirects` 不支持按来源域名匹配。不要改动 R2 管理的 `photos` 记录。
+
+上线后检查主站 HTTPS、www 路径和查询参数、canonical、RSS、远程图片、旧照片地址以及真实 404。后续回退可重新构建并部署已验证的 Git 提交产物。
+
+官方参考：[静态站点与 404](https://developers.cloudflare.com/workers/static-assets/routing/static-site-generation/)、[静态资产重定向](https://developers.cloudflare.com/workers/static-assets/redirects/)、[Workers 自定义域名](https://developers.cloudflare.com/workers/configuration/routing/custom-domains/)、[域名跳转](https://developers.cloudflare.com/fundamentals/manage-domains/redirect-domain/)。
