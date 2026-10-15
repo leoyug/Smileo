@@ -1,4 +1,5 @@
 ---
+import { mediaUrl } from "../lib/media-url";
 import type { Photo } from "../lib/photos";
 
 interface Props {
@@ -30,7 +31,7 @@ const layouts = [
         data-photo-drag-card
         style={`--stack-left:${layout.left};--stack-top:${layout.top};--stack-rotate:${layout.rotate};--stack-z:${layout.z}`}
       >
-        <span class="photo-drag-stack__image"><img src={photo.src} alt={photo.alt} draggable="false" loading="lazy" /></span>
+        <span class="photo-drag-stack__image"><img src={mediaUrl(photo.src)} alt={photo.alt} draggable="false" loading="lazy" /></span>
       </button>
     );
   })}

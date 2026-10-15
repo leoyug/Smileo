@@ -1,6 +1,8 @@
 node_modules/
 dist/
 .astro/
+.wrangler/
+.dev.vars*
 .DS_Store
 
 # 照片原件永不进入版本管理或公开构建。
@@ -16,3 +18,9 @@ private/cms/
 .playwright-cli/
 output/
 .agents/
+
+# 本地凭证与可重新生成的照片预览；发布资产继续保留在 Git。
+.env*
+!.env.example
+public/media/photos/**/*-preview-480.webp
+public/media/photos/**/*-preview-222.webp

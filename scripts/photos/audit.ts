@@ -3,6 +3,7 @@ import path from "node:path";
 import { fileURLToPath } from "node:url";
 import { exiftool } from "exiftool-vendored";
 import sharp from "sharp";
+import { thumbnailPath, thumbnailWidths } from "../media/paths.mjs";
 
 const projectRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "../..");
 const publicRoot = path.join(projectRoot, "public");
@@ -57,6 +58,21 @@ async function auditPhotos() {
       continue;
     }
     referenced.add(absolute);
+    if (photo.src.startsWith("/media/photos/")) {
+      for (const width of thumbnailWidths) {
+        const preview = path.join(publicRoot, thumbnailPath(photo.src, width));
+        referenced.add(preview);
+        if (photo.draft) continue;
+        try {
+          const [file, metadata, tags] = await Promise.all([stat(preview), sharp(preview).metadata(), exiftool.read(preview)]);
+          const expectedWidth = Math.min(width, photo.width);
+          const expectedHeight = Math.round(photo.height * expectedWidth / photo.width);
+          if (metadata.format !== "webp" || metadata.width !== expectedWidth || metadata.height !== expectedHeight) errors.push(`${name}: ${width}px 预览格式或尺寸不正确`);
+          if (file.size > 2_000_000 || metadata.exif?.length || metadata.xmp?.length) errors.push(`${name}: ${width}px 预览超过大小限制或含元数据`);
+          if (Object.keys(tags).some(key => key !== "ProfileCopyright" && /(gps|latitude|longitude|altitude|serialnumber|ownername|artist|copyright)/i.test(key))) errors.push(`${name}: ${width}px 预览含敏感元数据`);
+        } catch (error) { errors.push(`${name}: ${width}px 预览无法读取：${error instanceof Error ? error.message : error}`); }
+      }
+    }
     try {
       const [file, metadata] = await Promise.all([stat(absolute), sharp(absolute).metadata()]);
       if (file.size > 2_000_000) errors.push(`${name}: 发布资产超过 2 MB`);

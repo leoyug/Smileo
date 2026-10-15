@@ -1,4 +1,5 @@
 ---
+import { mediaUrl } from "../lib/media-url";
 import SiteHeader from "../components/SiteHeader.astro";
 import SiteFooter from "../components/SiteFooter.astro";
 import { ClientRouter } from "astro:transitions";
@@ -22,7 +23,7 @@ const {
   robots,
 } = Astro.props;
 const canonical = new URL(Astro.url.pathname, Astro.site);
-const resolvedSocialImage = socialImage ? new URL(socialImage, Astro.site) : null;
+const resolvedSocialImage = socialImage ? new URL(mediaUrl(socialImage), Astro.site) : null;
 const isDetailRoute = /^\/(?:projects|writing)\/[^/]+\/?$/.test(Astro.url.pathname);
 ---
 

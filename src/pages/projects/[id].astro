@@ -1,4 +1,5 @@
 ---
+import { mediaUrl } from "../../lib/media-url";
 import type { CollectionEntry } from "astro:content";
 import { getCollection, render } from "astro:content";
 import DetailToc from "../../components/DetailToc.astro";
@@ -20,7 +21,7 @@ const cover = entry.data.cover ?? "/assets/figma-v03/project-detail/cover.png";
 <BaseLayout title={`${entry.data.title}｜Leo`} description={entry.data.description} socialImage={cover}>
   <DetailToc headings={headings} ariaLabel="项目目录" className="detail-toc--reading" backHref="/projects" backLabel="返回项目" returnViaHistory />
   <article class="content-detail reading-column" data-detail-page="project">
-    <img class="content-detail__cover" src={cover} alt={`${entry.data.title}项目封面`} transition:name="project-cover" data-route-enter />
+    <img class="content-detail__cover" src={mediaUrl(cover)} alt={`${entry.data.title}项目封面`} transition:name="project-cover" data-route-enter />
     <header id="overview" data-route-enter>
       <h1>{entry.data.title}</h1>
       <p class="detail-facts" aria-label="项目信息">

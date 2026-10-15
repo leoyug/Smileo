@@ -1,4 +1,5 @@
 ---
+import { mediaUrl } from "../lib/media-url";
 interface Props {
   title: string;
   summary?: string;
@@ -13,7 +14,7 @@ const { title, summary, meta, href = "#", tags = [], density = "default", stackO
 ---
 
 <a class:list={["content-row", { "content-row--compact": density === "compact", "content-row--stack-mobile": stackOnMobile }]} href={href} data-list-sound>
-  {thumbnail && <img class="content-row__thumb" src={thumbnail} alt="" loading="lazy" />}
+  {thumbnail && <img class="content-row__thumb" src={mediaUrl(thumbnail)} alt="" loading="lazy" />}
   <span class="content-row__body">
     <strong>{title}</strong>
     {summary && <small>{summary}</small>}

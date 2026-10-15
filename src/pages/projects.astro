@@ -1,4 +1,5 @@
 ---
+import { mediaUrl } from "../lib/media-url";
 import BaseLayout from "../layouts/BaseLayout.astro";
 import ProjectCard from "../components/ProjectCard.astro";
 import { projectStackStyle } from "../lib/project-stack";
@@ -34,7 +35,7 @@ const archiveProjectPreviews = projects.map((project) => ({
         <a class="project-archive-row" href={project.href} data-list-sound data-project-transition data-project-source={project.source}>
           <span class="project-archive-row__thumb" aria-hidden="true">
             {/* The editor lists front to back; paint the stack back to front. */}
-            {[...project.images].reverse().map((image, index) => <img src={image} alt="" loading="lazy" style={projectStackStyle(project.source, index)} />)}
+            {[...project.images].reverse().map((image, index) => <img src={mediaUrl(image)} alt="" loading="lazy" style={projectStackStyle(project.source, index)} />)}
           </span>
           <span class="project-archive-row__copy"><strong>{project.title}</strong><small>{project.summary}</small></span>
           <span class="project-archive-row__time">{project.period}</span>
