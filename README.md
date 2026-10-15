@@ -1,6 +1,6 @@
-# 不息 Traces
+# Smileo
 
-“不息”是 Leo 的中文个人网站，记录写作、项目、摄影与职业经历。网站使用 Astro 6、TypeScript 和 Content Collections，生成纯静态页面。
+Smileo是 Leo 的中文个人网站，记录写作、项目、摄影与职业经历。网站使用 Astro 6、TypeScript 和 Content Collections，生成纯静态页面。
 
 ## 本地运行
 
