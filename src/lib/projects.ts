@@ -1,4 +1,5 @@
 import { getCollection } from "astro:content";
+import { featuredProjectBadges } from "./project-badges";
 
 export async function getProjects() {
   return (await getCollection("projects", ({ data }) => import.meta.env.DEV || !data.draft)).sort((left, right) =>
@@ -12,6 +13,7 @@ export function projectPreview(entry: Awaited<ReturnType<typeof getProjects>>[nu
     title: entry.data.title,
     summary: entry.data.description,
     status: entry.data.status,
+    badge: featuredProjectBadges[entry.id],
     image: entry.data.cover,
     href: `/projects/${entry.id}`,
   };

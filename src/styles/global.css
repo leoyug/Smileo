@@ -76,10 +76,10 @@
     --color-project-frame: #f5f4f2;
     --color-project-media-border: #fff;
     --color-project-attribute-bg: var(--color-surface);
-    --color-project-attribute-border: rgb(36 36 36 / 10%);
+    --color-project-attribute-border: var(--color-line);
     --color-project-attribute-text: var(--color-ink);
-    --color-project-attribute-dot-clay: #00b89d;
-    --color-project-attribute-dot-sage: #ffb000;
+    --project-attribute-border-width: .5px;
+    --project-attribute-icon-filter: brightness(0);
     --color-leader: #e2e1df;
     --color-contact-underline: rgb(77 77 77 / 25%);
     --color-contact-underline-active: var(--color-ink);
@@ -183,6 +183,7 @@
     --copy-icon-gap: var(--space-1);
     --copy-feedback-duration: 1500ms;
     --duration-signature-write: 1500ms;
+    --delay-signature-write: 500ms;
     --icon-swap-dur: var(--duration-fast);
     --icon-swap-blur: calc(var(--space-1) / 2);
     --icon-swap-start-scale: .25;
@@ -265,9 +266,10 @@
     --color-article-divider: #232323;
     --color-project-frame: #202020;
     --color-project-media-border: #111;
-    --color-project-attribute-bg: #292929;
-    --color-project-attribute-border: rgb(255 255 255 / 12%);
-    --color-project-attribute-text: #fafafa;
+    --color-project-attribute-bg: rgb(255 255 255 / 5%);
+    --color-project-attribute-border: #434343;
+    --color-project-attribute-text: #fff;
+    --project-attribute-icon-filter: none;
     --color-line-subtle: color-mix(in srgb, var(--color-line) 55%, var(--color-surface));
     --color-leader: #353231;
     --color-contact-underline: rgb(208 206 203 / 20%);
@@ -356,11 +358,8 @@
   .project-card__shot { --project-shot-radius: var(--radius-lg); position: relative; display: block; height: 11.3125rem; color: inherit; text-decoration: none; container-type: inline-size; }
   .project-card__shot::before { content: ""; position: absolute; z-index: 1; inset: 0; box-sizing: border-box; border: 1px solid var(--color-line); border-radius: var(--project-shot-radius); pointer-events: none; }
   .project-card__visual { --project-media-top: calc(36px - var(--space-1) - 1px); --project-media-inline: calc(var(--space-6) - var(--space-1) - 1px); position: absolute; inset: var(--space-1); display: block; overflow: hidden; border: 1px solid var(--color-line); border-radius: calc(var(--project-shot-radius) - var(--space-1)); background: var(--color-project-frame); text-decoration: none; }
-  .project-card__attribute { position: absolute; z-index: 2; top: var(--space-2); left: 50%; display: inline-flex; align-items: center; justify-content: center; gap: 6px; padding: 4px 8px; border: 1px solid var(--color-project-attribute-border); border-radius: var(--radius-pill); background: var(--color-project-attribute-bg); color: var(--color-project-attribute-text); font-size: var(--text-meta); font-weight: var(--weight-medium); line-height: 1.125rem; white-space: nowrap; pointer-events: none; opacity: 0; transform: translate(-50%, -8px); transition: opacity var(--duration-project-attribute) var(--ease-smooth-out), transform var(--duration-project-attribute) var(--ease-smooth-out); }
-  .project-card__attribute-dot { width: 8px; height: 8px; flex: 0 0 8px; border-radius: 50%; background: var(--color-project-attribute-dot-clay); }
-  .project-card__visual.status-ongoing .project-card__attribute-dot { background: var(--color-project-attribute-dot-sage); }
-  .project-card__visual.status-experiment .project-card__attribute-dot { background: var(--color-link); }
-  .project-card__visual.status-archive .project-card__attribute-dot { background: var(--color-muted); }
+  .project-card__attribute { position: absolute; z-index: 2; top: var(--space-2); left: 50%; display: inline-flex; align-items: center; justify-content: center; gap: var(--space-1); padding: var(--space-1) calc(var(--space-2) + var(--space-1) / 2); overflow: clip; border: var(--project-attribute-border-width) solid var(--color-project-attribute-border); border-radius: var(--radius-pill); background: var(--color-project-attribute-bg); color: var(--color-project-attribute-text); font-size: var(--text-meta); font-weight: var(--weight-regular); line-height: var(--space-5); white-space: nowrap; pointer-events: none; opacity: 0; transform: translate(-50%, -8px); transition: opacity var(--duration-project-attribute) var(--ease-smooth-out), transform var(--duration-project-attribute) var(--ease-smooth-out); }
+  .project-card__attribute-icon { display: block; flex: none; filter: var(--project-attribute-icon-filter); }
   .project-card:is(:hover, :focus-within, .is-transitioning) .project-card__attribute { opacity: 1; transform: translate(-50%, 0); }
   .project-card__media { position: absolute; top: var(--project-media-top); right: var(--project-media-inline); bottom: 0; left: var(--project-media-inline); overflow: hidden; border: 1px solid var(--color-project-media-border); border-bottom: 0; border-radius: var(--radius-project-card-media) var(--radius-project-card-media) 0 0; transition: transform var(--duration-fast) var(--ease-smooth-out); }
   .project-card__media > img { position: absolute; inset: 0; width: 100%; height: 100%; max-width: none; object-fit: cover; object-position: center; }

@@ -2,6 +2,7 @@
 import { mediaUrl } from "../lib/media-url";
 import TextLink from "./TextLink.astro";
 import { projectStatuses } from "../lib/project-status";
+import { projectBadgeVariants, type ProjectBadgeVariant } from "../lib/project-badges";
 
 interface Props {
   title: string;
@@ -10,16 +11,18 @@ interface Props {
   status?: keyof typeof projectStatuses;
   href?: string;
   image?: string;
+  badge?: ProjectBadgeVariant;
 }
-const { title, summary, year, status, href = "/projects", image } = Astro.props;
+const { title, summary, year, status, href = "/projects", image, badge } = Astro.props;
 const label = status ? projectStatuses[status].label : undefined;
-const linkLabel = ["查看项目", title, label, year].filter(Boolean).join("，");
+const badgeContent = badge ? projectBadgeVariants[badge] : undefined;
+const linkLabel = ["查看项目", title, badgeContent?.label, label, year].filter(Boolean).join("，");
 ---
 
 <article class="project-card" data-list-sound>
   <a class="project-card__shot" href={href} aria-label={linkLabel}>
-    <span class:list={["project-card__visual", status && `status-${status}`]}>
-      {label && <span class="project-card__attribute" aria-hidden="true"><span class="project-card__attribute-dot"></span>{label}</span>}
+    <span class="project-card__visual">
+      {badgeContent && <span class="project-card__attribute" data-project-badge={badge} aria-hidden="true"><img class="project-card__attribute-icon" src={badgeContent.icon} width="16" height="16" alt="" /><span>{badgeContent.label}</span></span>}
       <span class="project-card__media">
         {image ? <img src={mediaUrl(image)} alt="" loading="lazy" /> : (
           <span class="project-card__preview">

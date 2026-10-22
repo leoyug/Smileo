@@ -45,7 +45,7 @@ const filterId = `signature-ink-${crypto.randomUUID()}`;
   .signature-mark__stroke {
     stroke-dasharray: 1 2;
     stroke-dashoffset: 0;
-    animation: leo-signature-write var(--duration-signature-write) linear both;
+    animation: leo-signature-write var(--duration-signature-write) linear var(--delay-signature-write) both;
   }
 
   @media (prefers-reduced-motion: reduce) {
