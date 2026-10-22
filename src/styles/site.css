@@ -952,7 +952,7 @@
     transition: opacity var(--duration-quick) var(--ease-smooth-out), filter var(--duration-quick) var(--ease-smooth-out);
   }
 
-  .project-archive-row + .project-archive-row::before {
+  .project-archive-row:not([hidden]) ~ .project-archive-row:not([hidden])::before {
     content: "";
     position: absolute;
     inset-inline: 0;

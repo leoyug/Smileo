@@ -2,7 +2,7 @@
 import { mediaUrl } from "../lib/media-url";
 import TextLink from "./TextLink.astro";
 import { projectStatuses } from "../lib/project-status";
-import { projectBadgeVariants, type ProjectBadgeVariant } from "../lib/project-badges";
+import { projectBadgeVariants, type ProjectCategory } from "../lib/project-badges";
 
 interface Props {
   title: string;
@@ -11,7 +11,7 @@ interface Props {
   status?: keyof typeof projectStatuses;
   href?: string;
   image?: string;
-  badge?: ProjectBadgeVariant;
+  badge?: ProjectCategory;
 }
 const { title, summary, year, status, href = "/projects", image, badge } = Astro.props;
 const label = status ? projectStatuses[status].label : undefined;

@@ -1,15 +1,16 @@
 ---
 import { mediaUrl } from "../lib/media-url";
 import BaseLayout from "../layouts/BaseLayout.astro";
-import ProjectCard from "../components/ProjectCard.astro";
+import ProjectFilters from "../components/ProjectFilters.astro";
 import { projectStackStyle } from "../lib/project-stack";
-import { getProjects, projectPreview } from "../lib/projects";
+import { getProjects } from "../lib/projects";
+import { getProjectCategory } from "../lib/project-badges";
 
 const projects = await getProjects();
 if (projects.length === 0) return Astro.redirect("/", 302);
-const featuredProjectPreviews = projects.filter((project) => project.data.featured).map(projectPreview);
 const archiveProjectPreviews = projects.map((project) => ({
   source: project.id,
+  category: getProjectCategory(project.id),
   title: project.data.title,
   summary: project.data.description,
   period: project.data.period,
@@ -23,24 +24,19 @@ const archiveProjectPreviews = projects.map((project) => ({
     <h1 data-route-enter>项目</h1>
     <p data-route-enter>设计项目的过程中，我思考最多的往往是使用时的体验。</p>
   </header>
-  <section class="archive-section featured-projects reading-column" aria-labelledby="featured-title">
-    <div class="section-topline" data-route-enter><h2 id="featured-title">精选项目</h2></div>
-    <div class="project-grid" data-route-enter-group>
-      {featuredProjectPreviews.map((project) => <ProjectCard {...project} />)}
-    </div>
-  </section>
-  <section class="archive-section reading-column" aria-labelledby="archive-title">
-    <div class="section-topline" data-route-enter><h2 id="archive-title">全部项目</h2></div>
-    <div class="project-archive-list" data-project-archive-list data-route-enter-group>
-      {archiveProjectPreviews.map((project) =>
-        <a class="project-archive-row" href={project.href} data-list-sound data-project-transition data-project-source={project.source}>
-          <span class="project-archive-row__thumb" aria-hidden="true">
-            {/* The editor lists front to back; paint the stack back to front. */}
-            {[...project.images].reverse().map((image, index) => <img src={mediaUrl(image)} alt="" loading="lazy" style={projectStackStyle(project.source, index)} />)}
-          </span>
-          <span class="project-archive-row__copy"><strong>{project.title}</strong><small>{project.summary}</small></span>
-          <span class="project-archive-row__time">{project.period}</span>
-        </a>)}
-    </div>
+  <section class="archive-section reading-column" aria-label="项目列表">
+    <ProjectFilters id="project-categories" rememberSelection>
+      <div class="project-archive-list" data-project-archive-list data-route-enter-group>
+        {archiveProjectPreviews.map((project) =>
+          <a class="project-archive-row" href={project.href} data-list-sound data-project-transition data-project-source={project.source} data-project-category={project.category}>
+            <span class="project-archive-row__thumb" aria-hidden="true">
+              {/* The editor lists front to back; paint the stack back to front. */}
+              {[...project.images].reverse().map((image, index) => <img src={mediaUrl(image)} alt="" loading="lazy" style={projectStackStyle(project.source, index)} />)}
+            </span>
+            <span class="project-archive-row__copy"><strong>{project.title}</strong><small>{project.summary}</small></span>
+            <span class="project-archive-row__time">{project.period}</span>
+          </a>)}
+      </div>
+    </ProjectFilters>
   </section>
 </BaseLayout>

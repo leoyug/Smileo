@@ -1,0 +1,70 @@
+---
+import { projectBadgeVariants } from "../lib/project-badges";
+
+interface Props {
+  id: string;
+  rememberSelection?: boolean;
+}
+
+const { id, rememberSelection = false } = Astro.props;
+const options = [
+  { value: "all", label: "全部", icon: "/assets/figma/project-tab-all.svg" },
+  { value: "personal", label: "项目", icon: projectBadgeVariants.personal.tabIcon },
+  { value: "case-study", label: "案例", icon: projectBadgeVariants["case-study"].tabIcon },
+  { value: "experiment", label: "实验", icon: projectBadgeVariants.experiment.tabIcon },
+];
+const panelId = `${id}-panel`;
+---
+
+<div class="project-filters" data-project-filters data-project-filter-key={rememberSelection ? id : undefined}>
+  <div class="project-filter-tabs" role="tablist" aria-label="项目分类" data-project-filter-tabs data-route-enter hidden>
+    <div class="project-filter-tabs__track" data-project-filter-track data-motion="instant">
+      {options.map((option, index) => (
+        <button class="project-filter-tabs__tab" type="button" role="tab" id={`${id}-${option.value}`} aria-selected={index === 0 ? "true" : "false"} aria-controls={panelId} tabindex={index === 0 ? 0 : -1} data-project-filter-value={option.value}>
+          {option.icon && <span class="project-filter-tabs__icon-slot" data-project-filter-icon aria-hidden="true"><img class="project-filter-tabs__icon" src={option.icon} width="16" height="16" alt="" draggable="false" /></span>}
+          <span>{option.label}</span>
+        </button>
+      ))}
+      <div class="project-filter-tabs__active" aria-hidden="true" data-project-filter-active hidden>
+        {options.map((option, index) => (
+          <span class="project-filter-tabs__tab" data-project-filter-copy-value={option.value} data-selected={String(index === 0)}>
+            {option.icon && <span class="project-filter-tabs__icon-slot" data-project-filter-icon><img class="project-filter-tabs__icon" src={option.icon} width="16" height="16" alt="" draggable="false" /></span>}
+            <span>{option.label}</span>
+          </span>
+        ))}
+      </div>
+    </div>
+  </div>
+  <div id={panelId} role="tabpanel" aria-labelledby={`${id}-all`} tabindex="0" data-project-filter-panel>
+    <slot />
+    <p class="project-filters__empty" data-project-filter-empty hidden>这个分类下还没有项目。</p>
+  </div>
+  <p class="sr-only" role="status" aria-atomic="true" data-project-filter-status></p>
+</div>
+
+<script>
+  import "../scripts/project-filters";
+</script>
+
+<style>
+  .project-filters :global([hidden]) { display: none !important; }
+  .project-filter-tabs { max-width: calc(100% + var(--space-4)); margin-inline: calc(-1 * var(--space-2)); margin-block-end: var(--space-6); padding: 0 var(--space-2) var(--space-2); overflow-x: auto; scroll-padding-inline: var(--space-2); scrollbar-width: none; }
+  .project-filter-tabs::-webkit-scrollbar { display: none; }
+  .project-filter-tabs__track { position: relative; isolation: isolate; contain: layout; display: flex; align-items: center; gap: 0; width: max-content; padding: var(--space-1); border: 0; border-radius: var(--radius-pill); background: var(--color-project-tab-track); }
+  .project-filter-tabs__tab { position: relative; display: inline-flex; flex: none; align-items: center; justify-content: center; gap: 0; padding: var(--space-1) var(--space-3) var(--space-1) calc(var(--space-2) + var(--space-1) / 2); border: 0; border-radius: var(--radius-pill); background: transparent; color: color-mix(in srgb, var(--color-muted) 80%, var(--color-ink)); font: inherit; font-size: var(--text-tab); font-weight: var(--weight-medium); line-height: var(--space-6); white-space: nowrap; cursor: pointer; transition: color var(--duration-quick) var(--ease-smooth-out); }
+  .project-filter-tabs__tab:focus-visible { outline-offset: 0; }
+  .project-filter-tabs__icon-slot { display: inline-flex; flex: none; align-items: center; width: 0; overflow: clip; opacity: 0; }
+  .project-filter-tabs__tab:is([aria-selected="true"], [data-selected="true"]) .project-filter-tabs__icon-slot { width: calc(var(--space-4) + var(--space-1) / 2); opacity: 1; }
+  .project-filter-tabs__icon { display: block; flex: none; min-width: var(--space-4); max-width: none; margin-inline-end: calc(var(--space-1) / 2); filter: var(--project-attribute-icon-filter); opacity: .6; }
+  .project-filter-tabs__active { position: absolute; z-index: 1; inset: 0; display: flex; align-items: center; gap: 0; padding: var(--space-1); border-radius: var(--radius-pill); background: var(--color-canvas); pointer-events: none; }
+  :global([data-theme="dark"]) .project-filter-tabs__active { background: var(--color-surface-2); }
+  .project-filter-tabs__active .project-filter-tabs__tab { color: var(--color-ink); transition: none; }
+  .project-filter-tabs__active .project-filter-tabs__icon { filter: var(--project-attribute-icon-filter); opacity: 1; }
+  .project-filters__empty { padding-block: var(--space-8); color: var(--color-muted); }
+  @media (hover: hover) and (pointer: fine) {
+    .project-filter-tabs__tab:hover { color: var(--color-ink); }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .project-filter-tabs__tab, .project-filter-tabs__active { transition: none; }
+  }
+</style>

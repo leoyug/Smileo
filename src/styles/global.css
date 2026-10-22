@@ -92,6 +92,7 @@
     --color-control-emphasis: var(--color-ink);
     --color-control-selected: var(--color-ink);
     --color-control-selected-ink: var(--color-canvas);
+    --color-project-tab-track: var(--color-surface-2);
     --control-icon-idle-opacity: .58;
     --panel-icon-idle-opacity: .58;
     --external-arrow-size: .75em;
@@ -101,6 +102,7 @@
     --font-serif: Georgia, "Noto Serif SC", "Songti SC", serif; --font-mono: "Geist Mono", "SFMono-Regular", Consolas, monospace; --font-script: "Kaiti SC", "STKaiti", cursive;
     --font-heading: "Chill Jinshu Song Compact", var(--font-sans);
     --text-meta: .75rem; --text-body: .875rem; --text-title: .875rem; --text-lead: 1rem; --text-subhead: 1rem; --text-page-title: 1.5rem; --text-resume-title: 2.25rem; --text-display: 2rem;
+    --text-tab: .8125rem;
     --text-xs: var(--text-meta); --text-sm: var(--text-body); --text-ui: var(--text-body); --text-base: var(--text-body); --text-lg: var(--text-lead); --text-xl: var(--text-page-title); --text-2xl: 1.5rem; --text-3xl: 1.75rem; --text-4xl: var(--text-display);
     --weight-regular: 400; --weight-medium: 500; --weight-semibold: 600; --weight-bold: 700;
     --leading-tight: 1.2; --leading-title: 1.4; --leading-copy: 1.45; --leading-relaxed: 1.7;
@@ -282,6 +284,7 @@
     --color-control-emphasis: var(--color-ink);
     --color-control-selected: var(--color-ink);
     --color-control-selected-ink: var(--color-canvas);
+    --color-project-tab-track: #111;
     --control-icon-idle-opacity: .47;
     --panel-icon-idle-opacity: .43;
 
@@ -360,11 +363,11 @@
   .project-card__visual { --project-media-top: calc(36px - var(--space-1) - 1px); --project-media-inline: calc(var(--space-6) - var(--space-1) - 1px); position: absolute; inset: var(--space-1); display: block; overflow: hidden; border: 1px solid var(--color-line); border-radius: calc(var(--project-shot-radius) - var(--space-1)); background: var(--color-project-frame); text-decoration: none; }
   .project-card__attribute { position: absolute; z-index: 2; top: var(--space-2); left: 50%; display: inline-flex; align-items: center; justify-content: center; gap: var(--space-1); padding: var(--space-1) calc(var(--space-2) + var(--space-1) / 2); overflow: clip; border: var(--project-attribute-border-width) solid var(--color-project-attribute-border); border-radius: var(--radius-pill); background: var(--color-project-attribute-bg); color: var(--color-project-attribute-text); font-size: var(--text-meta); font-weight: var(--weight-regular); line-height: var(--space-5); white-space: nowrap; pointer-events: none; opacity: 0; transform: translate(-50%, -8px); transition: opacity var(--duration-project-attribute) var(--ease-smooth-out), transform var(--duration-project-attribute) var(--ease-smooth-out); }
   .project-card__attribute-icon { display: block; flex: none; filter: var(--project-attribute-icon-filter); }
-  .project-card:is(:hover, :focus-within, .is-transitioning) .project-card__attribute { opacity: 1; transform: translate(-50%, 0); }
+  .project-card:is(:hover, :focus-within, .is-transitioning) .project-card__attribute { opacity: 1; transform: translate(-50%, calc(var(--space-1) / 2)); }
   .project-card__media { position: absolute; top: var(--project-media-top); right: var(--project-media-inline); bottom: 0; left: var(--project-media-inline); overflow: hidden; border: 1px solid var(--color-project-media-border); border-bottom: 0; border-radius: var(--radius-project-card-media) var(--radius-project-card-media) 0 0; transition: transform var(--duration-fast) var(--ease-smooth-out); }
   .project-card__media > img { position: absolute; inset: 0; width: 100%; height: 100%; max-width: none; object-fit: cover; object-position: center; }
   .project-card__media .project-card__preview { width: 100%; height: 100%; aspect-ratio: auto; border-radius: inherit; }
-  .project-card:is(:hover, :focus-within) .project-card__media { transform: translateY(12px); }
+  .project-card:is(:hover, :focus-within) .project-card__media { transform: translateY(var(--space-4)); }
   .project-card.is-transitioning .project-card__media { transform: var(--project-transition-media-transform, none); }
   .project-card__preview { width: 72%; aspect-ratio: 1.46; display: grid; grid-template-rows: .9rem 1fr; overflow: hidden; border: 1px solid var(--color-line); border-radius: var(--radius-xs); background: var(--color-surface); box-shadow: var(--shadow-card); }
   .project-card__chrome { border-bottom: 1px solid var(--color-line); background: var(--color-surface-2); }
