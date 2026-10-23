@@ -280,6 +280,10 @@
     .content-detail[data-detail-page] .detail-facts {
       margin-top: var(--space-4);
     }
+
+    .content-detail[data-detail-page] .detail-facts--project {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
   }
 
   @media (min-width: 43rem) {

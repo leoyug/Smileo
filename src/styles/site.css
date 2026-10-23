@@ -1642,6 +1642,29 @@
     font-variant-numeric: tabular-nums;
   }
 
+  .content-detail--project-case .project-subtitle {
+    font-size: var(--text-body);
+    line-height: var(--space-6);
+  }
+
+  .content-detail[data-detail-page] .detail-facts--project {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    align-items: start;
+    gap: var(--space-4) var(--space-2);
+    padding-block: var(--space-4);
+    border-block: 1px solid var(--color-article-divider);
+  }
+
+  .detail-facts--project dd {
+    color: var(--color-ink);
+    overflow-wrap: anywhere;
+  }
+
+  .content-detail[data-detail-page].content-detail--project-case :is(h1, .article__body h2) {
+    font-weight: var(--weight-bold);
+  }
+
   .content-detail[data-detail-page] .article__body {
     margin-top: var(--space-8);
     font-size: var(--text-body);

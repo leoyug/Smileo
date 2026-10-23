@@ -46,6 +46,7 @@ const projects = defineCollection({
     ),
     status: z.enum(["ongoing", "launched", "experiment", "archive"]),
     role: optionalText,
+    tools: optionalText,
     featured: z.boolean().default(false),
     order: z.number().int().positive(),
     cover: z.string().startsWith("/").optional(),

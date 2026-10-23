@@ -11,15 +11,17 @@ interface Props {
   className?: string;
   backHref?: string;
   backLabel?: string;
+  backIcon?: string;
+  topIcon?: string;
   returnViaHistory?: boolean;
 }
 
-const { headings, ariaLabel, className = "", backHref = "/writing/", backLabel = "返回写作", returnViaHistory = false } = Astro.props;
+const { headings, ariaLabel, className = "", backHref = "/writing/", backLabel = "返回写作", backIcon = "/assets/figma-v03/detail/back.svg", topIcon = "/assets/figma-v03/detail/to-top.svg", returnViaHistory = false } = Astro.props;
 const items = headings.filter(({ depth }) => depth === 2 || depth === 3);
 ---
 
 <aside class:list={["detail-toc", className]} data-detail-toc>
-  <a class="detail-toc__back" href={backHref} aria-label={backLabel} data-detail-history-back={returnViaHistory ? "" : undefined}><img src="/assets/figma-v03/detail/back.svg" alt="" /><span>{backLabel}</span></a>
+  <a class="detail-toc__back" href={backHref} aria-label={backLabel} data-detail-history-back={returnViaHistory ? "" : undefined}><img src={backIcon} alt="" /><span>{backLabel}</span></a>
   {items.length > 0 && (
     <nav aria-label={ariaLabel}>
       <ol class="detail-toc__list">
@@ -40,7 +42,7 @@ const items = headings.filter(({ depth }) => depth === 2 || depth === 3);
       </ol>
     </nav>
   )}
-  <a class="detail-toc__top" href="#main" aria-label="回到顶部"><img src="/assets/figma-v03/detail/to-top.svg" alt="" /><span>回到顶部</span></a>
+  <a class="detail-toc__top" href="#main" aria-label="回到顶部"><img src={topIcon} alt="" /><span>回到顶部</span></a>
 </aside>
 
 <script>
