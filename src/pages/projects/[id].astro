@@ -17,7 +17,6 @@ const { entry } = Astro.props;
 const { Content, headings } = await render(entry);
 
 const cover = entry.data.cover ?? "/assets/figma-v03/project-detail/cover.png";
-const hasProjectFacts = Boolean(entry.data.tools);
 const projectFacts = [
   { label: "职责", value: entry.data.role },
   { label: "平台", value: entry.data.projectType },
@@ -27,22 +26,16 @@ const projectFacts = [
 ---
 
 <BaseLayout title={`${entry.data.title}｜Leo`} description={entry.data.description} socialImage={cover}>
-  <DetailToc headings={headings} ariaLabel="项目目录" className="detail-toc--reading" backHref="/projects" backLabel="返回项目" backIcon={hasProjectFacts ? "/assets/figma/wispora-back.svg" : undefined} topIcon={hasProjectFacts ? "/assets/figma/wispora-to-top.svg" : undefined} returnViaHistory />
-  <article class:list={["content-detail reading-column", { "content-detail--project-case": hasProjectFacts }]} data-detail-page="project">
+  <DetailToc headings={headings} ariaLabel="项目目录" className="detail-toc--reading" backHref="/projects" backLabel="返回项目" backIcon="/assets/figma/wispora-back.svg" topIcon="/assets/figma/wispora-to-top.svg" returnViaHistory />
+  <article class="content-detail reading-column content-detail--project-case" data-detail-page="project">
     <img class="content-detail__cover" src={mediaUrl(cover)} alt={`${entry.data.title}项目封面`} transition:name="project-cover" data-route-enter />
     <header id="overview" data-route-enter>
       <h1>{entry.data.title}</h1>
-      {hasProjectFacts ? <>
-        <p class="project-subtitle">{entry.data.description}</p>
-        <dl class="detail-facts detail-facts--project" aria-label="项目信息">
-          {projectFacts.map(({ label, value }) => <div><dt>{label}</dt><dd>{value}</dd></div>)}
-        </dl>
-        {entry.data.website && <p><TextLink href={entry.data.website}>{entry.data.website.replace(/^https?:\/\//, "").replace(/\/$/, "")}</TextLink></p>}
-      </> : <p class="detail-facts" aria-label="项目信息">
-        <span class="detail-facts__number" aria-label="项目时间">{entry.data.period}</span>
-        {entry.data.projectType && <><span aria-hidden="true">·</span><span aria-label="项目类型">{entry.data.projectType}</span></>}
-        {entry.data.website && <><span aria-hidden="true">·</span><TextLink href={entry.data.website}>{entry.data.website.replace(/^https?:\/\//, "").replace(/\/$/, "")}</TextLink></>}
-      </p>}
+      <p class="project-subtitle">{entry.data.description}</p>
+      <dl class="detail-facts detail-facts--project" aria-label="项目信息">
+        {projectFacts.map(({ label, value }) => <div><dt>{label}</dt><dd>{value}</dd></div>)}
+      </dl>
+      {entry.data.website && <p><TextLink href={entry.data.website}>{entry.data.website.replace(/^https?:\/\//, "").replace(/\/$/, "")}</TextLink></p>}
     </header>
     <div class="article__body" id="content" data-route-enter-body><Content /></div>
     <span id="reflection" class="detail-anchor" aria-hidden="true"></span>

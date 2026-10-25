@@ -8,14 +8,15 @@ interface Props extends HTMLAttributes<"a"> {
   href: string;
   underline?: "fade" | "reveal";
   copyText?: string;
+  externalIcon?: boolean;
 }
 
-const { href, underline = "fade", copyText, class: className, ...attributes } = Astro.props;
+const { href, underline = "fade", copyText, externalIcon = true, class: className, ...attributes } = Astro.props;
 const destination = new URL(href, Astro.url);
-const isExternal = destination.protocol === "mailto:" || (
+const isExternal = externalIcon && (destination.protocol === "mailto:" || (
   ["http:", "https:"].includes(destination.protocol) &&
   destination.origin !== Astro.url.origin && destination.origin !== Astro.site?.origin
-);
+));
 // Keep the script adjacent to the anchor so inline prose gains no whitespace.
 ---
 

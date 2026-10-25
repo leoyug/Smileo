@@ -22,14 +22,14 @@ const panelId = `${id}-panel`;
       {options.map((option, index) => (
         <button class="project-filter-tabs__tab" type="button" role="tab" id={`${id}-${option.value}`} aria-selected={index === 0 ? "true" : "false"} aria-controls={panelId} tabindex={index === 0 ? 0 : -1} data-project-filter-value={option.value}>
           {option.icon && <span class="project-filter-tabs__icon-slot" data-project-filter-icon aria-hidden="true"><img class="project-filter-tabs__icon" src={option.icon} width="16" height="16" alt="" draggable="false" /></span>}
-          <span>{option.label}</span>
+          <span data-project-filter-label>{option.label}</span>
         </button>
       ))}
       <div class="project-filter-tabs__active" aria-hidden="true" data-project-filter-active hidden>
         {options.map((option, index) => (
           <span class="project-filter-tabs__tab" data-project-filter-copy-value={option.value} data-selected={String(index === 0)}>
             {option.icon && <span class="project-filter-tabs__icon-slot" data-project-filter-icon><img class="project-filter-tabs__icon" src={option.icon} width="16" height="16" alt="" draggable="false" /></span>}
-            <span>{option.label}</span>
+            <span data-project-filter-label>{option.label}</span>
           </span>
         ))}
       </div>
@@ -47,15 +47,17 @@ const panelId = `${id}-panel`;
 </script>
 
 <style>
+  :global(html:has([data-project-filters])) { overflow-anchor: none; }
   .project-filters :global([hidden]) { display: none !important; }
+  [data-project-filter-panel], [data-project-filter-label] { transition: none; }
   .project-filter-tabs { max-width: calc(100% + var(--space-4)); margin-inline: calc(-1 * var(--space-2)); margin-block-end: var(--space-6); padding: 0 var(--space-2) var(--space-2); overflow-x: auto; scroll-padding-inline: var(--space-2); scrollbar-width: none; }
   .project-filter-tabs::-webkit-scrollbar { display: none; }
   .project-filter-tabs__track { position: relative; isolation: isolate; contain: layout; display: flex; align-items: center; gap: 0; width: max-content; padding: var(--space-1); border: 0; border-radius: var(--radius-pill); background: var(--color-project-tab-track); }
   .project-filter-tabs__tab { position: relative; display: inline-flex; flex: none; align-items: center; justify-content: center; gap: 0; padding: var(--space-1) var(--space-3) var(--space-1) calc(var(--space-2) + var(--space-1) / 2); border: 0; border-radius: var(--radius-pill); background: transparent; color: color-mix(in srgb, var(--color-muted) 80%, var(--color-ink)); font: inherit; font-size: var(--text-tab); font-weight: var(--weight-medium); line-height: var(--space-6); white-space: nowrap; cursor: pointer; transition: color var(--duration-quick) var(--ease-smooth-out); }
   .project-filter-tabs__tab:focus-visible { outline-offset: 0; }
-  .project-filter-tabs__icon-slot { display: inline-flex; flex: none; align-items: center; width: 0; overflow: clip; opacity: 0; }
+  .project-filter-tabs__icon-slot { position: relative; display: inline-flex; flex: none; align-items: center; width: 0; height: var(--space-4); opacity: 0; transition: none; }
   .project-filter-tabs__tab:is([aria-selected="true"], [data-selected="true"]) .project-filter-tabs__icon-slot { width: calc(var(--space-4) + var(--space-1) / 2); opacity: 1; }
-  .project-filter-tabs__icon { display: block; flex: none; min-width: var(--space-4); max-width: none; margin-inline-end: calc(var(--space-1) / 2); filter: var(--project-attribute-icon-filter); opacity: .6; }
+  .project-filter-tabs__icon { position: absolute; inset: 0 auto auto 0; display: block; min-width: var(--space-4); max-width: none; filter: var(--project-attribute-icon-filter); opacity: .6; }
   .project-filter-tabs__active { position: absolute; z-index: 1; inset: 0; display: flex; align-items: center; gap: 0; padding: var(--space-1); border-radius: var(--radius-pill); background: var(--color-canvas); pointer-events: none; }
   :global([data-theme="dark"]) .project-filter-tabs__active { background: var(--color-surface-2); }
   .project-filter-tabs__active .project-filter-tabs__tab { color: var(--color-ink); transition: none; }
