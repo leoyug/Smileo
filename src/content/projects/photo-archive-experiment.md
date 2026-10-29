@@ -2,6 +2,7 @@
 title: 照片档案实验
 description: 围绕稳定链接、照片顺序与隐私元数据的个人摄影工具。
 draft: true
+hidden: true
 publishedAt: 2026-07-10
 period: "2026"
 status: experiment

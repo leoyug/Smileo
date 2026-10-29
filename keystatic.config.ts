@@ -96,7 +96,7 @@ export default config({
   collections: {
     projects: collection({
       label: "项目",
-      columns: ["title", "period", "featured", "order", "draft"],
+      columns: ["title", "period", "featured", "order", "draft", "hidden"],
       slugField: "title",
       path: "src/content/projects/*",
       format: { contentField: "content" },
@@ -105,6 +105,7 @@ export default config({
       schema: {
         title,
         ...publication,
+        hidden: fields.checkbox({ label: "隐藏项目", description: "从网站列表和详情中隐藏，开发预览也不显示；内容仍保留在后台。", defaultValue: false }),
         publishedAt: automaticDate("发布日期", false),
         updatedAt: automaticDate("更新日期", true),
         period: requiredText("项目时间", "项目实际开展的年份或时间范围，如 2026、2022-2025。"),

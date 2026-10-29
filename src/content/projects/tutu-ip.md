@@ -4,6 +4,7 @@ description: 围绕 TUTU 形象设计的一系列周边。
 publishedAt: 2026-09-30
 updatedAt: 2026-10-10
 draft: true
+hidden: true
 period: '2026'
 projectType: IP 设计
 status: archive

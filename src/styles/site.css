@@ -286,15 +286,6 @@
     text-decoration-color: var(--color-contact-underline-active);
   }
 
-  .site-footer__links .text-link {
-    text-decoration: none;
-    transition: color var(--duration-text-link) var(--ease-smooth-out);
-  }
-
-  .site-footer__links .text-link:is(:hover, :focus-visible) {
-    color: var(--color-ink);
-  }
-
   .text-link--reveal {
     position: relative;
     display: inline-block;
@@ -1755,6 +1746,63 @@
 
   .content-detail[data-detail-page] .article__body > h2:first-child {
     margin-top: 0;
+  }
+
+  .content-detail--project-case .article__body > p:has(> :is(img, .article-image-zoom-trigger):only-child) {
+    margin-top: var(--space-8);
+  }
+
+  .content-detail--project-case .article__body img {
+    width: auto;
+    height: auto;
+    margin-inline: auto;
+  }
+
+  .content-detail--project-case .article__body .article-image-zoom-trigger {
+    margin-inline: auto;
+  }
+
+  .content-detail--project-case .article__body > p:has(> :is(img, .article-image-zoom-trigger):only-child) + p:has(> em:only-child) {
+    margin-top: var(--space-3);
+    margin-bottom: var(--space-8);
+    color: var(--color-copy);
+    font-size: var(--text-meta);
+    line-height: var(--leading-relaxed);
+    text-align: center;
+  }
+
+  .content-detail[data-project-id="homagine-app"] .article__body > :is(ol, ul) {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: var(--space-6);
+    margin-block: var(--space-6);
+  }
+
+  .content-detail[data-project-id="homagine-app"] .article__body > ol {
+    padding-inline-start: var(--space-5);
+  }
+
+  .content-detail[data-project-id="homagine-app"] .article__body > ol > li {
+    padding-inline-start: var(--space-1);
+  }
+
+  .content-detail[data-project-id="homagine-app"] .article__body > ul {
+    padding: 0;
+    list-style: none;
+  }
+
+  .content-detail[data-project-id="homagine-app"] .article__body > :is(ol, ul) strong {
+    color: var(--color-ink);
+    font-weight: var(--weight-medium);
+  }
+
+  .content-detail[data-project-id="homagine-app"] .article__body > :is(ol, ul) li > p + p {
+    margin-top: var(--space-1);
+  }
+
+  .content-detail[data-project-id="homagine-app"] .article__body > ol + p:has(> em:only-child) {
+    margin-top: var(--space-4);
+    font-size: var(--text-meta);
   }
 
   .has-photo-lightbox {

@@ -4,6 +4,7 @@ description: 在六周内统一任务、资产与协作流，建立可扩展的�
 publishedAt: 2026-06-20
 updatedAt: 2026-10-10
 draft: true
+hidden: true
 period: '2026'
 status: launched
 role: 设计工程师

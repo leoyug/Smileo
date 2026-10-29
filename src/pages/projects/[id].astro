@@ -27,7 +27,7 @@ const projectFacts = [
 
 <BaseLayout title={`${entry.data.title}｜Leo`} description={entry.data.description} socialImage={cover}>
   <DetailToc headings={headings} ariaLabel="项目目录" className="detail-toc--reading" backHref="/projects" backLabel="返回项目" backIcon="/assets/figma/wispora-back.svg" topIcon="/assets/figma/wispora-to-top.svg" returnViaHistory />
-  <article class="content-detail reading-column content-detail--project-case" data-detail-page="project">
+  <article class="content-detail reading-column content-detail--project-case" data-detail-page="project" data-project-id={entry.id}>
     <img class="content-detail__cover" src={mediaUrl(cover)} alt={`${entry.data.title}项目封面`} transition:name="project-cover" data-route-enter />
     <header id="overview" data-route-enter>
       <h1>{entry.data.title}</h1>

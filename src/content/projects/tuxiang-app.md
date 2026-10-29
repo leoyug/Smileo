@@ -4,6 +4,7 @@ description: 围绕旅行分享与路线发现的移动端产品。
 publishedAt: 2026-09-30
 updatedAt: 2026-10-10
 draft: true
+hidden: true
 period: '2020'
 projectType: App
 status: archive
