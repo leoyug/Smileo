@@ -96,7 +96,7 @@ export default config({
   collections: {
     projects: collection({
       label: "项目",
-      columns: ["title", "period", "featured", "order", "draft"],
+      columns: ["title", "period", "featured", "order", "draft", "hidden"],
       slugField: "title",
       path: "src/content/projects/*",
       format: { contentField: "content" },
@@ -105,14 +105,15 @@ export default config({
       schema: {
         title,
         ...publication,
+        hidden: fields.checkbox({ label: "隐藏项目", description: "从网站列表和详情中隐藏，开发预览也不显示；内容仍保留在后台。", defaultValue: false }),
         publishedAt: automaticDate("发布日期", false),
         updatedAt: automaticDate("更新日期", true),
         period: requiredText("项目时间", "项目实际开展的年份或时间范围，如 2026、2022-2025。"),
         projectType: fields.text({ label: "项目类型", description: "如 App、网页。" }),
         website: fields.text({ label: "项目网址", description: "填写完整的 http 或 https 网址。" }),
         status: fields.select({ label: "项目状态", description: "显示在精选项目卡片上。", options: Object.entries(projectStatuses).map(([value, status]) => ({ value, label: status.label })), defaultValue: "archive" }),
-        // Read legacy values without exposing or requiring a separate role field.
-        role: { ...fields.text({ label: "我的职责" }), Input: HiddenContentField },
+        role: fields.text({ label: "我的职责", description: "如 UI 设计、设计系统。" }),
+        tools: fields.text({ label: "项目工具", description: "可选；填写后显示在详情页的「工具」参数中，如 Figma、Codex、Cursor。" }),
         featured: fields.checkbox({ label: "精选", description: "在首页和项目页的精选区域展示。", defaultValue: false }),
         order: defaultNextOrder({ label: "展示顺序", description: "从 1 开始的唯一位置（含草稿），精选与全部项目共用。新增项目自动排在末尾；修改位置后，其他项目在保存时自动顺移。", validation: { isRequired: true, min: 1 } }, "projects"),
         cover: imageUpload({ label: "项目封面", description: "用于项目卡片、详情页和分享预览。", directory: "public/media/projects", publicPath: "/media/projects/" }),

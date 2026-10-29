@@ -1,6 +1,9 @@
 ---
 import { navigation } from "../data/site";
 import ProgressiveBlur from "./ProgressiveBlur.astro";
+import { getProjects } from "../lib/projects";
+const hasProjects = (await getProjects()).length > 0;
+const visibleNavigation = navigation.filter((item) => item.href !== "/projects" || hasProjects);
 const currentPath = Astro.url.pathname;
 const isCurrent = (href: string) => {
   if (href === "/") return currentPath === "/";
@@ -10,7 +13,7 @@ const isCurrent = (href: string) => {
 
 <ProgressiveBlur placement="viewport" class="dock-backdrop" />
 <nav class="floating-nav" aria-label="主要导航">
-  {navigation.map((item, index) => (
+  {visibleNavigation.map((item, index) => (
     <>
       {index === 1 && <span class="floating-nav__divider" aria-hidden="true"></span>}
       <a

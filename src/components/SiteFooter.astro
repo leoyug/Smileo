@@ -1,24 +1,40 @@
 ---
 import TextLink from "./TextLink.astro";
 import { getEntry } from "astro:content";
+import { Image } from "astro:assets";
+import chatgpt from "../assets/figma-footer/chatgpt.png";
 
 const resume = await getEntry("resume", "main");
 if (!resume) throw new Error("缺少 main 职业履历内容");
 const x = resume.data.links.find((link) => link.label === "X/Twitter")?.href;
 const github = resume.data.links.find((link) => link.label === "GitHub")?.href;
+const links = [
+  { label: "X / Twitter", href: x, icon: "x" },
+  { label: "GitHub", href: github, icon: "github", rel: "me" },
+  { label: "发送邮件", href: `mailto:${resume.data.email}`, icon: "email" },
+  { label: "查看简历", href: "/resume", icon: "resume" },
+].filter((link) => link.href);
 ---
 
 <footer class="site-footer">
   <div class="site-footer__inner">
-    <nav class="site-footer__links" aria-label="页脚导航">
-      <div><TextLink href="/resume">简历</TextLink><TextLink href="/rss.xml">RSS</TextLink></div>
-      <div><TextLink href="/inspiration">灵感</TextLink>{x && <TextLink href={x}>X.com</TextLink>}</div>
-      <div><TextLink href="/experiments">试验</TextLink>{github && <TextLink href={github} rel="me">GitHub</TextLink>}</div>
-      <div><TextLink href="/thanks">致谢</TextLink><TextLink href={`mailto:${resume.data.email}`}>Email</TextLink></div>
-    </nav>
     <div class="site-footer__brand">
-      <img src="/assets/figma/leo-mark.svg" alt="" width="64" height="48" />
-      <p>© 2026 Leo</p>
+      <img src="/assets/figma/footer/signature.svg" alt="Leo" width="42.6667" height="32" loading="lazy" />
+      <p class="site-footer__credit">
+        <span>和</span>
+        <Image src={chatgpt} alt="ChatGPT" width={16} height={16} densities={[1, 2]} format="webp" quality={90} class="site-footer__ai" />
+        <span>一起制作，以及向许多人<TextLink href="/thanks" class="site-footer__thanks">致谢</TextLink>…</span>
+      </p>
+    </div>
+    <div class="site-footer__details">
+      <nav class="site-footer__links" aria-label="联系与简历">
+        {links.map((link) => (
+          <a href={link.href} aria-label={link.label} title={link.label} rel={link.rel}>
+            <span class="site-footer__icon" style={`--footer-icon: url('/assets/figma/footer/${link.icon}.svg')`} aria-hidden="true"></span>
+          </a>
+        ))}
+      </nav>
+      <p class="site-footer__copyright">© 2026 LEO</p>
     </div>
   </div>
 </footer>

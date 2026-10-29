@@ -2,17 +2,34 @@
 import { getEntry } from "astro:content";
 import TextLink from "./TextLink.astro";
 
-interface Props { class?: string; }
-const { class: className } = Astro.props;
+interface Props { class?: string; variant?: "default" | "social"; }
+const { class: className, variant = "default" } = Astro.props;
 const resume = await getEntry("resume", "main");
 if (!resume) throw new Error("缺少 main 职业履历内容");
 const github = resume.data.links.find((link) => link.label === "GitHub")?.href;
 const x = resume.data.links.find((link) => link.label === "X/Twitter")?.href;
+const xiaohongshu = resume.data.links.find((link) => link.label === "小红书")?.href;
+const links = variant === "social"
+  ? [
+      { label: "X/Twitter", href: x },
+      { label: "Xiaohongshu", href: xiaohongshu },
+      { label: "GitHub", href: github, rel: "me" },
+      { label: "Email", href: `mailto:${resume.data.email}` },
+    ]
+  : [
+      { label: "GitHub", href: github, rel: "me" },
+      { label: "Email", href: `mailto:${resume.data.email}` },
+      { label: "X/Twitter", href: x },
+      { label: "RSS", href: "/rss.xml" },
+    ];
 ---
 
-<nav class={className} aria-label="联系方式">
-  {github && <TextLink href={github} rel="me">GitHub</TextLink>}
-  <TextLink href={`mailto:${resume.data.email}`}>Email</TextLink>
-  {x && <TextLink href={x}>X/Twitter</TextLink>}
-  <TextLink href="/rss.xml">RSS</TextLink>
+<nav class:list={["contact-links", { "contact-links--social": variant === "social" }, className]} aria-label="联系方式">
+  {links.map((link) => link.href && (
+    <TextLink
+      href={link.href}
+      rel={link.rel}
+      copyText={variant === "social" && link.href.startsWith("mailto:") ? resume.data.email : undefined}
+    >{link.label}</TextLink>
+  ))}
 </nav>

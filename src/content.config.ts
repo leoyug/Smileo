@@ -38,6 +38,7 @@ const projects = defineCollection({
   loader: glob({ pattern: "**/*.{md,mdx}", base: "./src/content/projects" }),
   schema: z.object({
     ...publicationFields,
+    hidden: z.boolean().default(false),
     period: z.string().trim().min(1, "请填写项目时间"),
     projectType: optionalText,
     website: z.preprocess(
@@ -46,6 +47,7 @@ const projects = defineCollection({
     ),
     status: z.enum(["ongoing", "launched", "experiment", "archive"]),
     role: optionalText,
+    tools: optionalText,
     featured: z.boolean().default(false),
     order: z.number().int().positive(),
     cover: z.string().startsWith("/").optional(),

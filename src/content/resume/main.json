@@ -44,7 +44,7 @@
   "skills": [
     { "label": "常用", "items": ["Sketch", "Figma", "Adobe 套件", "Git", "Codex"] },
     { "label": "用过", "items": ["Blender", "剪映", "Claude", "Hermes", "Midjourney"] },
-    { "label": "了解", "items": ["Paper", "Pencil", "Motion", "Codex"] }
+    { "label": "了解", "items": ["Paper", "Pencil", "Motion"] }
   ],
   "education": {
     "school": "电子科技大学",
@@ -53,7 +53,7 @@
     "place": "电子信息工程"
   },
   "links": [
-    { "label": "网站", "href": "https://incessantleo.com" },
+    { "label": "网站", "href": "https://smileoleo.com" },
     { "label": "GitHub", "href": "https://github.com/leoyug" },
     { "label": "X/Twitter", "href": "https://x.com/Incessant_Leo" },
     { "label": "小红书", "href": "https://www.xiaohongshu.com/user/profile/5bf80a4ddb2e604af5301e38" }

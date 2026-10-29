@@ -3,7 +3,8 @@ title: 途享 App
 description: 围绕旅行分享与路线发现的移动端产品。
 publishedAt: 2026-09-30
 updatedAt: 2026-10-10
-draft: false
+draft: true
+hidden: true
 period: '2020'
 projectType: App
 status: archive
@@ -21,7 +22,7 @@ relatedArticles: []
 
 ## 项目概览
 
-游享 App 围绕旅行经历的分享与发现。旅行内容通常同时包含地点、路线、照片和个人感受；若只保留时间流，读者很难判断一段经历是否适合自己的计划。
+途享 App 围绕旅行经历的分享与发现。旅行内容通常同时包含地点、路线、照片和个人感受；若只保留时间流，读者很难判断一段经历是否适合自己的计划。
 
 ## 设计重点
 
