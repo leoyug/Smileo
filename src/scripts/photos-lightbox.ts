@@ -1,3 +1,4 @@
+import { languageFromPath, languagePath } from "../i18n/runtime";
 import gsap from "gsap";
 import { cssTimeToMilliseconds } from "../lib/css-time";
 import { playInterfaceSound } from "./sound";
@@ -223,7 +224,7 @@ const initializePhotosPages = () => {
           history.pushState(
             { photoOverlay: true, photoSlug: photo.slug },
             "",
-            `/photos/${photo.slug}/`,
+            languagePath(`/photos/${photo.slug}/`, languageFromPath(location.pathname)),
           );
       };
 
@@ -252,7 +253,7 @@ const initializePhotosPages = () => {
           suppressPopstate = true;
           history.back();
         } else if (historyMode === "replace") {
-          history.replaceState({}, "", "/photos/");
+          history.replaceState({}, "", languagePath("/photos/", languageFromPath(location.pathname)));
         }
       };
 
@@ -378,7 +379,7 @@ const initializePhotosPages = () => {
           suppressPopstate = false;
           return;
         }
-        const match = location.pathname.match(/^\/photos\/([^/]+)\/?$/);
+        const match = location.pathname.match(/^\/(?:en\/)?photos\/([^/]+)\/?$/);
         const index = match
           ? photos.findIndex(
               (photo) => photo.slug === decodeURIComponent(match[1]),

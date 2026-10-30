@@ -1,3 +1,5 @@
+import { withoutLanguage } from "../i18n/runtime";
+import { transitionTheme, type ThemePreference } from "./theme";
 import { gsap } from "gsap";
 import { cssTimeToMilliseconds } from "../lib/css-time";
 import { setTitleLanguage, syncSiteTitle } from "./site-title";
@@ -8,17 +10,6 @@ import {
   type SoundPreference,
 } from "./sound";
 
-type ThemePreference = "light" | "system" | "dark";
-type ResolvedTheme = "light" | "dark";
-type ThemeTransition = {
-  finished: Promise<void>;
-  skipTransition?: () => void;
-};
-type ThemeTransitionDocument = Document & {
-  startViewTransition?: (update: () => void) => ThemeTransition;
-};
-
-const storageKey = "incessant-theme";
 const topLevelPaths = new Set([
   "/",
   "/projects/",
@@ -26,100 +17,12 @@ const topLevelPaths = new Set([
   "/photos/",
   "/about/",
 ]);
-const mediaQuery = window.matchMedia("(prefers-color-scheme: dark)");
 const reducedMotionQuery = window.matchMedia(
   "(prefers-reduced-motion: reduce)",
 );
-let isThemeTransitioning = false;
-let activeThemeTransition: ThemeTransition | null = null;
 let pendingPageSound = false;
 
-const resolveTheme = (preference: ThemePreference): ResolvedTheme =>
-  preference === "system"
-    ? mediaQuery.matches
-      ? "dark"
-      : "light"
-    : preference;
-
-const applyTheme = (preference: ThemePreference) => {
-  const theme = resolveTheme(preference);
-  document.documentElement.dataset.theme = theme;
-  document.documentElement.dataset.themePreference = preference;
-  document
-    .querySelector<HTMLMetaElement>('meta[name="theme-color"]')
-    ?.setAttribute("content", theme === "dark" ? "#191918" : "#fbfaf9");
-
-  document
-    .querySelectorAll<HTMLButtonElement>("[data-theme-option]")
-    .forEach((option) => {
-      const selected = option.dataset.themeValue === preference;
-      option.setAttribute("aria-checked", String(selected));
-      option.classList.toggle("is-selected", selected);
-    });
-};
-
-const clearThemeTransition = () => {
-  const root = document.documentElement;
-  activeThemeTransition?.skipTransition?.();
-  activeThemeTransition = null;
-  delete root.dataset.themeTransition;
-  root.style.removeProperty("--theme-transition-x");
-  root.style.removeProperty("--theme-transition-y");
-  root.style.removeProperty("--theme-transition-radius");
-  isThemeTransitioning = false;
-};
-
-const transitionTheme = (preference: ThemePreference, origin: HTMLElement) => {
-  const root = document.documentElement;
-  const nextTheme = resolveTheme(preference);
-  const transitionDocument = document as ThemeTransitionDocument;
-
-  if (
-    root.dataset.theme === nextTheme ||
-    reducedMotionQuery.matches ||
-    !transitionDocument.startViewTransition
-  ) {
-    localStorage.setItem(storageKey, preference);
-    applyTheme(preference);
-    return;
-  }
-
-  if (isThemeTransitioning) return;
-
-  const bounds = origin.getBoundingClientRect();
-  const originX = bounds.left + bounds.width / 2;
-  const originY = bounds.top + bounds.height / 2;
-  const radius = Math.hypot(
-    Math.max(originX, window.innerWidth - originX),
-    Math.max(originY, window.innerHeight - originY),
-  );
-
-  root.style.setProperty("--theme-transition-x", `${originX}px`);
-  root.style.setProperty("--theme-transition-y", `${originY}px`);
-  root.style.setProperty("--theme-transition-radius", `${radius}px`);
-  root.dataset.themeTransition = "circle-blur";
-  isThemeTransitioning = true;
-
-  try {
-    const transition = transitionDocument.startViewTransition(() => {
-      localStorage.setItem(storageKey, preference);
-      applyTheme(preference);
-    });
-    activeThemeTransition = transition;
-
-    transition.finished.then(clearThemeTransition, clearThemeTransition);
-  } catch {
-    clearThemeTransition();
-    localStorage.setItem(storageKey, preference);
-    applyTheme(preference);
-  }
-};
-
 const initializePreferences = () => {
-  const savedTheme = localStorage.getItem(storageKey);
-  const preference: ThemePreference =
-    savedTheme === "dark" || savedTheme === "light" ? savedTheme : "system";
-  applyTheme(preference);
   syncSoundControls(initializeSound());
   syncSiteTitle();
 };
@@ -249,6 +152,16 @@ if (!themeWindow.__incessantThemeToggleInitialized) {
   });
 
   document.addEventListener("keydown", (event) => {
+    if (["ArrowLeft", "ArrowRight", "Home", "End"].includes(event.key)) {
+      const target = event.target as HTMLElement;
+      if (target.matches('[data-preference-group="language"]')) {
+        event.preventDefault();
+        const options = [...document.querySelectorAll<HTMLButtonElement>('[data-preference-group="language"]')];
+        const index = options.indexOf(target as HTMLButtonElement);
+        const next = event.key === "Home" ? 0 : event.key === "End" ? options.length - 1 : (index + (event.key === "ArrowLeft" ? -1 : 1) + options.length) % options.length;
+        options[next]?.focus(); options[next]?.click();
+      }
+    }
     if (event.key !== "Escape") return;
     const panel = document.querySelector<HTMLElement>(
       "[data-preferences-panel]",
@@ -257,14 +170,8 @@ if (!themeWindow.__incessantThemeToggleInitialized) {
     closePreferences(true);
   });
 
-  mediaQuery.addEventListener("change", () => {
-    if (document.documentElement.dataset.themePreference === "system")
-      applyTheme("system");
-  });
-
   document.addEventListener("astro:before-preparation", () => {
     pendingPageSound = true;
-    clearThemeTransition();
   });
 
   document.addEventListener("astro:page-load", () => {
@@ -273,7 +180,7 @@ if (!themeWindow.__incessantThemeToggleInitialized) {
     const path = location.pathname.endsWith("/")
       ? location.pathname
       : `${location.pathname}/`;
-    if (topLevelPaths.has(path)) playInterfaceSound("navigate", 0.55);
+    if (topLevelPaths.has(withoutLanguage(path))) playInterfaceSound("navigate", 0.55);
   });
 }
 

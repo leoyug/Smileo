@@ -1,3 +1,4 @@
+import { withoutLanguage } from "../i18n/runtime";
 interface ProjectReturnContext {
   source: string;
   from: string;
@@ -79,8 +80,8 @@ const finishProjectTransition = () => {
 
 initializeProjectTransitions();
 document.addEventListener("astro:before-preparation", (event) => {
-  if (!/^\/projects\/[^/]+\/?$/.test(event.from.pathname)
-    || !["/", "/projects"].includes(event.to.pathname.replace(/\/+$/, "") || "/")) return;
+  if (!/^\/(?:en\/)?projects\/[^/]+\/?$/.test(event.from.pathname)
+    || !["/", "/projects"].includes(withoutLanguage(event.to.pathname.replace(/\/+$/, "") || "/"))) return;
   // Stop an unfinished directory smooth scroll on the outgoing document.
   window.scrollTo({ left: window.scrollX, top: window.scrollY, behavior: "instant" });
 });
@@ -102,7 +103,7 @@ document.addEventListener("astro:before-swap", (event) => {
   } catch {
     // Old or malformed source entries cannot restore a previous visit.
   }
-  const returningFromDetail = /^\/projects\/[^/]+\/?$/.test(event.from.pathname);
+  const returningFromDetail = /^\/(?:en\/)?projects\/[^/]+\/?$/.test(event.from.pathname);
   const samePage = (left: URL, right: URL) => left.origin === right.origin
     && left.pathname.replace(/\/+$/, "") === right.pathname.replace(/\/+$/, "")
     && left.search === right.search;

@@ -25,8 +25,13 @@ const applySoundSettings = (enabled: boolean) => {
   setLegacyEnabled(enabled);
 };
 
-export const getSoundPreference = (): SoundPreference =>
-  localStorage.getItem(soundStorageKey) === "on" ? "on" : "off";
+export const getSoundPreference = (): SoundPreference => {
+  try {
+    return localStorage.getItem(soundStorageKey) === "on" ? "on" : "off";
+  } catch {
+    return "off";
+  }
+};
 
 export const initializeSound = (): SoundPreference => {
   const preference = getSoundPreference();
@@ -41,7 +46,7 @@ export const playInterfaceSound = (sound: InterfaceSound, volume = 1) => {
 };
 
 export const setSoundPreference = (preference: SoundPreference) => {
-  localStorage.setItem(soundStorageKey, preference);
+  try { localStorage.setItem(soundStorageKey, preference); } catch { /* Sound preferences can remain in memory. */ }
   document.documentElement.dataset.soundPreference = preference;
   setVolume(defaultVolume);
   setLegacyVolume(defaultVolume);

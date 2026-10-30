@@ -7,7 +7,6 @@ draft: false
 hidden: false
 period: '2025'
 projectType: PC / 移动端
-website: https://zhaichangxiang.com
 status: archive
 role: UI 与视觉设计
 tools: Figma，ChatGPT

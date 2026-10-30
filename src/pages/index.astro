@@ -42,7 +42,7 @@ const homeFanPhotos = fanPhotos.map((photo) => ({
   <section class="home-section reading-column writing-home">
     <div class="section-topline" data-route-enter><h2>最近在想</h2></div>
     <div class="home-list" data-route-enter-group>
-      {recentArticles.map((article) => <ContentRow title={article.data.title} meta={formatDate(article.data.publishedAt).replaceAll(".", "-")} href={`/writing/${article.id}`} density="compact" stackOnMobile={false} />)}
+      {recentArticles.map((article) => <ContentRow title={article.data.title} meta={formatDate(article.data.publishedAt).replaceAll(".", "-")} href={`/writing/${article.id}`} density="compact" />)}
     </div>
   </section>
 

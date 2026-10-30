@@ -862,8 +862,12 @@
     );
   }
 
+  .content-row--compact .content-row__leader {
+    margin-block-start: calc((var(--space-5) - 2px) / 2);
+  }
+
   .project-grid {
-    gap: 16px;
+    gap: var(--space-8) var(--space-4);
   }
 
   .project-card {
@@ -1229,7 +1233,7 @@
     display: grid;
     grid-template-columns: minmax(0, 1fr) var(--about-portrait-width);
     gap: var(--space-6);
-    align-items: stretch;
+    align-items: start;
     margin-top: var(--space-4);
   }
 
@@ -1242,8 +1246,8 @@
 
   .about-portrait {
     --portrait-width: 100%;
-    --portrait-height: 100%;
-    --portrait-ratio: auto;
+    --portrait-height: auto;
+    --portrait-ratio: var(--about-portrait-ratio);
     min-height: 0;
     margin-top: 0;
     overflow: hidden;
@@ -1513,11 +1517,12 @@
     /* Keep 44px targets while the 24px text lines sit 12px apart. */
     margin-block: calc(-1 * var(--space-1));
     padding-left: 0;
+    color: var(--color-subtle);
     transition: color var(--duration-quick) var(--ease-smooth-out);
   }
 
   .detail-toc--reading .detail-toc__link:is(.is-active, :focus-visible) {
-    color: var(--color-ink);
+    color: var(--color-copy);
   }
 
   .detail-toc--reading .detail-toc__label {
@@ -1560,7 +1565,7 @@
     }
 
     .detail-toc--reading .detail-toc__link:hover {
-      color: var(--color-ink);
+      color: var(--color-copy);
     }
 
     .detail-toc__link:hover::before {
@@ -2631,6 +2636,8 @@
     display: none;
   }
 
+  .portfolio-language { display: inline-flex; align-items: center; min-height: var(--dock-control-size); padding-inline: var(--space-2); margin-left: auto; margin-right: var(--space-2); }
+
   .portfolio-theme {
     width: 2.75rem;
     height: 2.75rem;
@@ -2643,15 +2650,17 @@
     cursor: pointer;
   }
 
-  .portfolio-theme svg {
-    width: 1.25rem;
-    height: 1.25rem;
+  .portfolio-theme img {
+    width: var(--space-5);
+    height: var(--space-5);
+    filter: brightness(0);
   }
 
   .portfolio-theme__icon--sun { display: none; }
 
   :root[data-theme="dark"] .portfolio-theme__icon--moon { display: none; }
   :root[data-theme="dark"] .portfolio-theme__icon--sun { display: block; }
+  :root[data-theme="dark"] .portfolio-theme img { filter: brightness(0) invert(1); }
 
   .portfolio-intro {
     margin-top: var(--space-16);
@@ -2676,16 +2685,22 @@
   /* Highlighted text from Opensource UI AnnotatedText. MIT, Bidyut Kundu.
      https://opensourceui.in/components/annotated-text */
   .portfolio-mark {
-    padding: .1em .22em .16em;
+    --mark-shift: .33em;
+    padding: .1em .22em calc(.16em + var(--mark-shift));
     border-radius: 0;
     line-height: 1;
     background-color: transparent;
-    background-image: url("data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%20170%2026%22%20preserveAspectRatio%3D%22none%22%3E%3Cdefs%3E%3Cfilter%20id%3D%22rough%22%20x%3D%22-30%25%22%20y%3D%22-30%25%22%20width%3D%22160%25%22%20height%3D%22160%25%22%3E%3CfeTurbulence%20type%3D%22fractalNoise%22%20baseFrequency%3D%220.035%22%20numOctaves%3D%222%22%20seed%3D%2211%22%20result%3D%22n%22%2F%3E%3CfeDisplacementMap%20in%3D%22SourceGraphic%22%20in2%3D%22n%22%20scale%3D%221.5%22%20xChannelSelector%3D%22R%22%20yChannelSelector%3D%22G%22%2F%3E%3C%2Ffilter%3E%3C%2Fdefs%3E%3Cpath%20fill%3D%22%23264038%22%20filter%3D%22url(%23rough)%22%20d%3D%22M4%2017C2%2011%205%207%2012%206C45%202%2095%202%20138%204C152%205%20164%207%20166%2013C167%2018%20163%2021%20155%2022C112%2024%2060%2024%2016%2022C8%2021.5%204%2020%204%2017Z%22%2F%3E%3C%2Fsvg%3E");
+    background-image: var(--mark-light);
     background-repeat: no-repeat;
-    background-size: 100% 100%;
+    background-position: center var(--mark-shift);
+    background-size: 100% calc(100% - var(--mark-shift));
     color: var(--color-portfolio-mark-ink);
     box-decoration-break: clone;
     -webkit-box-decoration-break: clone;
+  }
+
+  :root[data-theme="dark"] .portfolio-mark {
+    background-image: var(--mark-dark);
   }
 
   .portfolio-figure {

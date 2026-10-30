@@ -1,0 +1,20 @@
+---
+import type { GetStaticPaths } from 'astro';
+import { getCollection } from 'astro:content';
+import { localizePage } from '../../i18n/render';
+
+export const getStaticPaths: GetStaticPaths = async () => {
+  const articles = await getCollection('articles', ({data}) => import.meta.env.DEV || !data.draft);
+  const projects = await getCollection('projects', ({data}) => !data.hidden && (import.meta.env.DEV || !data.draft));
+  const photos = await getCollection('photos', ({data}) => !data.draft);
+  const paths = ['', 'about', 'projects', 'writing', 'photos', 'resume', 'portfolio', 'thanks', 'experiments', 'inspiration', '404',
+    ...articles.map(e=>`writing/${e.id}`), ...projects.map(e=>`projects/${e.id}`), ...photos.map(e=>`photos/${e.id}`)];
+  return paths.map(path=>({params:{path:path || undefined}}));
+};
+
+const response = await Astro.rewrite(`/${Astro.params.path ?? ''}`);
+const headers = new Headers(response.headers);
+headers.delete('content-length');
+const path = `/en/${Astro.params.path ?? ''}`;
+return new Response(await localizePage(await response.text(), path, Astro.site), {status:response.status,headers});
+---

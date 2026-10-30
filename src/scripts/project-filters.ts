@@ -1,3 +1,4 @@
+import { uiText } from "../i18n/runtime";
 type ProjectFiltersElement = HTMLElement & { projectFiltersCleanup?: () => void };
 
 const selectedCategory = (root: HTMLElement) => {
@@ -68,7 +69,7 @@ const applyCategory = (root: HTMLElement, category: string, announce = false) =>
   if (tabList) tabList.hidden = false;
   if (announce) {
     const status = root.querySelector<HTMLElement>("[data-project-filter-status]");
-    if (status) status.textContent = `${selected.textContent?.trim()}，显示 ${count} 个项目`;
+    if (status) status.textContent = uiText(`${selected.textContent?.trim()}，显示 ${count} 个项目`, `${selected.textContent?.trim()}: ${count} ${count === 1 ? "project" : "projects"}`);
   }
   return value;
 };

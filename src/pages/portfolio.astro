@@ -65,7 +65,7 @@ const narratives: Record<string, PortfolioNarrative> = {
         alt: "前期获客解决方案，左侧为业务阶段与场景说明，右侧为手持设备、小程序码和线索卡片",
       },
     ],
-    more: { href: "https://zhaichangxiang.com", label: "访问宅畅想官网" },
+    more: { href: "/projects/zhaichangxiang-website", label: "查看完整的案例" },
   },
   wispora: {
     paragraphs: [
@@ -90,6 +90,24 @@ const sections = ["Zhaichangxiang-App", "yiwo-admin", "zhaichangxiang-website", 
   const narrative = narratives[id];
   return project && narrative ? [{ id, title: project.data.title, ...narrative }] : [];
 });
+const markShapes = [
+  { seed: 11, scale: 1.5, d: "M4 17C2 11 5 7 12 6C45 2 95 2 138 4C152 5 164 7 166 13C167 18 163 21 155 22C112 24 60 24 16 22C8 21.5 4 20 4 17Z" },
+  { seed: 19, scale: 1.8, d: "M6 15C3 9 8 5 16 5C48 1 100 3 140 6C154 7 165 9 166 15C167 20 160 23 148 23C100 25 50 22 18 21C10 20.5 5 19 6 15Z" },
+  { seed: 5, scale: 1.3, d: "M3 16C2 12 6 8 14 8C40 4 90 3 130 5C150 6 166 8 167 14C168 19 162 22 150 23C108 26 55 25 18 23C8 22 3 20 3 16Z" },
+  { seed: 29, scale: 2.1, d: "M5 18C2 13 7 9 15 8C42 4 88 5 132 3C148 2 163 6 165 12C166 17 161 20 152 21C110 23 62 22 20 21C10 20.5 4 21 5 18Z" },
+  { seed: 37, scale: 1.6, d: "M4 16C3 10 6 6 14 6C46 3 96 1 136 5C152 6 164 10 165 16C166 21 158 24 146 24C100 25 48 23 16 21C8 20 3 19 4 16Z" },
+  { seed: 47, scale: 1.1, d: "M8 17C4 12 6 7 18 7C50 3 95 2 135 6C150 7 162 8 164 14C165 19 160 22 148 22C105 23 55 24 22 22C12 21 6 20 8 17Z" },
+];
+const markImage = (shape: (typeof markShapes)[number], fill: string) => {
+  const svg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 170 26" preserveAspectRatio="none"><defs><filter id="rough" x="-30%" y="-30%" width="160%" height="160%"><feTurbulence type="fractalNoise" baseFrequency="0.035" numOctaves="2" seed="${shape.seed}" result="n"/><feDisplacementMap in="SourceGraphic" in2="n" scale="${shape.scale}" xChannelSelector="R" yChannelSelector="G"/></filter></defs><path fill="${fill}" filter="url(#rough)" d="${shape.d}"/></svg>`;
+  return `url("data:image/svg+xml,${encodeURIComponent(svg)}")`;
+};
+let markIndex = 0;
+const markStyle = () => {
+  const shape = markShapes[markIndex % markShapes.length];
+  markIndex += 1;
+  return `--mark-light: ${markImage(shape, "#b7d6c8")}; --mark-dark: ${markImage(shape, "#264038")}`;
+};
 const description = "这些年做过的项目：家装产品的界面、交互和设计系统，以及我为自己做的灵感库。";
 const opener = sections.find((section) => section.id === "Zhaichangxiang-App");
 ---
@@ -101,20 +119,16 @@ const opener = sections.find((section) => section.id === "Zhaichangxiang-App");
       <img class="portfolio-bar__avatar portfolio-bar__avatar--dark" src="/assets/figma-v03/about/portrait-particles.webp" alt="" width="28" height="28" />
       <span>作品集</span>
     </a>
+    <TextLink href="/en/portfolio" class="portfolio-language" data-language-switch>English</TextLink>
     <button class="portfolio-theme" type="button" data-portfolio-theme aria-label="切换到深色模式" aria-pressed="false">
-      <svg class="portfolio-theme__icon--moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-        <path d="M21 14.5A8.5 8.5 0 1 1 9.5 3 7 7 0 0 0 21 14.5z" />
-      </svg>
-      <svg class="portfolio-theme__icon--sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" aria-hidden="true">
-        <circle cx="12" cy="12" r="4" />
-        <path d="M12 3v1.5M12 19.5V21M4.9 4.9l1.1 1.1M18 18l1.1 1.1M3 12h1.5M19.5 12H21M4.9 19.1 6 18M18 6l1.1-1.1" />
-      </svg>
+      <img class="portfolio-theme__icon--moon" src="/assets/figma/preferences/dark.svg" width="20" height="20" alt="" />
+      <img class="portfolio-theme__icon--sun" src="/assets/figma/preferences/light.svg" width="20" height="20" alt="" />
     </button>
   </header>
 
   <section class="portfolio-intro reading-column" aria-labelledby="portfolio-intro-title">
     <h1 id="portfolio-intro-title">这些年做过的项目</h1>
-    <p>我是一名产品设计师，主要为家装产品<mark class="portfolio-mark">设计界面、梳理交互流程</mark>，并建立<mark class="portfolio-mark">可以继续扩展的设计系统</mark>。这里整理了一些我参与过的项目，介绍当时遇到的问题、我的设计思路和最终方案。</p>
+    <p>我是一名产品设计师，主要为家装产品<mark class="portfolio-mark" style={markStyle()}>设计界面、梳理交互流程</mark>，并建立<mark class="portfolio-mark" style={markStyle()}>可以继续扩展的设计系统</mark>。这里整理了一些我参与过的项目，介绍当时遇到的问题、我的设计思路和最终方案。</p>
     <p>文中界面来自项目设计稿，用于说明设计决策与交互。</p>
     {opener && (
       <figure class="portfolio-figure">
@@ -128,7 +142,7 @@ const opener = sections.find((section) => section.id === "Zhaichangxiang-App");
       <h2 id={`portfolio-${section.id}`}>{section.title}</h2>
       {section.paragraphs.map((paragraph) => (
         <p>
-          {paragraph.map((part) => typeof part === "string" ? part : <mark class="portfolio-mark">{part.highlight}</mark>)}
+          {paragraph.map((part) => typeof part === "string" ? part : <mark class="portfolio-mark" style={markStyle()}>{part.highlight}</mark>)}
         </p>
       ))}
       {section.images.map((image) => (

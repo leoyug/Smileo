@@ -1,3 +1,4 @@
+import { uiText } from "../i18n/runtime";
 import { cssTimeToMilliseconds } from "../lib/css-time";
 
 type CopyLink = HTMLAnchorElement & { copyTextCleanup?: () => void };
@@ -29,12 +30,12 @@ const initializeCopyLinks = () => {
     let resetTimer: ReturnType<typeof setTimeout> | undefined;
     link.dataset.copyReady = "true";
     link.setAttribute("role", "button");
-    link.setAttribute("aria-label", `复制邮箱地址：${value}`);
+    link.setAttribute("aria-label", `${uiText("复制邮箱地址：", "Copy email: ")}${value}`);
 
     // Persistent layers let CSS reverse an unfinished crossfade in place.
     const initialWidth = label.getBoundingClientRect().width;
     const layers = new Map<string, HTMLSpanElement>();
-    [initialLabel, value, "已复制", "复制失败"].forEach((text) => {
+    [initialLabel, value, uiText("已复制", "Copied"), uiText("复制失败", "Copy failed")].forEach((text) => {
       if (layers.has(text)) return;
       const layer = document.createElement("span");
       layer.textContent = text;
@@ -89,7 +90,7 @@ const initializeCopyLinks = () => {
     const updateLabel = () => {
       const state = link.dataset.copyState;
       const previewing = link.dataset.copyLabelMode !== "static" && (hovering || link.matches(":focus-visible"));
-      softSwap(state === "copied" ? "已复制" : state === "error" ? "复制失败" : previewing ? value : initialLabel);
+      softSwap(state === "copied" ? uiText("已复制", "Copied") : state === "error" ? uiText("复制失败", "Copy failed") : previewing ? value : initialLabel);
     };
 
     const setState = (state: "idle" | "copied" | "error") => {
@@ -101,8 +102,8 @@ const initializeCopyLinks = () => {
       link.dataset.copyState = state;
       icon.dataset.state = state === "copied" ? "b" : "a";
       updateLabel();
-      link.setAttribute("aria-label", state === "copied" ? `已复制邮箱地址：${value}` : `复制邮箱地址：${value}`);
-      status.textContent = state === "copied" ? "邮箱地址已复制" : state === "error" ? "复制失败，请重试" : "";
+      link.setAttribute("aria-label", state === "copied" ? `${uiText("已复制邮箱地址：", "Email copied: ")}${value}` : `${uiText("复制邮箱地址：", "Copy email: ")}${value}`);
+      status.textContent = state === "copied" ? uiText("邮箱地址已复制", "Email address copied") : state === "error" ? uiText("复制失败，请重试", "Copy failed. Please try again.") : "";
     };
 
     const beginHover = () => {

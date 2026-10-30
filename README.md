@@ -141,3 +141,13 @@ npm run deploy:site  # 将当前 dist 上传并绑定主域名，不重新构建
 上线后检查主站 HTTPS、www 路径和查询参数、canonical、RSS、远程图片、旧照片地址以及真实 404。后续回退可重新构建并部署已验证的 Git 提交产物。
 
 官方参考：[静态站点与 404](https://developers.cloudflare.com/workers/static-assets/routing/static-site-generation/)、[静态资产重定向](https://developers.cloudflare.com/workers/static-assets/redirects/)、[Workers 自定义域名](https://developers.cloudflare.com/workers/configuration/routing/custom-domains/)、[域名跳转](https://developers.cloudflare.com/fundamentals/manage-domains/redirect-domain/)。
+
+## 中英文切换
+
+公开页面提供中文和 English 版本，英文地址为原地址前加 `/en/`。在底部偏好面板中选择语言；独立作品集在页头提供切换入口。切换保留当前页面、查询参数和章节锚点，浏览器会记住选择。直接打开语言地址以该地址为准；再次访问首页时恢复已保存的英文偏好。禁用存储时仍能切换，禁用 JavaScript 时英文地址仍包含完整静态内容。
+
+中文内容记录继续作为发布状态、稳定短名、照片与内容关系的唯一来源。英文文章和案例正文位于 `src/i18n/content/articles/`、`src/i18n/content/projects/`，文件名与原记录一致；frontmatter 维护英文标题、摘要和需要翻译的项目字段。`src/i18n/english.json` 维护其余界面、简历和作品集文案，照片英文说明沿用作者维护的英文短名。更新中文文案时同步更新对应译文。
+
+英文页面复用中文页面的组件输出，在静态构建时替换文字、正文、内部链接及元数据；不调用在线翻译服务。正文目录沿用原章节 ID，因此跨语言切换后原章节锚点仍有效。英文 RSS 为 `/en/rss.xml`，页面提供双向 `hreflang` 与独立 canonical。CMS、导入工具和开发设计系统不生成公开英文版本。
+
+`npm run test:i18n` 检查语言路径、正文覆盖、章节和图片对应关系；构建中的 `npm run i18n:audit` 会扫描所有静态英文页面，阻止未翻译正文、元数据、照片数据或可访问名称进入发布结果。未翻译的开发草稿只在中文索引中展示；直接打开对应英文草稿地址时会明确标注。公开英文页面不回退到中文正文。

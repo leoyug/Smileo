@@ -1,4 +1,48 @@
 @layer site-responsive {
+  @media (max-width: 39.999rem) {
+    .content-row--compact.content-row--stack-mobile time {
+      font-size: var(--text-meta);
+      line-height: var(--space-4);
+    }
+
+    .project-archive-list {
+      --project-archive-gap: var(--space-8);
+    }
+
+    .project-archive-row {
+      grid-template-columns: var(--space-20) minmax(0, 1fr);
+      grid-template-areas:
+        "thumb copy"
+        "thumb time";
+      align-items: start;
+      column-gap: var(--space-4);
+      row-gap: var(--space-2);
+    }
+
+    .project-archive-row__thumb {
+      grid-area: thumb;
+      width: var(--space-20);
+      height: calc(var(--space-12) + var(--space-2));
+    }
+
+    .project-archive-row__thumb img {
+      left: var(--space-2);
+      top: var(--space-2);
+      width: var(--space-16);
+      height: calc(var(--space-8) + var(--space-2));
+    }
+
+    .project-archive-row__copy {
+      grid-area: copy;
+    }
+
+    .project-archive-row__time {
+      grid-area: time;
+      font-size: var(--text-meta);
+      line-height: var(--space-4);
+    }
+  }
+
   @media (max-width: 79.999rem) {
     .photo-lightbox__shell {
       width: calc(100% - 80px);
@@ -305,5 +349,29 @@
     .detail-toc__label {
       display: block;
     }
+  }
+}
+
+/* English words wrap at readable boundaries without changing the Chinese layout. */
+@layer site-responsive {
+  html:lang(en) .about-intro {
+    --about-portrait-width: var(--about-portrait-width-en);
+  }
+
+  html:lang(en) :is(h1, h2, h3) { overflow-wrap: anywhere; }
+  html:lang(en) .preferences-panel {
+    width: max-content;
+    max-width: calc(100vw - 2 * var(--gutter));
+  }
+  html:lang(en) .preferences-panel__row h2,
+  html:lang(en) .preferences-panel__options button { white-space: nowrap; }
+  html:lang(en) .preferences-panel__options { flex-shrink: 0; }
+  html:lang(en) .content-detail[data-project-id="zhaichangxiang-website"] .article__body table {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    column-gap: var(--space-3);
+  }
+  html:lang(en) .content-detail[data-project-id="zhaichangxiang-website"] .article__body th {
+    white-space: normal;
+    overflow-wrap: anywhere;
   }
 }

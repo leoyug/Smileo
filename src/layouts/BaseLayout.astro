@@ -1,4 +1,5 @@
 ---
+import { languagePath } from "../i18n/runtime";
 import { mediaUrl } from "../lib/media-url";
 import { siteDescription, siteTitles } from "../lib/site-metadata";
 import SiteHeader from "../components/SiteHeader.astro";
@@ -45,14 +46,24 @@ const isDetailRoute = /^\/(?:projects|writing)\/[^/]+\/?$/.test(Astro.url.pathna
     {robots && <meta name="robots" content={robots} />}
     <meta name="theme-color" content="#fbfaf9" />
     <script is:inline>
-      const storedTheme = localStorage.getItem("incessant-theme");
-      const themePreference = storedTheme === "dark" || storedTheme === "light" ? storedTheme : "system";
-      document.documentElement.dataset.themePreference = themePreference;
-      document.documentElement.dataset.theme = themePreference === "system" ? (matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light") : themePreference;
+      try {
+        const storedTheme = localStorage.getItem("incessant-theme");
+        const themePreference = storedTheme === "dark" || storedTheme === "light" ? storedTheme : "system";
+        document.documentElement.dataset.themePreference = themePreference;
+        document.documentElement.dataset.theme = themePreference === "system" ? (matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light") : themePreference;
+        if (location.pathname === "/" && localStorage.getItem("incessant-language") === "en") location.replace(`/en/${location.search}${location.hash}`);
+      } catch {
+        document.documentElement.dataset.theme = matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light";
+      }
     </script>
     <link rel="icon" href="/favicon.svg?v=f9fb16d0d39c" type="image/svg+xml" />
     <link rel="apple-touch-icon" href="/favicon-leo.png?v=f9fb16d0d39c" />
     <link rel="canonical" href={canonical} />
+    {!Astro.url.pathname.startsWith('/design-system') && <>
+      <link rel="alternate" hreflang="zh-CN" href={canonical} />
+      <link rel="alternate" hreflang="en" href={new URL(languagePath(Astro.url.pathname, 'en'), Astro.site)} />
+      <link rel="alternate" hreflang="x-default" href={canonical} />
+    </>}
     <meta property="og:type" content="website" />
     <meta property="og:locale" content="zh_CN" />
     <meta property="og:site_name" content={siteTitles["zh-CN"]} />
@@ -75,7 +86,6 @@ const isDetailRoute = /^\/(?:projects|writing)\/[^/]+\/?$/.test(Astro.url.pathna
   </head>
   <body class:list={{ "body--detail-route": isDetailRoute, "body--no-dock": !showNavigation }}>
     {isDetailRoute && <div class="detail-route-backdrop" aria-hidden="true"></div>}
-    <!-- THESIS: 中性纸色背景中的一条安静出版栏，把工作、写作与摄影放在同一条长期记录里。 OWN-WORLD: 中性纸色画布、592px 内容栏、手写标记、灰阶文字与原比例摄影。 STORY: 访客先认识 Leo，再依次进入文章、项目与照片，距视口底部 24px 的胶囊导航持续提供方向。 FIRST VIEWPORT: 签名与三行介绍从 80px 开始，正文在首屏直接给出项目、写作和摄影入口。 FORM: 可切换的亮色个人出版物。 -->
     <a class="skip-link" href="#main">跳到主要内容</a>
     {showNavigation && <SiteHeader />}
     <main id="main" class:list={["page-main", { "page-main--wide": wide }]} data-route-main>
