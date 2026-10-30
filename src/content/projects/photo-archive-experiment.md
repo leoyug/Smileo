@@ -8,7 +8,7 @@ period: "2026"
 status: experiment
 role: 独立设计与开发
 featured: false
-order: 8
+order: 6
 relatedArticles: [a-living-archive]
 cover: /media/projects/photo-archive-experiment/cover.jpg
 archiveImages: []

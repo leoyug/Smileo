@@ -1,6 +1,6 @@
 {
   "name": "smileo",
-  "version": "0.8.0",
+  "version": "0.8.4",
   "private": true,
   "type": "module",
   "scripts": {
@@ -14,18 +14,23 @@
     "test:batch": "node --test scripts/content-batch/store.test.mjs",
     "test:photo-slug": "node --test scripts/photo-slug/generate.test.mjs",
     "test:search": "node --test scripts/admin-search/search.test.mjs",
-    "check": "astro check && npm run photos:audit && npm run order:audit && npm run test:import && npm run test:order && npm run test:batch && npm run test:photo-slug && npm run test:search && npm run test:media",
-    "build": "npm run media:prepare && npm run fonts:subset && npm run check && astro build && node scripts/photos/prune-drafts.mjs",
+    "check": "astro check && npm run photos:audit && npm run order:audit && npm run test:import && npm run test:order && npm run test:batch && npm run test:photo-slug && npm run test:search && npm run test:media && npm run test:motion && npm run test:cms && npm run test:i18n",
+    "build": "npm run media:prepare && npm run fonts:subset && npm run check && astro build && npm run i18n:audit && node scripts/photos/prune-drafts.mjs",
     "preview": "astro preview",
     "media:prepare": "node scripts/media/prepare.mjs",
     "media:sync": "npm run media:prepare && npm run photos:audit && node scripts/media/sync-r2.mjs",
     "test:media": "node --test scripts/media/media.test.mjs",
+    "test:motion": "node --import tsx --test scripts/motion/css-time.test.mjs",
+    "test:cms": "node --import tsx --test scripts/cms-projects/*.test.mjs",
     "publish:prepare": "npm run build && npm run media:sync",
     "deploy:check": "wrangler deploy --dry-run --outdir output/workers-dry-run",
-    "deploy:site": "wrangler deploy"
+    "deploy:site": "wrangler deploy",
+    "test:i18n": "node --import tsx --test scripts/i18n/locale.test.mjs",
+    "i18n:audit": "node scripts/i18n/audit.mjs"
   },
   "dependencies": {
     "@astrojs/check": "^0.9.4",
+    "@astrojs/markdown-remark": "7.2.0",
     "@astrojs/react": "^5.0.0",
     "@aws-sdk/client-s3": "^3.1152.0",
     "@keystatic/astro": "^6.0.0",
@@ -38,6 +43,7 @@
     "gray-matter": "^4.0.3",
     "gsap": "^3.15.0",
     "mammoth": "^1.13.0",
+    "parse5": "7.3.0",
     "react": "^19.3.0",
     "react-dom": "^19.3.0",
     "sharp": "^0.35.4",

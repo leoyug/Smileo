@@ -34,7 +34,7 @@ const homeFanPhotos = fanPhotos.map((photo) => ({
     <SignatureMark class="hero__signature" data-route-enter />
     <div class="hero__copy">
       <p data-route-enter>这里是 <TextLink href="/about">Leo</TextLink> 的<DashedUnderline effect="flowers">数字花园</DashedUnderline>。</p>
-      <p data-route-enter>在这里，你可以{hasProjects ? <>看到我正在折腾的<TextLink href="/projects">项目</TextLink>，也可以探索我记录的</> : <>探索我记录的</>}<TextLink href="/writing">文字</TextLink>与<TextLink href="/photos">影像</TextLink>—关于生活、工作、兴趣，以及那些尚未想明白的问题。</p>
+      <p data-route-enter>在这里，你可以{hasProjects ? <>看到我正在折腾的<TextLink href="/projects">东西</TextLink>，也可以探索我记录的</> : <>探索我记录的</>}<TextLink href="/writing">文字</TextLink>与<TextLink href="/photos">影像</TextLink>—关于生活、工作、兴趣，以及那些尚未想明白的问题。</p>
       {/* <p data-route-enter>你可以在 {x && <TextLink href={x}>X</TextLink>}、{github && <TextLink href={github} rel="me">GitHub</TextLink>}、{xiaohongshu && <TextLink href={xiaohongshu}>小红书</TextLink>}上找到我，也可以<TextLink href={`mailto:${resume.data.email}`}>给我发邮件</TextLink>。</p> */}
     </div>
   </section>
@@ -42,7 +42,7 @@ const homeFanPhotos = fanPhotos.map((photo) => ({
   <section class="home-section reading-column writing-home">
     <div class="section-topline" data-route-enter><h2>最近在想</h2></div>
     <div class="home-list" data-route-enter-group>
-      {recentArticles.map((article) => <ContentRow title={article.data.title} meta={formatDate(article.data.publishedAt).replaceAll(".", "-")} href={`/writing/${article.id}`} density="compact" stackOnMobile={false} />)}
+      {recentArticles.map((article) => <ContentRow title={article.data.title} meta={formatDate(article.data.publishedAt).replaceAll(".", "-")} href={`/writing/${article.id}`} density="compact" />)}
     </div>
   </section>
 

@@ -10,7 +10,7 @@ projectType: App
 status: archive
 role: 待确认
 featured: false
-order: 9
+order: 7
 cover: /media/projects/tuxiang-app/cover.png
 archiveImages:
   - /media/projects/tuxiang-app/archiveImages/0.png

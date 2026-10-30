@@ -1,0 +1,23 @@
+{
+  "github": {
+    "profile": "https://github.com/leoyug",
+    "source": "https://avatars.githubusercontent.com/u/73673629?v=4?s=400",
+    "asset": "/assets/contact-avatars/github.jpg",
+    "retrieved": "2026-10-30",
+    "provenance": "Avatar from the linked account’s public og:image metadata; downloaded without visual edits."
+  },
+  "x": {
+    "profile": "https://x.com/Incessant_Leo",
+    "source": "https://pbs.twimg.com/profile_images/1430752524584194048/mQVa998W_400x400.jpg",
+    "asset": "/assets/contact-avatars/x.jpg",
+    "retrieved": "2026-10-30",
+    "provenance": "Avatar from the linked account’s public og:image metadata; downloaded without visual edits."
+  },
+  "instagram": {
+    "profile": "https://www.instagram.com/incessantleo/",
+    "source": "https://scontent-hkg1-1.cdninstagram.com/v/t51.2885-19/316375386_1546995012409924_7697880890159143319_n.jpg?stp=dst-jpg_s150x150_tt6&_nc_cat=104&ig_cache_key=GFqB2xJEGi-Y_34FAJcZNG3iXdRqbkULAAAB1501500j-ccb7-5&ccb=7-5&_nc_sid=669407&efg=eyJ2ZW5jb2RlX3RhZyI6InByb2ZpbGVfcGljLnd3dy4xMDgwLkMzIn0%3D&_nc_ohc=SlIIzPH5Y_MQ7kNvwGJHT1K&_nc_oc=AdqtTQQtiQVZPFk3Z89mocaEv1cBA_IUMSZe1LLk1SAdHiCjNwJ4dHmJ-kB_u5E5ejM&_nc_zt=24&_nc_ht=scontent-hkg1-1.cdninstagram.com&_nc_ss=70a02&oh=00_AQSwd-YGX24HKpnFVfacDa27xYhfSRlCTDiLxES2yFlRxA&oe=6AE9F8D2",
+    "asset": "/assets/contact-avatars/instagram.jpg",
+    "retrieved": "2026-10-30",
+    "provenance": "Avatar from the linked account’s public og:image metadata; downloaded without visual edits."
+  }
+}

@@ -8,10 +8,11 @@ interface Props extends HTMLAttributes<"a"> {
   href: string;
   underline?: "fade" | "reveal";
   copyText?: string;
+  copyLabel?: "address" | "static";
   externalIcon?: boolean;
 }
 
-const { href, underline = "fade", copyText, externalIcon = true, class: className, ...attributes } = Astro.props;
+const { href, underline = "fade", copyText, copyLabel = "address", externalIcon = true, class: className, ...attributes } = Astro.props;
 const destination = new URL(href, Astro.url);
 const isExternal = externalIcon && (destination.protocol === "mailto:" || (
   ["http:", "https:"].includes(destination.protocol) &&
@@ -20,6 +21,6 @@ const isExternal = externalIcon && (destination.protocol === "mailto:" || (
 // Keep the script adjacent to the anchor so inline prose gains no whitespace.
 ---
 
-<a href={href} class:list={["text-link", `text-link--${underline}`, { "text-link--external": isExternal && !copyText, "text-link--copy": !!copyText }, className]} data-copy-text={copyText} data-copy-state={copyText ? "idle" : undefined} {...attributes}>{copyText ? <><span class="text-link__copy-icon t-icon-swap" data-state="a" aria-hidden="true"><span class="t-icon" data-icon="a"><Copy /></span><span class="t-icon" data-icon="b"><Check /></span></span><span class="text-link__copy-label t-text-soft" data-copy-label><slot /></span><span class="sr-only" data-copy-status role="status" aria-live="polite" aria-atomic="true"></span></> : <><slot />{isExternal && <span class="text-link__arrow" aria-hidden="true"><ArrowUpRight /></span>}</>}</a><script>
+<a href={href} class:list={["text-link", `text-link--${underline}`, { "text-link--external": isExternal && !copyText, "text-link--copy": !!copyText, "text-link--copy-static": !!copyText && copyLabel === "static" }, className]} data-copy-text={copyText} data-copy-label-mode={copyText ? copyLabel : undefined} data-copy-state={copyText ? "idle" : undefined} {...attributes}>{copyText ? <><span class="text-link__copy-icon t-icon-swap" data-state="a" aria-hidden="true"><span class="t-icon" data-icon="a"><Copy /></span><span class="t-icon" data-icon="b"><Check /></span></span><span class="text-link__copy-label t-text-soft" data-copy-label><slot /></span><span class="sr-only" data-copy-status role="status" aria-live="polite" aria-atomic="true"></span></> : <><slot />{isExternal && <span class="text-link__arrow" aria-hidden="true"><ArrowUpRight /></span>}</>}</a><script>
   import "../scripts/copy-text";
 </script>

@@ -1,0 +1,170 @@
+---
+interface Props { id: string; variant?: "default" | "contact"; }
+const { id, variant = "default" } = Astro.props;
+---
+
+<tooltip-group>
+  <slot />
+  <div id={id} class:list={["tooltip-group__bubble", { "tooltip-group__bubble--contact": variant === "contact" }]} role="tooltip" popover="manual" data-show="false">
+    <div class="tooltip-group__content">
+      <strong class="tooltip-group__name"></strong>
+      <span class="tooltip-group__description"></span>
+    </div>
+  </div>
+</tooltip-group>
+
+<style>
+  tooltip-group { display: block; }
+  .tooltip-group__bubble {
+    position: fixed;
+    inset: auto;
+    margin: 0;
+    width: max-content;
+    max-width: min(15rem, calc(100vw - 2 * var(--space-4)));
+    padding: var(--space-3);
+    border: 1px solid var(--color-line);
+    border-radius: var(--radius-photo-tooltip);
+    background: var(--color-surface);
+    color: var(--color-copy);
+    box-shadow: var(--shadow-float);
+    font-size: var(--text-meta);
+    line-height: var(--tooltip-line-height);
+    opacity: 0;
+    scale: .98;
+    transform-origin: center bottom;
+    transition: opacity var(--duration-quick) var(--ease-smooth-out), scale var(--duration-quick) var(--ease-smooth-out);
+  }
+  .tooltip-group__bubble--contact {
+    width: 18rem;
+    max-width: calc(100vw - 2 * var(--space-4));
+    padding: var(--space-4);
+  }
+  .tooltip-group__bubble[data-show="true"] { opacity: 1; scale: 1; }
+  .tooltip-group__name { display: block; color: var(--color-ink); font-weight: var(--weight-medium); }
+  .tooltip-group__description { display: block; margin-top: var(--space-1); }
+  @media (prefers-reduced-motion: reduce) {
+    .tooltip-group__bubble { transition: none; scale: 1; }
+  }
+</style>
+
+<script>
+  class TooltipGroup extends HTMLElement {
+    private cleanup?: () => void;
+    connectedCallback() {
+      const bubble = this.querySelector<HTMLElement>('[role="tooltip"]');
+      const content = bubble?.querySelector<HTMLElement>('.tooltip-group__content');
+      if (!bubble || !content) return;
+      const defaultContent = content.innerHTML;
+      const controller = new AbortController();
+      const { signal } = controller;
+      let active: HTMLElement | null = null;
+      let pointerInside = false;
+      let retainUntil = 0;
+      let timer: ReturnType<typeof setTimeout>;
+      const observer = new ResizeObserver(() => { if (bubble.matches(':popover-open')) place(); });
+      observer.observe(bubble);
+      const triggerFor = (target: EventTarget | null) => target instanceof Element ? target.closest<HTMLElement>('[data-tooltip-name]') : null;
+      const contact = bubble.classList.contains('tooltip-group__bubble--contact');
+      const textBox = (trigger: HTMLElement) => {
+        const range = document.createRange();
+        range.selectNodeContents(trigger);
+        const box = range.getBoundingClientRect();
+        return box.width > 0 && box.height > 0 ? box : trigger.getBoundingClientRect();
+      };
+      const place = () => {
+        if (!active) return;
+        const link = active.getBoundingClientRect();
+        const anchor = contact ? textBox(active) : link;
+        const padding = parseFloat(getComputedStyle(bubble).paddingTop);
+        const gap = contact ? padding * 0.75 : padding;
+        const x = Math.max(padding, Math.min(anchor.left + anchor.width / 2 - bubble.offsetWidth / 2, window.innerWidth - bubble.offsetWidth - padding));
+        const above = anchor.top - bubble.offsetHeight - gap;
+        bubble.style.left = `${x}px`;
+        bubble.style.top = `${above >= padding ? above : anchor.bottom + gap}px`;
+      };
+      const hide = () => {
+        clearTimeout(timer);
+        if (active) observer.unobserve(active);
+        active = null;
+        pointerInside = false;
+        bubble.dataset.show = 'false';
+        if (bubble.matches(':popover-open')) bubble.hidePopover();
+      };
+      const visibleFor = (trigger: HTMLElement) => bubble.dataset.show === 'true' && bubble.matches(':popover-open') && active === trigger;
+      const show = (trigger: HTMLElement, delay = 0) => {
+        clearTimeout(timer);
+        if (visibleFor(trigger)) return;
+        const wasOpen = bubble.matches(':popover-open');
+        if (active) observer.unobserve(active);
+        active = trigger;
+        observer.observe(trigger);
+        timer = setTimeout(() => {
+          const template = Array.from(this.querySelectorAll<HTMLTemplateElement>('template[data-tooltip-content]'))
+            .find((item) => item.dataset.tooltipContent === trigger.dataset.tooltipTemplate);
+          if (template) {
+            content.replaceChildren(template.content.cloneNode(true));
+          } else {
+            content.innerHTML = defaultContent;
+            content.querySelector('.tooltip-group__name')!.textContent = trigger.dataset.tooltipName ?? '';
+            content.querySelector('.tooltip-group__description')!.textContent = trigger.dataset.tooltipDescription ?? '';
+          }
+          if (!bubble.matches(':popover-open')) bubble.showPopover();
+          place();
+          // Commit the initial geometry before fading the bubble in.
+          void bubble.offsetWidth;
+          bubble.dataset.show = 'true';
+        }, wasOpen ? 0 : delay);
+      };
+      this.addEventListener('pointerover', (event) => {
+        if (event.pointerType === 'touch') return;
+        const trigger = triggerFor(event.target);
+        if (trigger || bubble.contains(event.target as Node)) pointerInside = true;
+        if (trigger && trigger !== active) {
+          const delay = parseFloat(getComputedStyle(this).getPropertyValue('--tooltip-appear-delay'));
+          show(trigger, delay);
+        }
+        if (bubble.contains(event.target as Node)) clearTimeout(timer);
+      }, { signal });
+      this.addEventListener('pointerdown', (event) => {
+        if (triggerFor(event.target)) retainUntil = performance.now() + 500;
+      }, { signal });
+      this.addEventListener('pointerout', (event) => {
+        const next = event.relatedTarget;
+        if (next instanceof Node && (active?.contains(next) || bubble.contains(next))) return;
+        // Opening a new tab blurs the page and emits a pointerout with nowhere to land.
+        if (next == null && (performance.now() < retainUntil || active?.matches(':hover') || bubble.matches(':hover'))) return;
+        pointerInside = false;
+        if (active === document.activeElement && active?.matches(':hover')) return;
+        clearTimeout(timer);
+        timer = setTimeout(hide, 80);
+      }, { signal });
+      this.addEventListener('focusin', (event) => {
+        const trigger = triggerFor(event.target);
+        if (trigger) show(trigger);
+      }, { signal });
+      this.addEventListener('focusout', (event) => {
+        const next = event.relatedTarget;
+        if (next instanceof Node && this.contains(next)) return;
+        if (pointerInside || performance.now() < retainUntil) return;
+        hide();
+      }, { signal });
+      this.addEventListener('click', (event) => {
+        const trigger = triggerFor(event.target);
+        if (trigger) show(trigger);
+      }, { signal });
+      document.addEventListener('pointerdown', (event) => {
+        if (!this.contains(event.target as Node)) hide();
+      }, { signal });
+      document.addEventListener('keydown', (event) => { if (event.key === 'Escape') hide(); }, { signal });
+      window.addEventListener('resize', () => { if (bubble.matches(':popover-open')) place(); }, { signal });
+      document.addEventListener('scroll', () => {
+        if (active && active === document.activeElement) {
+          if (bubble.matches(':popover-open')) place();
+        } else hide();
+      }, { signal, capture: true });
+      this.cleanup = () => { hide(); observer.disconnect(); controller.abort(); };
+    }
+    disconnectedCallback() { this.cleanup?.(); }
+  }
+  if (!customElements.get('tooltip-group')) customElements.define('tooltip-group', TooltipGroup);
+</script>

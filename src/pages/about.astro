@@ -5,8 +5,10 @@ import TextLink from "../components/TextLink.astro";
 import AnimatedHighlight from "../components/AnimatedHighlight.astro";
 import DashedUnderline from "../components/DashedUnderline.astro";
 import ContactLinks from "../components/ContactLinks.astro";
+import TooltipGroup from "../components/TooltipGroup.astro";
 import SectionHeading from "../components/SectionHeading.astro";
-import { aiLogos } from "../data/site";
+import { Image } from "astro:assets";
+import { aiLogos, everydayTools } from "../data/site";
 import { getEntry } from "astro:content";
 import { getPhotoStackPhotos } from "../lib/photo-stack";
 
@@ -18,12 +20,12 @@ const x = resume.data.links.find((link) => link.label === "X/Twitter")?.href;
 const xiaohongshu = resume.data.links.find((link) => link.label === "小红书")?.href;
 ---
 
-<BaseLayout title="关于｜Leo" description="设计工程师 Leo 的个人介绍。">
+<BaseLayout title="关于" description="产品设计师 Leo 的个人介绍。">
   <header class="about-intro reading-column">
     <h1 data-route-enter>关于我</h1>
     <div class="about-intro__body">
       <div class="about-intro__copy" data-route-enter-group>
-        <p>你好，我是Leo，一名 <AnimatedHighlight>设计工程师</AnimatedHighlight>。</p>
+        <p>你好，我是Leo，一名 <AnimatedHighlight>产品设计师</AnimatedHighlight>。</p>
         <p>我使用 <DashedUnderline effect="selection">Figma</DashedUnderline> 进行设计，使用 <DashedUnderline effect="pixel-person">Codex</DashedUnderline> 和 Cursor 进行构建。我也喜欢探索流畅、有趣的<DashedUnderline effect="wave">动效</DashedUnderline>，以及所有用心创作的事物。最近，我开始更多地借助 <DashedUnderline effect="logos" logos={aiLogos}>AI</DashedUnderline> 来实现自己的想法，并尝试将其融入日常工作流中。</p>
         <p>工作之余，我会和万万一起带着相机到处<DashedUnderline effect="photo-stack" photos={stackPhotos}>走走拍拍</DashedUnderline>，也享受创作、游戏和漫画带来的乐趣。</p>
         <p>目前我正在寻找全职工作，如果你感兴趣，不妨<TextLink href="/resume">了解更多</TextLink>。</p>
@@ -34,25 +36,31 @@ const xiaohongshu = resume.data.links.find((link) => link.label === "小红书")
   <div class="about-sections reading-column" data-route-enter-group>
     <section>
       <SectionHeading title="常用工具" />
+      <p class="about-tools__description">AI 正在将很多表层的设计工作简化及自动化，此时系统思维与化繁为简的能力更显重要。我一直在探索并掌握新工具，下面是我目前常用的一些工具。</p>
+      <TooltipGroup id="everyday-tools-tooltip">
       <ul class="about-tools" aria-label="常用工具">
-        {aiLogos.map((logo) => (
-          <li>
-            <img src={logo.src} alt={logo.alt} width="48" height="48" loading="lazy" style={"rotation" in logo ? `rotate: ${logo.rotation}deg` : undefined} />
+        {everydayTools.map((tool) => (
+          <li class:list={["about-tools__item", `about-tools__item--${tool.variant}`]}>
+            <button type="button" class="about-tools__trigger" aria-label={tool.alt} aria-describedby="everyday-tools-tooltip" data-tooltip-name={tool.alt} data-tooltip-description={tool.description}>
+            <span class="about-tools__image">
+              <Image src={tool.src} alt="" width={tool.variant === "cropped" ? 61 : 48} height={tool.variant === "cropped" ? 61 : 48} densities={[1, 2]} format="webp" loading="lazy" />
+            </span>
+            </button>
           </li>
         ))}
       </ul>
+      </TooltipGroup>
     </section>
     <section>
       <SectionHeading title="NOW" />
       <ul class="plain-list">
-        <li>👨🏻‍💻迭代 Wandly</li>
-        <li>📺补完《真探》4 季</li>
+        <li>👨🏻‍💻迭代 Wispora</li>
         <li>📖追更《故纸浮生》</li>
         <li>🏋🏻减到 65kg</li>
         <li>🎮通关《杀戮尖塔 2》</li>
-        <li>🥲在大A回本</li>
         <li>👫🏻和万万一起探索世界上的美好</li>
       </ul>
+      <time class="about-now__updated" datetime="2026-09-16">2026-09-16 更新</time>
     </section>
     <section>
       <SectionHeading title="联系到我" />

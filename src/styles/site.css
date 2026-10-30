@@ -250,6 +250,10 @@
     line-height: 24px;
   }
 
+  body.body--no-dock {
+    padding-block-end: env(safe-area-inset-bottom, 0px);
+  }
+
   body.body--detail-route {
     isolation: isolate;
   }
@@ -296,6 +300,8 @@
     position: relative;
     display: inline-flex;
     align-items: baseline;
+    column-gap: 0;
+    transition: column-gap var(--duration-fast) var(--ease-smooth-out);
     vertical-align: baseline;
     white-space: nowrap;
     text-decoration-line: none;
@@ -345,11 +351,14 @@
     flex: 0 0 auto;
     width: 0;
     height: var(--copy-icon-size);
-    margin-inline-end: 0;
     overflow: hidden;
     align-self: center;
-    transition: width var(--duration-fast) var(--ease-smooth-out), margin-inline-end var(--duration-fast) var(--ease-smooth-out);
+    transition: width var(--duration-fast) var(--ease-smooth-out);
   }
+
+  .text-link--copy-static .text-link__copy-icon { order: 1; }
+
+  .text-link--copy:is(:focus-visible, [data-copy-state="copied"], [data-copy-state="error"]) { column-gap: var(--copy-icon-gap); }
 
   .text-link__copy-icon svg {
     display: block;
@@ -359,20 +368,19 @@
 
   .text-link--copy:is(:focus-visible, [data-copy-state="copied"], [data-copy-state="error"]) .text-link__copy-icon {
     width: var(--copy-icon-size);
-    margin-inline-end: var(--copy-icon-gap);
   }
 
   @media (hover: hover) and (pointer: fine) {
+    .text-link--copy[data-copy-hovering] { column-gap: var(--copy-icon-gap); }
     .text-link--copy[data-copy-hovering] .text-link__copy-icon {
       width: var(--copy-icon-size);
-      margin-inline-end: var(--copy-icon-gap);
     }
   }
 
   @media (hover: none), (pointer: coarse), (prefers-reduced-motion: reduce) {
+    .text-link--copy { column-gap: var(--copy-icon-gap); transition: none; }
     .text-link__copy-icon {
       width: var(--copy-icon-size);
-      margin-inline-end: var(--copy-icon-gap);
       transition: none;
     }
   }
@@ -836,7 +844,8 @@
     line-height: 20px;
   }
 
-  .content-row time {
+  .content-row time,
+  .about-now__updated {
     color: var(--color-faint);
     font-family: var(--font-mono);
     font-size: 14px;
@@ -853,8 +862,12 @@
     );
   }
 
+  .content-row--compact .content-row__leader {
+    margin-block-start: calc((var(--space-5) - 2px) / 2);
+  }
+
   .project-grid {
-    gap: 16px;
+    gap: var(--space-8) var(--space-4);
   }
 
   .project-card {
@@ -1220,7 +1233,7 @@
     display: grid;
     grid-template-columns: minmax(0, 1fr) var(--about-portrait-width);
     gap: var(--space-6);
-    align-items: stretch;
+    align-items: start;
     margin-top: var(--space-4);
   }
 
@@ -1233,8 +1246,8 @@
 
   .about-portrait {
     --portrait-width: 100%;
-    --portrait-height: 100%;
-    --portrait-ratio: auto;
+    --portrait-height: auto;
+    --portrait-ratio: var(--about-portrait-ratio);
     min-height: 0;
     margin-top: 0;
     overflow: hidden;
@@ -1275,13 +1288,50 @@
     display: flex;
     flex-wrap: wrap;
     align-items: center;
-    gap: var(--space-6);
+    gap: var(--tool-icon-gap);
     list-style: none;
   }
 
-  .about-tools img {
+  .about-tools__item {
+    position: relative;
+    flex: none;
     width: var(--space-12);
     height: var(--space-12);
+  }
+
+  .about-tools__trigger {
+    position: relative;
+    display: block;
+    width: 100%;
+    height: 100%;
+    padding: 0;
+    border: 0;
+    border-radius: var(--radius-tool-tile);
+    background: transparent;
+    cursor: help;
+  }
+
+  .about-tools__image,
+  .about-tools img {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  .about-tools__item--rotated img { rotate: 180deg; }
+  .about-tools__item--rounded .about-tools__image { overflow: clip; border-radius: var(--radius-tool-image); }
+  .about-tools__item--cropped .about-tools__trigger { overflow: clip; border-radius: var(--radius-tool-tile); background: var(--color-tool-tile); }
+  .about-tools__item--cropped .about-tools__image { position: absolute; inset: 9.96%; width: auto; height: auto; overflow: hidden; }
+  .about-tools__item--cropped img { position: absolute; top: -29.17%; left: -29.17%; max-width: none; width: 158.33%; height: 158.33%; }
+
+  .about-sections .about-tools__description {
+    font-weight: var(--weight-regular);
+    line-height: var(--space-6);
+  }
+
+  .about-now__updated {
+    font-size: var(--text-meta);
   }
 
   .about-sections .contact-links,
@@ -1296,7 +1346,7 @@
 
   .about-sections .plain-list {
     gap: var(--space-4);
-    color: var(--color-copy);
+    color: var(--color-ink);
     font-weight: var(--weight-medium);
   }
 
@@ -1467,11 +1517,12 @@
     /* Keep 44px targets while the 24px text lines sit 12px apart. */
     margin-block: calc(-1 * var(--space-1));
     padding-left: 0;
+    color: var(--color-subtle);
     transition: color var(--duration-quick) var(--ease-smooth-out);
   }
 
   .detail-toc--reading .detail-toc__link:is(.is-active, :focus-visible) {
-    color: var(--color-ink);
+    color: var(--color-copy);
   }
 
   .detail-toc--reading .detail-toc__label {
@@ -1514,7 +1565,7 @@
     }
 
     .detail-toc--reading .detail-toc__link:hover {
-      color: var(--color-ink);
+      color: var(--color-copy);
     }
 
     .detail-toc__link:hover::before {
@@ -1635,10 +1686,15 @@
     line-height: 28px;
   }
 
-  .content-detail .article__body p,
-  .content-detail .article__body blockquote {
+  .content-detail .article__body p {
     color: var(--color-copy);
     line-height: 26px;
+  }
+
+  .content-detail[data-detail-page] .article__body blockquote p {
+    color: inherit;
+    font: inherit;
+    line-height: inherit;
   }
 
   .content-detail .article__body :is(ul, ol) {
@@ -1696,6 +1752,34 @@
     font-variant-numeric: tabular-nums;
   }
 
+  .content-detail--project-case .project-heading {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--space-4);
+  }
+
+  .project-download {
+    width: 2.75rem;
+    height: 2.75rem;
+    flex: none;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--color-muted);
+    text-decoration: none;
+    transition: color var(--duration-quick) var(--ease-smooth-out);
+  }
+
+  .project-download svg {
+    width: 1.5rem;
+    height: 1.5rem;
+  }
+
+  .project-download:is(:hover, :focus-visible) {
+    color: var(--color-ink);
+  }
+
   .content-detail--project-case .project-subtitle {
     font-size: var(--text-body);
     line-height: var(--space-6);
@@ -1703,9 +1787,10 @@
 
   .content-detail[data-detail-page] .detail-facts--project {
     display: grid;
-    grid-template-columns: repeat(4, minmax(0, 1fr));
+    /* Time is usually the short value, so it yields width to the other columns and the gaps. */
+    grid-template-columns: minmax(0, 1.15fr) minmax(0, 1.15fr) minmax(0, 0.85fr) minmax(0, 1.15fr);
     align-items: start;
-    gap: var(--space-4) var(--space-2);
+    gap: var(--space-4);
     padding-block: var(--space-4);
     border-block: 1px solid var(--color-article-divider);
   }
@@ -1729,8 +1814,16 @@
     margin-top: var(--space-2);
   }
 
-  .content-detail[data-detail-page] .article__body p,
-  .content-detail[data-detail-page] .article__body blockquote {
+  .content-detail[data-detail-page] .article__body > * + blockquote,
+  .content-detail[data-detail-page] .article__body > blockquote + * {
+    margin-top: var(--space-6);
+  }
+
+  .content-detail[data-detail-page] .article__body > .code-block {
+    margin-block: var(--space-6);
+  }
+
+  .content-detail[data-detail-page] .article__body p {
     line-height: var(--leading-article-body);
   }
 
@@ -1742,6 +1835,11 @@
     font-size: var(--text-article-heading);
     font-weight: var(--weight-regular);
     line-height: 1.75rem;
+  }
+
+  .content-detail[data-detail-page="article"] .article__body :is(h2, h3, h4, h5, h6) {
+    font-family: var(--font-heading);
+    font-weight: var(--weight-bold);
   }
 
   .content-detail[data-detail-page] .article__body > h2:first-child {
@@ -1762,6 +1860,18 @@
     margin-inline: auto;
   }
 
+  .content-detail[data-project-id="yiwo-admin"] .article__body > p:has(> .article-image-zoom-trigger > img[src$="02-plan-actions.webp"]) > .article-image-zoom-trigger {
+    width: calc(100% / 3);
+  }
+
+  .content-detail[data-project-id="yiwo-admin"] .article__body > p:has(> .article-image-zoom-trigger > img[src$="04-shared-controls.webp"]) > .article-image-zoom-trigger {
+    width: calc(100% * 2 / 3);
+  }
+
+  .content-detail[data-project-id="yiwo-admin"] .article__body img:is([src$="02-plan-actions.webp"], [src$="04-shared-controls.webp"]) {
+    width: 100%;
+  }
+
   .content-detail--project-case .article__body > p:has(> :is(img, .article-image-zoom-trigger):only-child) + p:has(> em:only-child) {
     margin-top: var(--space-3);
     margin-bottom: var(--space-8);
@@ -1771,38 +1881,115 @@
     text-align: center;
   }
 
-  .content-detail[data-project-id="homagine-app"] .article__body > :is(ol, ul) {
+  .content-detail[data-project-id="Zhaichangxiang-App"] .article__body > :is(ol, ul) {
     display: grid;
     grid-template-columns: repeat(3, minmax(0, 1fr));
     gap: var(--space-6);
     margin-block: var(--space-6);
   }
 
-  .content-detail[data-project-id="homagine-app"] .article__body > ol {
+  .content-detail[data-project-id="Zhaichangxiang-App"] .article__body > ol {
     padding-inline-start: var(--space-5);
   }
 
-  .content-detail[data-project-id="homagine-app"] .article__body > ol > li {
+  .content-detail[data-project-id="Zhaichangxiang-App"] .article__body > ol > li {
     padding-inline-start: var(--space-1);
   }
 
-  .content-detail[data-project-id="homagine-app"] .article__body > ul {
+  .content-detail[data-project-id="Zhaichangxiang-App"] .article__body > ul {
     padding: 0;
     list-style: none;
   }
 
-  .content-detail[data-project-id="homagine-app"] .article__body > :is(ol, ul) strong {
+  .content-detail[data-project-id="Zhaichangxiang-App"] .article__body > :is(ol, ul) strong {
     color: var(--color-ink);
     font-weight: var(--weight-medium);
   }
 
-  .content-detail[data-project-id="homagine-app"] .article__body > :is(ol, ul) li > p + p {
+  .content-detail[data-project-id="Zhaichangxiang-App"] .article__body > :is(ol, ul) li > p + p {
     margin-top: var(--space-1);
   }
 
-  .content-detail[data-project-id="homagine-app"] .article__body > ol + p:has(> em:only-child) {
+  .content-detail[data-project-id="Zhaichangxiang-App"] .article__body > ol + p:has(> em:only-child) {
     margin-top: var(--space-4);
     font-size: var(--text-meta);
+  }
+
+  /* Keep the CMS-editable Markdown table in the existing three-metric layout. */
+  .content-detail:is([data-project-id="homagine-website"], [data-project-id="zhaichangxiang-website"]) .article__body {
+    container-type: inline-size;
+  }
+
+  .content-detail:is([data-project-id="homagine-website"], [data-project-id="zhaichangxiang-website"]) .article__body table {
+    --project-outcome-value-size: clamp(2rem, 9cqi, 3.25rem);
+    display: grid;
+    grid-template-columns: repeat(3, max-content);
+    justify-content: center;
+    column-gap: clamp(var(--space-4), 14cqi, 5.5rem);
+    width: 100%;
+    margin-top: var(--space-16);
+    margin-bottom: var(--space-8);
+    border: 0;
+  }
+
+  .content-detail:is([data-project-id="homagine-website"], [data-project-id="zhaichangxiang-website"]) .article__body :is(thead, tbody, tr) {
+    display: contents;
+  }
+
+  .content-detail:is([data-project-id="homagine-website"], [data-project-id="zhaichangxiang-website"]) .article__body :is(th, td) {
+    padding: 0;
+    border: 0;
+    text-align: left;
+    white-space: nowrap;
+  }
+
+  .content-detail:is([data-project-id="homagine-website"], [data-project-id="zhaichangxiang-website"]) .article__body td {
+    grid-row: 1;
+    display: flex;
+    align-items: baseline;
+    color: var(--color-ink);
+    font-family: var(--font-heading);
+    font-weight: var(--weight-regular);
+    font-size: calc(var(--project-outcome-value-size) * 0.45);
+    line-height: 1;
+    letter-spacing: 0.016em;
+  }
+
+  .content-detail:is([data-project-id="homagine-website"], [data-project-id="zhaichangxiang-website"]) .article__body td strong {
+    font-size: var(--project-outcome-value-size);
+    font-weight: var(--weight-regular);
+    line-height: 1;
+  }
+
+  .content-detail:is([data-project-id="homagine-website"], [data-project-id="zhaichangxiang-website"]) .article__body td::after {
+    content: "";
+    width: 24px;
+    height: 14px;
+    margin-left: var(--space-2);
+    flex: none;
+    background: url("/assets/figma/outcome-rise.svg") center / contain no-repeat;
+  }
+
+  .content-detail:is([data-project-id="homagine-website"], [data-project-id="zhaichangxiang-website"]) .article__body th {
+    grid-row: 2;
+    color: color-mix(in srgb, var(--color-ink) 50%, transparent);
+    font-family: var(--font-sans);
+    font-size: max(var(--text-meta), calc(var(--project-outcome-value-size) * 0.25));
+    font-weight: var(--weight-regular);
+    line-height: 1.4;
+  }
+
+  @container (max-width: 22rem) {
+    .content-detail:is([data-project-id="homagine-website"], [data-project-id="zhaichangxiang-website"]) .article__body table {
+      --project-outcome-value-size: 1.75rem;
+      column-gap: var(--space-3);
+    }
+
+    .content-detail:is([data-project-id="homagine-website"], [data-project-id="zhaichangxiang-website"]) .article__body td::after {
+      width: 16px;
+      height: 9px;
+      margin-left: var(--space-1);
+    }
   }
 
   .has-photo-lightbox {
@@ -2418,5 +2605,121 @@
     .project-card:is(:hover, :focus-within, .is-transitioning) .project-card__media {
       transform: none;
     }
+  }
+
+  .portfolio-bar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding-top: var(--space-8);
+  }
+
+  .portfolio-bar__brand {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-2);
+    min-height: 2.75rem;
+    color: var(--color-ink);
+    font-weight: var(--weight-medium);
+    text-decoration: none;
+  }
+
+  .portfolio-bar__avatar {
+    width: 1.75rem;
+    height: 1.75rem;
+    border-radius: var(--radius-pill);
+    object-fit: cover;
+  }
+
+  :root[data-theme="dark"] .portfolio-bar__avatar--light,
+  :root:not([data-theme="dark"]) .portfolio-bar__avatar--dark {
+    display: none;
+  }
+
+  .portfolio-language { display: inline-flex; align-items: center; min-height: var(--dock-control-size); padding-inline: var(--space-2); margin-left: auto; margin-right: var(--space-2); }
+
+  .portfolio-theme {
+    width: 2.75rem;
+    height: 2.75rem;
+    display: grid;
+    place-items: center;
+    border: 0;
+    border-radius: var(--radius-pill);
+    background: transparent;
+    color: var(--color-ink);
+    cursor: pointer;
+  }
+
+  .portfolio-theme img {
+    width: var(--space-5);
+    height: var(--space-5);
+    filter: brightness(0);
+  }
+
+  .portfolio-theme__icon--sun { display: none; }
+
+  :root[data-theme="dark"] .portfolio-theme__icon--moon { display: none; }
+  :root[data-theme="dark"] .portfolio-theme__icon--sun { display: block; }
+  :root[data-theme="dark"] .portfolio-theme img { filter: brightness(0) invert(1); }
+
+  .portfolio-intro {
+    margin-top: var(--space-16);
+  }
+
+  .portfolio-intro h1,
+  .portfolio-project h2,
+  .portfolio-close h2 {
+    font-size: var(--text-lead);
+    font-weight: var(--weight-medium);
+    line-height: 1.5rem;
+    letter-spacing: var(--tracking-title);
+  }
+
+  .portfolio-intro p,
+  .portfolio-project p,
+  .portfolio-close p {
+    margin-top: var(--space-4);
+    color: var(--color-copy);
+  }
+
+  /* Highlighted text from Opensource UI AnnotatedText. MIT, Bidyut Kundu.
+     https://opensourceui.in/components/annotated-text */
+  .portfolio-mark {
+    --mark-shift: .33em;
+    padding: .1em .22em calc(.16em + var(--mark-shift));
+    border-radius: 0;
+    line-height: 1;
+    background-color: transparent;
+    background-image: var(--mark-light);
+    background-repeat: no-repeat;
+    background-position: center var(--mark-shift);
+    background-size: 100% calc(100% - var(--mark-shift));
+    color: var(--color-portfolio-mark-ink);
+    box-decoration-break: clone;
+    -webkit-box-decoration-break: clone;
+  }
+
+  :root[data-theme="dark"] .portfolio-mark {
+    background-image: var(--mark-dark);
+  }
+
+  .portfolio-figure {
+    margin: var(--space-8) 0 0;
+  }
+
+  .portfolio-figure img {
+    width: 100%;
+    height: auto;
+    border-radius: var(--radius-sm);
+    background: var(--color-surface-2);
+  }
+
+  .portfolio-project,
+  .portfolio-close {
+    margin-top: var(--space-16);
+  }
+
+  .portfolio-more {
+    margin-top: var(--space-6);
   }
 }

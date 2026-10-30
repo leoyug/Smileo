@@ -1,6 +1,10 @@
 # Smileo
 
-Smileo是 Leo 的中文个人网站，记录写作、项目、摄影与职业经历。网站使用 Astro 6、TypeScript 和 Content Collections，生成纯静态页面。
+Smileo 是 Leo 的数字花园，记录生活、设计与学习，分享文字、项目与沿途影像。
+
+访问网站：[Leo 的数字花园](https://smileoleo.com)。
+
+网站基于 Astro 6、TypeScript 和 Content Collections 构建，以静态页面发布。浏览器标签页标题跟随语言偏好：中文显示“Leo 的数字花园”，其他语言显示“Leo's digital garden”；也可在网站的偏好面板中切换标题语言。
 
 ## 本地运行
 
@@ -30,6 +34,8 @@ npm run media:sync -- --dry-run # 查看图片同步计划，不上传
 ## 可视化内容后台
 
 运行 `npm run dev` 后，打开终端显示的本地地址，再访问 `/keystatic`（通常是 `http://localhost:4321/keystatic`）。后台按“项目 / 写作 / 摄影”组织，直接在浏览器中编辑标题、正文、封面、照片和发布顺序。「照片组件」分组分别管理首页扇形、首页拖拽及文字悬停的照片，从已有摄影记录中选择并排序。摄影列表和照片组件列表左侧均显示正方形缩略图。修改保存在本机仓库的内容文件与 `public/media/` 图片目录；只有检查、构建并正常发布仓库后，线上网站才会更新。后台仅在开发环境启用，不会被打包到静态网站。
+
+项目的「项目下载（可选）」管理下载地址、文件名与按钮说明；无附件时均留空。项目正文使用编辑器支持的 Markdown；宅畅想官网的成果指标使用三列表格维护，前台呈现数字、百分比与上升箭头，无需在正文中编写 HTML。
 
 已有文件可以在本机的 `/content-import` 批量导入。先选择“项目 / 写作 / 摄影”，再拖入多个文件或选择一个文件夹；支持 Markdown、Word `.docx`、照片及照片 JSON。导入前会预览新建或关联的内容，只有勾选并确认后才写入文件。项目图片按同文件夹或项目短名匹配，文章插图按正文中的相对路径匹配，照片 JSON 按同名短名匹配图片；正文里明确写出的项目或文章链接也会自动建立关联。没有明确依据的内容关系不会猜测。新内容一律存为草稿，照片默认接在现有照片之后。导入后请在 Keystatic 中核对摘要、照片画面描述、项目职责及公开范围。
 
@@ -86,7 +92,7 @@ scripts/photos/audit.ts         # 发布图片审计
 
 职业履历以 `src/content/resume/main.json` 为唯一结构化来源。当前照片发布资产与预览已通过技术审计；项目和初版样例文章的作者核对情况见[内容发布核对](./docs/内容发布核对.md)。历史版本记录保留在 `docs/releases/`。
 
-网站目前暂停公开访问，主站及图片请求由 Cloudflare 自定义规则拦截。部署、域名和 R2 文件均保留，恢复方法见[站点暂停与恢复](./docs/站点暂停与恢复.md)。提交或重新部署代码不会自动关闭暂停规则。
+网站已于 2026-10-30 恢复公开访问，当前线上版本为 V0.8.0，主地址为 [smileoleo.com](https://smileoleo.com)。主站及图片的暂停规则已关闭；暂停开关和本次部署记录见[站点暂停与恢复](./docs/站点暂停与恢复.md)。提交或重新部署代码不会自动改变暂停规则。
 
 ## 图片托管（R2）
 
@@ -135,3 +141,13 @@ npm run deploy:site  # 将当前 dist 上传并绑定主域名，不重新构建
 上线后检查主站 HTTPS、www 路径和查询参数、canonical、RSS、远程图片、旧照片地址以及真实 404。后续回退可重新构建并部署已验证的 Git 提交产物。
 
 官方参考：[静态站点与 404](https://developers.cloudflare.com/workers/static-assets/routing/static-site-generation/)、[静态资产重定向](https://developers.cloudflare.com/workers/static-assets/redirects/)、[Workers 自定义域名](https://developers.cloudflare.com/workers/configuration/routing/custom-domains/)、[域名跳转](https://developers.cloudflare.com/fundamentals/manage-domains/redirect-domain/)。
+
+## 中英文切换
+
+公开页面提供中文和 English 版本，英文地址为原地址前加 `/en/`。在底部偏好面板中选择语言；独立作品集在页头提供切换入口。切换保留当前页面、查询参数和章节锚点，浏览器会记住选择。直接打开语言地址以该地址为准；再次访问首页时恢复已保存的英文偏好。禁用存储时仍能切换，禁用 JavaScript 时英文地址仍包含完整静态内容。
+
+中文内容记录继续作为发布状态、稳定短名、照片与内容关系的唯一来源。英文文章和案例正文位于 `src/i18n/content/articles/`、`src/i18n/content/projects/`，文件名与原记录一致；frontmatter 维护英文标题、摘要和需要翻译的项目字段。`src/i18n/english.json` 维护其余界面、简历和作品集文案，照片英文说明沿用作者维护的英文短名。更新中文文案时同步更新对应译文。
+
+英文页面复用中文页面的组件输出，在静态构建时替换文字、正文、内部链接及元数据；不调用在线翻译服务。正文目录沿用原章节 ID，因此跨语言切换后原章节锚点仍有效。英文 RSS 为 `/en/rss.xml`，页面提供双向 `hreflang` 与独立 canonical。CMS、导入工具和开发设计系统不生成公开英文版本。
+
+`npm run test:i18n` 检查语言路径、正文覆盖、章节和图片对应关系；构建中的 `npm run i18n:audit` 会扫描所有静态英文页面，阻止未翻译正文、元数据、照片数据或可访问名称进入发布结果。中英文写作列表使用相同的发布规则：开发环境均展示草稿，正式构建均排除草稿，文章顺序与年份分组保持一致。未翻译的开发草稿保留中文标题，英文详情会明确标注尚未翻译并展示中文正文。公开英文页面不回退到中文正文。

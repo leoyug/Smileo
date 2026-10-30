@@ -1,6 +1,7 @@
 import { defineCollection, reference } from "astro:content";
 import { glob } from "astro/loaders";
 import { z } from "astro/zod";
+import { projectDownloadSchema } from "./lib/project-download";
 
 const publicationFields = {
   title: z.string().min(1),
@@ -35,7 +36,12 @@ const articles = defineCollection({
 });
 
 const projects = defineCollection({
-  loader: glob({ pattern: "**/*.{md,mdx}", base: "./src/content/projects" }),
+  loader: glob({
+    pattern: "**/*.{md,mdx}",
+    base: "./src/content/projects",
+    // Keep the CMS filename as the ID, including case, so previews and relationships agree.
+    generateId: ({ entry }) => entry.replace(/\.(md|mdx)$/, ""),
+  }),
   schema: z.object({
     ...publicationFields,
     hidden: z.boolean().default(false),
@@ -51,6 +57,7 @@ const projects = defineCollection({
     featured: z.boolean().default(false),
     order: z.number().int().positive(),
     cover: z.string().startsWith("/").optional(),
+    download: projectDownloadSchema,
     archiveImages: z.array(z.string().startsWith("/")).default([]),
     privacyNote: z.string().optional(),
     relatedArticles: z.array(reference("articles")).default([]),

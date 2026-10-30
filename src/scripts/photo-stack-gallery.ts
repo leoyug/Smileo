@@ -1,4 +1,6 @@
+import { uiText } from "../i18n/runtime";
 import type { PhotoStackPhoto } from "../lib/photo-stack-types";
+import { cssTimeToMilliseconds } from "../lib/css-time";
 
 function initializePhotoStacks() {
   document.querySelectorAll<HTMLElement>("[data-photo-stack-gallery]").forEach((root) => {
@@ -45,7 +47,7 @@ function initializePhotoStacks() {
     preview.hidden = false;
     document.body.append(dialog);
 
-    const timing = (token: string) => Number.parseFloat(getComputedStyle(root).getPropertyValue(token)) || 0;
+    const timing = (token: string) => cssTimeToMilliseconds(getComputedStyle(root).getPropertyValue(token));
     const easing = () => getComputedStyle(root).getPropertyValue("--ease-smooth-out").trim();
     const animate = (element: HTMLElement, keys: Keyframe[], duration: number, delay = 0) => {
       const animation = element.animate(keys, { duration: reduced.matches ? 0 : duration, delay: reduced.matches ? 0 : delay, easing: easing(), fill: "both" });
@@ -193,7 +195,7 @@ function initializePhotoStacks() {
       stage.inert = false;
       detail.hidden = true;
       dialog.dataset.view = "gallery";
-      labelControl("关闭照片图库");
+      labelControl(uiText("关闭照片图库", "Close photo gallery"));
       lockScroll();
       dialog.showModal();
       control.focus({ preventScroll: true });
@@ -225,7 +227,7 @@ function initializePhotoStacks() {
       detail.hidden = false;
       stage.hidden = false;
       stage.inert = true;
-      labelControl("关闭照片详情");
+      labelControl(uiText("关闭照片详情", "Close photo details"));
       control.focus({ preventScroll: true });
       fly(frames[index], source, measureFrame(media), sourceRotation, 0, timing("--duration-very-slow"));
       frames[index].style.visibility = "hidden";
@@ -254,7 +256,7 @@ function initializePhotoStacks() {
       detail.hidden = true;
       stage.hidden = false;
       stage.inert = false;
-      labelControl("关闭照片图库");
+      labelControl(uiText("关闭照片图库", "Close photo gallery"));
       control.focus({ preventScroll: true });
       fly(detailFrame, source, measureFrame(frames[selected]), 0, cardRotation[selected], timing("--duration-very-slow"));
       if (!reduced.matches) frames[selected].style.visibility = "hidden";

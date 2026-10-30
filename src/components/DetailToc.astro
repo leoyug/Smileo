@@ -46,6 +46,7 @@ const items = headings.filter(({ depth }) => depth === 2 || depth === 3);
 </aside>
 
 <script>
+  import { uiText, languageFromPath, languagePath, withoutLanguage } from "../i18n/runtime";
   type TocRoot = HTMLElement & { detailTocCleanup?: () => void };
 
   const initializeDetailTocs = () => document.querySelectorAll<TocRoot>("[data-detail-toc]").forEach((toc) => {
@@ -61,14 +62,17 @@ const items = headings.filter(({ depth }) => depth === 2 || depth === 3);
         const context = stored ? JSON.parse(stored) as { from?: string; to?: string } : null;
         const target = context?.to ? new URL(context.to) : null;
         const currentPath = location.pathname.replace(/\/+$/, "") || "/";
-        const listPath = currentPath.startsWith("/projects/") ? "/projects" : "/writing";
+        const locale = languageFromPath(currentPath);
+        const listPath = languagePath(withoutLanguage(currentPath).startsWith("/projects/") ? "/projects" : "/writing", locale);
+        const returnsToPortfolio = context?.from === languagePath("/portfolio", locale) && withoutLanguage(listPath) === "/projects";
         if (
+          context?.from &&
           target?.origin === location.origin &&
           (target.pathname.replace(/\/+$/, "") || "/") === currentPath &&
           target.search === location.search &&
-          (context?.from === "/" || context?.from === listPath)
+          (context?.from === languagePath("/", locale).replace(/\/$/, "") || context?.from === languagePath("/", locale) || context?.from === listPath || returnsToPortfolio)
         ) {
-          const label = context.from === "/" ? "返回主页" : listPath === "/projects" ? "返回项目" : "返回写作";
+          const label = withoutLanguage(context.from) === "/" ? uiText("返回主页", "Back home") : returnsToPortfolio ? uiText("返回作品集", "Back to portfolio") : withoutLanguage(listPath) === "/projects" ? uiText("返回作品", "Back to work") : uiText("返回写作", "Back to writing");
           historyBackLink.href = context.from;
           historyBackLink.setAttribute("aria-label", label);
           const text = historyBackLink.querySelector("span");
@@ -89,7 +93,7 @@ const items = headings.filter(({ depth }) => depth === 2 || depth === 3);
         const target = new URL(context.to);
         const backPath = new URL(historyBackLink.href).pathname.replace(/\/+$/, "") || "/";
         const currentPath = location.pathname.replace(/\/+$/, "") || "/";
-        const isProjectDetail = currentPath.startsWith("/projects/");
+        const isProjectDetail = withoutLanguage(currentPath).startsWith("/projects/");
         if (
           context.from === backPath &&
           target.origin === location.origin &&

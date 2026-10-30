@@ -11,6 +11,6 @@ interface Props { photo: Photo; photos: Photo[] }
 const { photo, photos } = Astro.props;
 ---
 
-<BaseLayout title={`摄影｜Leo`} description={photo.alt} socialImage={photo.src} robots="noindex,follow">
+<BaseLayout title={`摄影`} description={photo.alt} socialImage={photo.src} robots="noindex,follow">
   <PhotosPage photos={photos} initialSlug={photo.slug} />
 </BaseLayout>

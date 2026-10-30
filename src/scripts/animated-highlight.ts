@@ -1,3 +1,5 @@
+import { cssTimeToMilliseconds } from "../lib/css-time";
+
 type AnimatedHighlightElement = HTMLElement & { highlightCleanup?: () => void };
 
 const initializeHighlights = () => {
@@ -11,7 +13,7 @@ const initializeHighlights = () => {
     const animations = new Map<SVGPathElement, Animation>();
     let hovering = false;
     let active = false;
-    const timing = (name: string) => Number.parseFloat(getComputedStyle(root).getPropertyValue(name)) || 0;
+    const timing = (name: string) => cssTimeToMilliseconds(getComputedStyle(root).getPropertyValue(name));
 
     const cancelAll = () => {
       animations.forEach((animation) => animation.cancel());
@@ -37,7 +39,7 @@ const initializeHighlights = () => {
         };
         animations.get(path)?.cancel();
         const duration = nextActive ? timing(index === 0 ? "--duration-highlight-draw" : "--duration-highlight-glint") : timing("--duration-quick");
-        const delay = fresh && index > 0 ? Number.parseFloat(style.getPropertyValue("--draw-delay")) || 0 : 0;
+        const delay = fresh && index > 0 ? cssTimeToMilliseconds(style.getPropertyValue("--draw-delay")) : 0;
         const animation = path.animate([from, { strokeDashoffset: "0", opacity: "1" }], {
           duration,
           delay,

@@ -1,6 +1,9 @@
 ---
 import { getEntry } from "astro:content";
 import TextLink from "./TextLink.astro";
+import TooltipGroup from "./TooltipGroup.astro";
+import contactAvatars from "../data/contact-avatars.json";
+import { loadGithubContributions } from "../lib/github-contributions";
 
 interface Props { class?: string; variant?: "default" | "social"; }
 const { class: className, variant = "default" } = Astro.props;
@@ -8,11 +11,11 @@ const resume = await getEntry("resume", "main");
 if (!resume) throw new Error("缺少 main 职业履历内容");
 const github = resume.data.links.find((link) => link.label === "GitHub")?.href;
 const x = resume.data.links.find((link) => link.label === "X/Twitter")?.href;
-const xiaohongshu = resume.data.links.find((link) => link.label === "小红书")?.href;
+const instagram = resume.data.links.find((link) => link.label === "Instagram")?.href;
 const links = variant === "social"
   ? [
       { label: "X/Twitter", href: x },
-      { label: "Xiaohongshu", href: xiaohongshu },
+      { label: "Instagram", href: instagram },
       { label: "GitHub", href: github, rel: "me" },
       { label: "Email", href: `mailto:${resume.data.email}` },
     ]
@@ -22,14 +25,86 @@ const links = variant === "social"
       { label: "X/Twitter", href: x },
       { label: "RSS", href: "/rss.xml" },
     ];
+const githubUsername = github ? new URL(github).pathname.split("/").filter(Boolean)[0] : undefined;
+const contributions = githubUsername ? await loadGithubContributions(githubUsername) : null;
+const contributionTotal = contributions?.total.toLocaleString("zh-CN");
+const tooltipId = `contact-preview-${crypto.randomUUID()}`;
+const profileLinks = links.filter((link) => link.href && link.label !== "RSS").map((link) => {
+  const isEmail = link.href!.startsWith("mailto:");
+  const icon = ({ "X/Twitter": "x", Instagram: "instagram", GitHub: "github", Email: "email" })[link.label];
+  const handle = isEmail ? resume.data.email : `@${new URL(link.href!).pathname.split("/").filter(Boolean)[0]}`;
+  const avatar = ({ "X/Twitter": contactAvatars.x.asset, Instagram: contactAvatars.instagram.asset, GitHub: contactAvatars.github.asset })[link.label];
+  return { ...link, isEmail, icon, handle, avatar };
+});
 ---
 
+<TooltipGroup id={tooltipId} variant="contact">
 <nav class:list={["contact-links", { "contact-links--social": variant === "social" }, className]} aria-label="联系方式">
   {links.map((link) => link.href && (
     <TextLink
       href={link.href}
       rel={link.rel}
+      target={link.href.startsWith("https:") ? "_blank" : undefined}
+      aria-describedby={link.label !== "RSS" ? tooltipId : undefined}
+      data-tooltip-name={link.label !== "RSS" ? link.label : undefined}
+      data-tooltip-template={link.label}
+      copyLabel="static"
       copyText={variant === "social" && link.href.startsWith("mailto:") ? resume.data.email : undefined}
     >{link.label}</TextLink>
   ))}
 </nav>
+
+  {profileLinks.map((link) => (
+    <template data-tooltip-content={link.label}>
+      <div class="contact-preview">
+        <div class="contact-preview__platform">
+          <span class="contact-preview__icon" style={`--contact-icon: url('/assets/figma/footer/${link.icon}.svg')`} aria-hidden="true"></span>
+          {link.label === "X/Twitter" ? "X / Twitter" : link.label}
+          {link.label === "GitHub" && contributionTotal && (
+            <span class="contact-preview__contributions"><span class="contact-preview__count">{contributionTotal}</span>次贡献<span class="sr-only">，过去一年</span></span>
+          )}
+        </div>
+        {link.label === "GitHub" && contributions ? (
+          <div class="contact-preview__heatmap" style={`--weeks: ${contributions.weeks}`} aria-hidden="true">
+            {contributions.cells.map((cell) => <span class="contact-preview__cell" data-level={cell.level} style={`grid-column: ${cell.column}; grid-row: ${cell.row}`} />)}
+          </div>
+        ) : (
+        <div class:list={["contact-preview__identity", { "contact-preview__identity--email": link.isEmail }]}>
+          {!link.isEmail && <img class="contact-preview__avatar" src={link.avatar} alt="" width="48" height="48" />}
+          <div class="contact-preview__details">
+            {link.isEmail && <span class="contact-preview__recipient">收件人</span>}
+            <strong class="contact-preview__name">{resume.data.publicName}</strong>
+            <span class="contact-preview__handle">{link.handle}</span>
+          </div>
+          {link.isEmail && <div class="contact-preview__postage" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.25" stroke-linecap="round" stroke-linejoin="round"><path d="m22 2-7 20-4-9-9-4 20-7ZM22 2 11 13" /></svg><span>邮件</span></div>}
+        </div>
+        )}
+        <div class="contact-preview__action">{link.isEmail ? (variant === "social" ? "点击复制邮箱" : "打开邮件应用") : "在新标签页打开"}</div>
+      </div>
+    </template>
+  ))}
+</TooltipGroup>
+
+<style>
+  .contact-preview { color: var(--color-copy); }
+  .contact-preview__platform { display: flex; align-items: center; gap: var(--space-2); padding-bottom: var(--space-3); border-bottom: 1px solid var(--color-line-subtle); }
+  .contact-preview__contributions { display: flex; align-items: baseline; gap: var(--space-1); margin-left: auto; color: var(--color-muted); white-space: nowrap; }
+  .contact-preview__count { color: var(--color-copy); font-family: var(--font-mono); font-variant-numeric: tabular-nums; }
+  .contact-preview__heatmap { --heat-gap: calc(var(--space-1) / 2); display: grid; grid-template-columns: repeat(var(--weeks), minmax(0, 1fr)); grid-template-rows: repeat(7, minmax(0, 1fr)); gap: var(--heat-gap); width: 100%; margin-block: var(--space-4); aspect-ratio: calc(var(--weeks) * 7 + (var(--weeks) - 1) * 2) / calc(7 * 7 + 6 * 2); }
+  .contact-preview__cell { border-radius: calc(var(--radius-xs) / 2); background: color-mix(in srgb, var(--color-ink) var(--heat, 10%), transparent); }
+  .contact-preview__cell[data-level="0"] { --heat: 10%; }
+  .contact-preview__cell[data-level="1"] { --heat: 30%; }
+  .contact-preview__cell[data-level="2"] { --heat: 45%; }
+  .contact-preview__cell[data-level="3"] { --heat: 62%; }
+  .contact-preview__cell[data-level="4"] { --heat: 82%; }
+  .contact-preview__icon { width: var(--space-4); height: var(--space-4); flex: none; background: currentColor; mask: var(--contact-icon) center / contain no-repeat; }
+  .contact-preview__identity { display: flex; align-items: center; gap: var(--space-3); padding-block: var(--space-4); }
+  .contact-preview__avatar { width: var(--space-12); height: var(--space-12); flex: none; border-radius: var(--radius-pill); object-fit: cover; }
+  .contact-preview__details { display: grid; gap: var(--space-1); min-width: 0; }
+  .contact-preview__name { color: var(--color-ink); font-size: var(--text-lead); font-weight: var(--weight-medium); }
+  .contact-preview__handle { color: var(--color-muted); font-family: var(--font-mono); overflow-wrap: anywhere; }
+  .contact-preview__recipient { color: var(--color-muted); margin-bottom: var(--space-1); }
+  .contact-preview__postage { display: grid; justify-items: center; align-content: center; gap: var(--space-1); width: var(--space-16); height: var(--space-16); aspect-ratio: 1; margin-left: auto; flex: none; border: 1px dashed var(--color-line); border-radius: var(--radius-xs); color: var(--color-muted); }
+  .contact-preview__postage svg { width: var(--space-6); height: var(--space-6); }
+  .contact-preview__action { padding-top: var(--space-2); border-top: 1px dotted var(--color-line); }
+</style>

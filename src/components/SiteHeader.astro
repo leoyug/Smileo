@@ -1,4 +1,5 @@
 ---
+import { languagePath } from "../i18n/runtime";
 import { navigation } from "../data/site";
 import ProgressiveBlur from "./ProgressiveBlur.astro";
 import { getProjects } from "../lib/projects";
@@ -39,7 +40,7 @@ const isCurrent = (href: string) => {
       <section class="preferences-panel__row">
         <h2>语言</h2>
         <div class="preferences-panel__options" role="radiogroup" aria-label="语言">
-          <button class="is-selected" type="button" data-preference-option data-preference-group="language" data-preference-value="zh-CN" role="radio" aria-checked="true">中文</button><button type="button" data-preference-option data-preference-group="language" data-preference-value="en" role="radio" aria-checked="false">English</button>
+          <button class="is-selected" type="button" data-preference-option data-preference-group="language" data-preference-value="zh-CN" data-language-href={currentPath} role="radio" aria-checked="true">中文</button><button type="button" data-preference-option data-preference-group="language" data-preference-value="en" data-language-href={languagePath(currentPath, "en")} role="radio" aria-checked="false">English</button>
         </div>
       </section>
       <section class="preferences-panel__row">

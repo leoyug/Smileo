@@ -9,7 +9,7 @@ period: '2026'
 status: launched
 role: 设计工程师
 featured: false
-order: 4
+order: 3
 cover: /media/projects/workspace-structure-redesign/cover.jpg
 archiveImages: []
 privacyNote: 案例中的公司标识、业务名称与部分数据经过抽象处理。

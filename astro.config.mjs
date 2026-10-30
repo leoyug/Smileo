@@ -9,6 +9,7 @@ import { preparePhotos } from "./scripts/photos/prepare.mjs";
 import { prepareMediaManifest } from "./scripts/media/manifest.mjs";
 import { localContentImport } from "./scripts/import/vite-plugin.mjs";
 import { localPhotoSlugs } from "./scripts/photo-slug/vite-plugin.mjs";
+import { codeHighlighting } from "./src/lib/code-highlighting.mjs";
 
 const require = createRequire(import.meta.url);
 const environment = loadEnv(process.argv[2] === "dev" ? "development" : "production", process.cwd(), "");
@@ -31,8 +32,20 @@ const prepareUploadedPhotos = () => ({
 
 export default defineConfig({
   output: "static",
+  markdown: { shikiConfig: codeHighlighting },
   site: environment.SITE_URL || "https://smileoleo.com",
   redirects: {
+    "/en/projects/wanderland": "/en/projects/wispora",
+    "/en/projects/homagine-app": "/en/projects/Zhaichangxiang-App",
+    "/en/projects/homagine-website": "/en/projects/zhaichangxiang-website",
+    "/en/writing/energy-management-at-35": "/en/writing/energy-management-at-30",
+    "/en/photos/entry-f02d3fccf3": "/en/photos/walk-slowly-along-the-forest-path",
+    "/en/photos/the-pier-under-the-blue-night": "/en/photos/the-pier-under-the-blue-night-sky",
+
+    "/projects/wanderland": "/projects/wispora",
+    "/projects/homagine-app": "/projects/Zhaichangxiang-App",
+    "/projects/homagine-website": "/projects/zhaichangxiang-website",
+    "/writing/energy-management-at-35": "/writing/energy-management-at-30",
     "/photos/entry-f02d3fccf3": "/photos/walk-slowly-along-the-forest-path",
     "/photos/the-pier-under-the-blue-night": "/photos/the-pier-under-the-blue-night-sky",
   },

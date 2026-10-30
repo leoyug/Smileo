@@ -1,4 +1,6 @@
+import { languageFromPath, languagePath } from "../i18n/runtime";
 import gsap from "gsap";
+import { cssTimeToMilliseconds } from "../lib/css-time";
 import { playInterfaceSound } from "./sound";
 
 type Photo = {
@@ -144,7 +146,7 @@ const initializePhotosPages = () => {
         const durationValue = getComputedStyle(
           document.documentElement,
         ).getPropertyValue("--lightbox-photo-duration");
-        const travelDuration = (Number.parseFloat(durationValue) || 560) / 1000;
+        const travelDuration = cssTimeToMilliseconds(durationValue, 560) / 1000;
         const element = createTraveler(sourceImage, sourceRect);
         if (!element) return;
         gsap.set(frame, { autoAlpha: 0 });
@@ -222,7 +224,7 @@ const initializePhotosPages = () => {
           history.pushState(
             { photoOverlay: true, photoSlug: photo.slug },
             "",
-            `/photos/${photo.slug}/`,
+            languagePath(`/photos/${photo.slug}/`, languageFromPath(location.pathname)),
           );
       };
 
@@ -251,7 +253,7 @@ const initializePhotosPages = () => {
           suppressPopstate = true;
           history.back();
         } else if (historyMode === "replace") {
-          history.replaceState({}, "", "/photos/");
+          history.replaceState({}, "", languagePath("/photos/", languageFromPath(location.pathname)));
         }
       };
 
@@ -311,7 +313,7 @@ const initializePhotosPages = () => {
         const durationValue = getComputedStyle(
           document.documentElement,
         ).getPropertyValue("--lightbox-close-duration");
-        const closeDuration = (Number.parseFloat(durationValue) || 400) / 1000;
+        const closeDuration = cssTimeToMilliseconds(durationValue, 400) / 1000;
 
         transitionAnimation = gsap.timeline({
           onComplete: () => finishClose(historyMode),
@@ -377,7 +379,7 @@ const initializePhotosPages = () => {
           suppressPopstate = false;
           return;
         }
-        const match = location.pathname.match(/^\/photos\/([^/]+)\/?$/);
+        const match = location.pathname.match(/^\/(?:en\/)?photos\/([^/]+)\/?$/);
         const index = match
           ? photos.findIndex(
               (photo) => photo.slug === decodeURIComponent(match[1]),

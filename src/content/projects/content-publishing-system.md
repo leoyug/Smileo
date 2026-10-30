@@ -9,7 +9,7 @@ period: '2025'
 status: launched
 role: 产品设计师
 featured: false
-order: 7
+order: 5
 cover: /media/projects/content-publishing-system/cover.jpg
 archiveImages: []
 relatedArticles: []

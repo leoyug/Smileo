@@ -3,7 +3,7 @@
   "publicName": "Leo",
   "title": "产品设计师",
   "location": "上海",
-  "email": "leo615@163.com",
+  "email": "smileorush@gmail.com",
   "summary": "我喜欢体验有趣的应用与产品，也持续探索设计、博客与 AI 工作流。过去做过 App、B 端后台和 Web 页面设计，并尝试用 Agent 开发个人产品。",
   "introduction": [
     "你好，我是廖如晟，一名拥有5年以上经验的设计工程师。我热衷于体验有趣的应用或者产品，也爱探索各种有创意的设计和博客。",
@@ -56,6 +56,6 @@
     { "label": "网站", "href": "https://smileoleo.com" },
     { "label": "GitHub", "href": "https://github.com/leoyug" },
     { "label": "X/Twitter", "href": "https://x.com/Incessant_Leo" },
-    { "label": "小红书", "href": "https://www.xiaohongshu.com/user/profile/5bf80a4ddb2e604af5301e38" }
+    { "label": "Instagram", "href": "https://www.instagram.com/incessantleo/" }
   ]
 }

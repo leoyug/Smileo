@@ -37,7 +37,7 @@ const flowerPaths = [
 ];
 ---
 
-{hasPhotoStack ? <PhotoStackGallery photos={photos} class={className} {...attributes}><span class="dashed-underline"><slot /></span></PhotoStackGallery> : (<span class:list={["dashed-underline", { "dashed-underline--interactive": hasEffect, "dashed-underline--selection": effect === "selection", "dashed-underline--pixel-person": effect === "pixel-person", "dashed-underline--wave": effect === "wave", "dashed-underline--logos": effect === "logos", "dashed-underline--flowers": effect === "flowers" }, className]} tabindex={hasEffect ? 0 : undefined} {...attributes}><slot />{effect === "selection" && <span class="dashed-underline__frame" aria-hidden="true"><i></i><i></i><i></i><i></i></span>}{effect === "pixel-person" && <PixelPersonPreview />}{effect === "logos" && <span class="dashed-underline__logos" aria-hidden="true">
+{hasPhotoStack ? <PhotoStackGallery photos={photos} class={className} {...attributes}><span class="dashed-underline dashed-underline--photo-stack"><slot /></span></PhotoStackGallery> : (<span class:list={["dashed-underline", { "dashed-underline--interactive": hasEffect, "dashed-underline--selection": effect === "selection", "dashed-underline--pixel-person": effect === "pixel-person", "dashed-underline--wave": effect === "wave", "dashed-underline--logos": effect === "logos", "dashed-underline--flowers": effect === "flowers" }, className]} tabindex={hasEffect ? 0 : undefined} {...attributes}><slot />{effect === "selection" && <span class="dashed-underline__frame" aria-hidden="true"><i></i><i></i><i></i><i></i></span>}{effect === "pixel-person" && <PixelPersonPreview />}{effect === "logos" && <span class="dashed-underline__logos" aria-hidden="true">
     {logos.slice(0, 3).map((logo, index) => <img src={logo.src} alt={logo.alt} width="40" height="40" decoding="async" draggable="false" style={`--logo-index: ${index}; --logo-image-rotation: ${logo.rotation ?? 0}deg`} />)}
   </span>}{effect === "flowers" && <span class="dashed-underline__flowers" aria-hidden="true">
     {flowerPaths.map((flower, index) => <svg class="dashed-underline__flower" style={`--flower-index: ${index}`} viewBox="0 0 60 90" fill="none" focusable="false">
@@ -63,6 +63,11 @@ const flowerPaths = [
     text-decoration-thickness: 1px;
     text-underline-offset: var(--space-1);
     text-decoration-skip-ink: none;
+  }
+
+  .dashed-underline--interactive,
+  .dashed-underline--photo-stack {
+    text-decoration-line: none;
   }
 
   .dashed-underline--interactive {

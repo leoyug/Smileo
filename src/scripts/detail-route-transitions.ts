@@ -1,3 +1,4 @@
+import { withoutLanguage } from "../i18n/runtime";
 const returnContextKey = "detail-list-return";
 const writingSourceKey = "writing-title-return";
 interface WritingSource { from: string; to: string; scrollX: number; scrollY: number; }
@@ -6,18 +7,18 @@ const writingRow = (root: Document, href: string) => Array.from(root.querySelect
 
 const normalizedPath = (path: string) => path.replace(/\/+$/, "") || "/";
 const listKind = (path: string) => {
-  const normalized = normalizedPath(path);
+  const normalized = withoutLanguage(normalizedPath(path));
   return normalized === "/projects" || normalized === "/writing" ? normalized : null;
 };
 const detailKind = (path: string) => {
-  const match = normalizedPath(path).match(/^\/(projects|writing)\/[^/]+$/);
+  const match = withoutLanguage(normalizedPath(path)).match(/^\/(projects|writing)\/[^/]+$/);
   return match ? `/${match[1]}` : null;
 };
 
 export function initDetailRouteTransitions() {
   document.addEventListener("astro:before-preparation", (event) => {
     document.querySelectorAll(".content-row.is-writing-transition").forEach((row) => row.classList.remove("is-writing-transition"));
-    if (detailKind(event.to.pathname) === "/writing" && ["/", "/writing"].includes(normalizedPath(event.from.pathname))) {
+    if (detailKind(event.to.pathname) === "/writing" && ["/", "/writing"].includes(withoutLanguage(normalizedPath(event.from.pathname)))) {
       const row = writingRow(document, event.to.href);
       if (row) {
         row.classList.add("is-writing-transition");
@@ -54,7 +55,7 @@ export function initDetailRouteTransitions() {
     const from = normalizedPath(location.pathname);
     const to = new URL(link.href);
     const targetKind = detailKind(to.pathname);
-    const entersDetail = targetKind === from || from === "/";
+    const entersDetail = targetKind === withoutLanguage(from) || withoutLanguage(from) === "/" || (withoutLanguage(from) === "/portfolio" && targetKind === "/projects");
     if (to.origin !== location.origin || !targetKind || !entersDetail) return;
 
     sessionStorage.setItem(returnContextKey, JSON.stringify({
@@ -69,12 +70,12 @@ export function initDetailRouteTransitions() {
     const toList = listKind(event.to.pathname);
     const fromDetail = detailKind(event.from.pathname);
     const toDetail = detailKind(event.to.pathname);
-    const opensDetailFromHome = normalizedPath(event.from.pathname) === "/" && !!toDetail;
+    const opensDetailFromHome = withoutLanguage(normalizedPath(event.from.pathname)) === "/" && !!toDetail;
 
     if (toDetail && (fromList === toDetail || opensDetailFromHome)) {
       event.newDocument.documentElement.dataset.detailTransition = "open";
       event.newDocument.documentElement.dataset.detailTransitionKind = toDetail.slice(1);
-    } else if (fromDetail && (fromDetail === toList || normalizedPath(event.to.pathname) === "/")) {
+    } else if (fromDetail && (fromDetail === toList || withoutLanguage(normalizedPath(event.to.pathname)) === "/")) {
       event.newDocument.documentElement.dataset.detailTransition = "close";
       event.newDocument.documentElement.dataset.detailTransitionKind = fromDetail.slice(1);
     }
