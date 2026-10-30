@@ -25,7 +25,7 @@ const prepareUploadedPhotos = () => ({
       if (/-preview-(?:480|222|2400)\.webp$/.test(file)) return;
       if (!file.includes("/public/media/") && !file.includes("/src/content/")) return;
       clearTimeout(timer);
-      timer = setTimeout(() => { preparePhotos().then(() => prepareContentPreviews()).then(() => prepareMediaManifest()).catch((error) => server.config.logger.error(String(error))); }, 800);
+      timer = setTimeout(() => { preparePhotos().then(() => prepareContentPreviews(undefined, { includeDrafts: true })).then(() => prepareMediaManifest()).catch((error) => server.config.logger.error(String(error))); }, 800);
     };
     server.watcher.on("add", schedule);
     server.watcher.on("change", schedule);

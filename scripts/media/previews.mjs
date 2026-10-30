@@ -3,7 +3,7 @@ import path from 'node:path';
 import sharp from 'sharp';
 import { createHash } from 'node:crypto';
 import { contentPreviewWidths, thumbnailPath, thumbnailWidths } from './paths.mjs';
-import { projectRoot, publishedContentPreviewJobs } from './manifest.mjs';
+import { projectRoot, contentPreviewJobs } from './manifest.mjs';
 
 const cacheName = 'private/cms/media-previews.json';
 
@@ -79,8 +79,8 @@ export async function preparePhotoPreviews(root, photos) {
   await updatePreviews(root, jobs, isPhotoPreviewKey);
 }
 
-export async function prepareContentPreviews(root = projectRoot) {
-  const jobs = await publishedContentPreviewJobs(root);
+export async function prepareContentPreviews(root = projectRoot, options = {}) {
+  const jobs = await contentPreviewJobs(root, options);
   const managed = await updatePreviews(root, jobs, isContentPreviewKey);
   const publicRoot = path.join(root, 'public');
   for (const directory of ['media/projects', 'media/articles']) {

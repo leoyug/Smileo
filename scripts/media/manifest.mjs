@@ -25,7 +25,7 @@ export async function mediaFile(root, source) {
   return actual;
 }
 
-async function collectPublished(root) {
+async function collectMedia(root, { includeDrafts = false } = {}) {
   const sources = new Set();
   const jobs = new Map();
   const add = value => {
@@ -50,7 +50,7 @@ async function collectPublished(root) {
       if (!/\.(json|md|mdx)$/.test(name)) continue;
       const raw = await readFile(path.join(directory, name), 'utf8');
       const { data, content } = name.endsWith('.json') ? { data: JSON.parse(raw), content: '' } : matter(raw);
-      if (data.draft) continue;
+      if (data.draft && !includeDrafts) continue;
       if (collection === 'photos') {
         add(data.src);
         if (data.src?.startsWith('/media/')) for (const width of thumbnailWidths) add(thumbnailPath(data.src, width));
@@ -66,13 +66,13 @@ async function collectPublished(root) {
 }
 
 export async function publishedMedia(root = projectRoot) {
-  const { sources } = await collectPublished(root);
+  const { sources } = await collectMedia(root);
   // Validate original files before derived previews, so a bad source fails as itself.
   return [...sources].sort((left, right) => Number(/-preview-\d+\.webp$/.test(left)) - Number(/-preview-\d+\.webp$/.test(right)) || left.localeCompare(right));
 }
 
-export async function publishedContentPreviewJobs(root = projectRoot) {
-  const { jobs } = await collectPublished(root);
+export async function contentPreviewJobs(root = projectRoot, options = {}) {
+  const { jobs } = await collectMedia(root, options);
   return [...jobs].map(([src, widths]) => ({ src, widths: [...widths].sort((left, right) => right - left) }));
 }
 

@@ -5,7 +5,7 @@
   "type": "module",
   "scripts": {
     "fonts:subset": "python3 scripts/fonts/subset.py",
-    "dev": "npm run fonts:subset && npm run media:prepare && astro dev",
+    "dev": "npm run fonts:subset && npm run media:prepare -- --include-drafts && astro dev",
     "photos:prepare": "node scripts/photos/prepare.mjs",
     "photos:audit": "tsx scripts/photos/audit.ts",
     "test:import": "node --test scripts/import/import.test.mjs",

@@ -109,6 +109,44 @@ test('manifest includes published body/cover/shared assets, excludes drafts and 
   await assert.rejects(createManifest(root), /超出 public\/media/);
 });
 
+test('development generates draft previews and preserves them after unpublishing without publishing draft media', async t => {
+  const { root, put, buffer } = await fixture(t);
+  const previews = [];
+  for (const collection of ['projects', 'articles']) {
+    for (const name of ['cover', 'archive', 'body']) await put(`public/media/${collection}/${name}.jpg`, buffer);
+    const content = draft => `---\ndraft: ${draft}\ncover: /media/${collection}/cover.jpg\narchiveImages: [/media/${collection}/archive.jpg]\n---\n![正文](/media/${collection}/body.jpg)`;
+    await put(`src/content/${collection}/entry.md`, content(collection === 'articles'));
+    if (collection === 'projects') {
+      await prepareContentPreviews(root);
+      await put(`src/content/${collection}/entry.md`, content(true));
+    }
+    previews.push(
+      `/media/${collection}/cover-preview-2400.webp`,
+      `/media/${collection}/cover-preview-480.webp`,
+      `/media/${collection}/archive-preview-480.webp`,
+      `/media/${collection}/body-preview-2400.webp`,
+    );
+  }
+  await prepareContentPreviews(root, { includeDrafts: true });
+  // The watcher uses the same mode; repeated preparation must retain draft previews.
+  await prepareContentPreviews(root, { includeDrafts: true });
+  const manifest = await prepareMediaManifest(root);
+  for (const preview of previews) {
+    assert.equal((await sharp(path.join(root, 'public', preview)).metadata()).format, 'webp');
+    assert.equal(manifest.files[preview], undefined);
+    await put(`dist${preview}`, await readFile(path.join(root, 'public', preview)));
+  }
+  assert.ok(Object.keys(manifest.files).every(source => source.startsWith('/media/photos/')));
+  await finalizeMediaBuild(root, '');
+  for (const preview of previews) {
+    await assert.rejects(stat(path.join(root, 'dist', preview)), { code: 'ENOENT' });
+    assert.ok(await stat(path.join(root, 'public', preview)));
+  }
+  // Production preparation retains its published-only behavior.
+  await prepareContentPreviews(root);
+  for (const preview of previews) await assert.rejects(stat(path.join(root, 'public', preview)), { code: 'ENOENT' });
+});
+
 test('dry-run never writes, real sync skips existing keys and stops on the first upload failure', async t => {
   const { root } = await fixture(t);
   const { files } = await prepareMediaManifest(root);

@@ -19,7 +19,7 @@ const serialized = JSON.stringify(photos).replaceAll("<", "\\u003c");
 const tileHeights = { tall: 296, short: 134 } as const;
 const tileGap = 12;
 const balanceColumns = (count: number) => {
-  const columns = Array.from({ length: count }, () => [] as Photo[]);
+  const columns = Array.from({ length: count }, (): (typeof photos)[number][] => []);
   const heights = Array<number>(count).fill(0);
 
   for (const photo of photos) {
