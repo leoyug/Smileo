@@ -3,6 +3,7 @@ title: "Zhaichangxiang App"
 description: "An all-in-one platform for renovation companies"
 projectType: "Phone / Tablet / Web"
 role: "UI design, design system"
+tools: "Figma, Adobe suite"
 ---
 Zhaichangxiang supports small and medium-sized home renovation companies with design proposals, visual presentations and client communication. I joined in September 2021, collaborating with two other designers through ongoing iterations.
 

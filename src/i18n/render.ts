@@ -111,17 +111,8 @@ export async function localizePage(html: string, pathname: string, site: URL | u
       replaceChildren(body, '<p lang="en">This unpublished draft has not been translated yet.</p>' + serialize(body));
     }
   }
-  if (import.meta.env.DEV) {
-    for (const node of elements) {
-      const href=attr(node,'href');
-      if (isElement(node) && hasClass(node,'content-row') && href?.startsWith('/writing/') && !translations[href.replace('/writing/','articles/')] && node.parentNode && 'childNodes' in node.parentNode)
-        node.parentNode.childNodes=node.parentNode.childNodes.filter(child=>child!==node);
-    }
-    for (const node of elements) if (isElement(node) && hasClass(node,'writing-year') && 'childNodes' in node) {
-      let hasEntry=false; walk(node,child=>{if(hasClass(child,'content-row'))hasEntry=true;});
-      if (!hasEntry && node.parentNode && 'childNodes' in node.parentNode) node.parentNode.childNodes=node.parentNode.childNodes.filter(child=>child!==node);
-    }
-  }
+  // Preserve the source page's entries and year groups in both languages.
+  // Publication filtering belongs to the source page; untranslated dev drafts keep their original text.
   // Replace character-by-character photo labels as a whole, retaining the animation hooks.
   walk(root, node=>{
     if (!hasClass(node,'photo-fan-stack__label')) return;

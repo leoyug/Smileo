@@ -1,11 +1,11 @@
 ---
 title: "Yiwo Renovation Admin"
 description: "Streamlining proposals, materials and data"
-role: "Information architecture, interaction and visual design, design guidelines"
+role: "Information architecture, interaction and visual design"
 ---
 Yiwo Renovation Admin supports the day-to-day management of design proposals, materials and related business work at renovation companies. As features accumulated, older pages developed scattered entry points, unclear information hierarchy and inconsistent visual rules.
 
-I worked on proposal management, material management, marketing management and analytics, owning information architecture, interaction and visual design, and design guidelines. The improvements centered on three tasks: **act after finding a proposal, see the effect while configuring materials, and identify what matters when reviewing data.**
+I worked on proposal management, material management, marketing management and analytics, owning information architecture, interaction and visual design. The improvements centered on three tasks: **act after finding a proposal, see the effect while configuring materials, and identify what matters when reviewing data.**
 
 The screens are project design deliverables used to explain the proposed design and interactions.
 

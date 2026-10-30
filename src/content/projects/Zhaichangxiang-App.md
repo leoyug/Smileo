@@ -9,7 +9,7 @@ period: 2021—2025
 projectType: 手机 / Pad / Web
 status: launched
 role: UI 设计，设计系统
-tools: Figma
+tools: Figma，Adobe 套件
 featured: true
 order: 9
 cover: /media/projects/Zhaichangxiang-App/cover.png
