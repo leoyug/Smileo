@@ -1,6 +1,7 @@
 import { defineCollection, reference } from "astro:content";
 import { glob } from "astro/loaders";
 import { z } from "astro/zod";
+import { projectDownloadSchema } from "./lib/project-download";
 
 const publicationFields = {
   title: z.string().min(1),
@@ -56,11 +57,7 @@ const projects = defineCollection({
     featured: z.boolean().default(false),
     order: z.number().int().positive(),
     cover: z.string().startsWith("/").optional(),
-    download: z.object({
-      href: z.string().startsWith("/"),
-      filename: z.string().trim().min(1),
-      label: z.string().trim().min(1),
-    }).optional(),
+    download: projectDownloadSchema,
     archiveImages: z.array(z.string().startsWith("/")).default([]),
     privacyNote: z.string().optional(),
     relatedArticles: z.array(reference("articles")).default([]),

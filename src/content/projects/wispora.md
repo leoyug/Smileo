@@ -2,8 +2,9 @@
 title: Wispora
 description: 个人视觉灵感库
 publishedAt: 2026-09-30
-updatedAt: 2026-10-29
-draft: true
+updatedAt: 2026-10-30
+draft: false
+hidden: false
 period: 2026-至今
 projectType: Chrome / Edge 浏览器扩展
 status: ongoing

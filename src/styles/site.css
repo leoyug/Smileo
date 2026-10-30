@@ -1910,80 +1910,80 @@
     font-size: var(--text-meta);
   }
 
-  .content-detail[data-project-id="homagine-website"] .project-outcomes-frame {
+  /* Keep the CMS-editable Markdown table in the existing three-metric layout. */
+  .content-detail:is([data-project-id="homagine-website"], [data-project-id="zhaichangxiang-website"]) .article__body {
     container-type: inline-size;
   }
 
-  .content-detail[data-project-id="homagine-website"] .project-outcomes {
-    display: flex;
+  .content-detail:is([data-project-id="homagine-website"], [data-project-id="zhaichangxiang-website"]) .article__body table {
+    --project-outcome-value-size: clamp(2rem, 9cqi, 3.25rem);
+    display: grid;
+    grid-template-columns: repeat(3, max-content);
     justify-content: center;
-    align-items: flex-start;
-    gap: clamp(var(--space-4), 14cqi, 5.5rem);
+    column-gap: clamp(var(--space-4), 14cqi, 5.5rem);
+    width: 100%;
     margin-top: var(--space-16);
     margin-bottom: var(--space-8);
+    border: 0;
+  }
+
+  .content-detail:is([data-project-id="homagine-website"], [data-project-id="zhaichangxiang-website"]) .article__body :is(thead, tbody, tr) {
+    display: contents;
+  }
+
+  .content-detail:is([data-project-id="homagine-website"], [data-project-id="zhaichangxiang-website"]) .article__body :is(th, td) {
     padding: 0;
-    list-style: none;
+    border: 0;
+    text-align: left;
+    white-space: nowrap;
   }
 
-  .content-detail[data-project-id="homagine-website"] .project-outcomes__metric {
-    display: flex;
-    flex-direction: column;
-    align-items: flex-start;
-    min-width: 0;
-  }
-
-  .content-detail[data-project-id="homagine-website"] .project-outcomes__value {
+  .content-detail:is([data-project-id="homagine-website"], [data-project-id="zhaichangxiang-website"]) .article__body td {
+    grid-row: 1;
     display: flex;
     align-items: baseline;
-    gap: var(--space-2);
-    margin: 0;
     color: var(--color-ink);
     font-family: var(--font-heading);
     font-weight: var(--weight-regular);
-    font-size: clamp(2rem, 9cqi, 3.25rem);
+    font-size: calc(var(--project-outcome-value-size) * 0.45);
     line-height: 1;
     letter-spacing: 0.016em;
-    white-space: nowrap;
   }
 
-  .content-detail[data-project-id="homagine-website"] .project-outcomes__figure {
+  .content-detail:is([data-project-id="homagine-website"], [data-project-id="zhaichangxiang-website"]) .article__body td strong {
+    font-size: var(--project-outcome-value-size);
+    font-weight: var(--weight-regular);
     line-height: 1;
   }
 
-  .content-detail[data-project-id="homagine-website"] .project-outcomes__unit {
-    font-size: 0.45em;
-    line-height: 1;
-  }
-
-  .content-detail[data-project-id="homagine-website"] .project-outcomes__arrow {
+  .content-detail:is([data-project-id="homagine-website"], [data-project-id="zhaichangxiang-website"]) .article__body td::after {
+    content: "";
     width: 24px;
     height: 14px;
+    margin-left: var(--space-2);
     flex: none;
+    background: url("/assets/figma/outcome-rise.svg") center / contain no-repeat;
   }
 
-  .content-detail[data-project-id="homagine-website"] .project-outcomes__label {
-    margin: 0;
+  .content-detail:is([data-project-id="homagine-website"], [data-project-id="zhaichangxiang-website"]) .article__body th {
+    grid-row: 2;
     color: color-mix(in srgb, var(--color-ink) 50%, transparent);
     font-family: var(--font-sans);
-    font-size: max(var(--text-meta), calc(clamp(2rem, 9cqi, 3.25rem) * 0.25));
+    font-size: max(var(--text-meta), calc(var(--project-outcome-value-size) * 0.25));
     font-weight: var(--weight-regular);
     line-height: 1.4;
-    white-space: nowrap;
   }
 
   @container (max-width: 22rem) {
-    .content-detail[data-project-id="homagine-website"] .project-outcomes {
-      gap: var(--space-3);
+    .content-detail:is([data-project-id="homagine-website"], [data-project-id="zhaichangxiang-website"]) .article__body table {
+      --project-outcome-value-size: 1.75rem;
+      column-gap: var(--space-3);
     }
 
-    .content-detail[data-project-id="homagine-website"] .project-outcomes__value {
-      gap: var(--space-1);
-      font-size: 1.75rem;
-    }
-
-    .content-detail[data-project-id="homagine-website"] .project-outcomes__arrow {
+    .content-detail:is([data-project-id="homagine-website"], [data-project-id="zhaichangxiang-website"]) .article__body td::after {
       width: 16px;
       height: 9px;
+      margin-left: var(--space-1);
     }
   }
 

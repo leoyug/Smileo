@@ -117,10 +117,15 @@ export default config({
         featured: fields.checkbox({ label: "精选", description: "在首页和项目页的精选区域展示。", defaultValue: false }),
         order: defaultNextOrder({ label: "展示顺序", description: "从 1 开始的唯一位置（含草稿），精选与全部项目共用。新增项目自动排在末尾；修改位置后，其他项目在保存时自动顺移。", validation: { isRequired: true, min: 1 } }, "projects"),
         cover: imageUpload({ label: "项目封面", description: "用于项目卡片、详情页和分享预览。", directory: "public/media/projects", publicPath: "/media/projects/" }),
+        download: fields.object({
+          href: fields.text({ label: "下载地址", description: "站内文件路径，如 /downloads/wispora-0.7.3-chrome.zip。" }),
+          filename: fields.text({ label: "下载文件名", description: "保存到访客设备时使用的文件名。" }),
+          label: fields.text({ label: "下载按钮说明", description: "供屏幕阅读器描述下载操作。" }),
+        }, { label: "项目下载（可选）", description: "无下载附件时三项均留空；提供附件时请填写完整。" }),
         archiveImages: fields.array(imageUpload({ label: "档案叠放图片", directory: "public/media/projects", publicPath: "/media/projects/" }), { label: "档案叠放图片（最多选三张）", description: "用于「全部项目」列表的叠图。从上到下依次为：1 最上层、2 中间层、3 最底层，越靠上越在前。新增图片追加到列表末尾，放在已有图片下层；拖动可调整层级。不足三张时，缺少的位置用封面补齐。", itemLabel: ({ value }) => value?.filename || "未上传图片" }),
         privacyNote: fields.text({ label: "匿名化说明", multiline: true }),
         relatedArticles: fields.array(fields.relationship({ label: "相关文章", collection: "articles" }), { label: "相关文章" }),
-        content: fields.mdx({ label: "项目正文", extension: "md", options: { image: { directory: "public/media/projects", publicPath: "/media/projects/" } } }),
+        content: fields.mdx({ label: "项目正文", extension: "md", options: { table: true, image: { directory: "public/media/projects", publicPath: "/media/projects/" } } }),
       },
     }),
     articles: collection({

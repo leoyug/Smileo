@@ -49,7 +49,7 @@ const narratives: Record<string, PortfolioNarrative> = {
     ],
     more: { href: "/projects/yiwo-admin", label: "查看改版案例" },
   },
-  "homagine-website": {
+  "zhaichangxiang-website": {
     paragraphs: [
       ["官网需要让家装企业看懂产品价值，并愿意继续了解。我负责界面与视觉，和团队把页面组织成", { highlight: "定位、业务问题、解决方案、信任和行动" }, "。"],
       ["首屏说明这是一套可视化谈单软件，再用从获客到下单的业务链路解释产品参与哪一段工作。深绿色和网格保留软件产品的识别，家居画面则把专业感放回空间和材质里。"],
@@ -57,11 +57,11 @@ const narratives: Record<string, PortfolioNarrative> = {
     ],
     images: [
       {
-        src: "/media/projects/homagine-website/case-study/01-opening.webp",
+        src: "/media/projects/zhaichangxiang-website/case-study/01-opening.webp",
         alt: "深绿色首屏、平台规模数据栏与家装获客转化漏斗纵向相接",
       },
       {
-        src: "/media/projects/homagine-website/case-study/02-scenarios.webp",
+        src: "/media/projects/zhaichangxiang-website/case-study/02-scenarios.webp",
         alt: "前期获客解决方案，左侧为业务阶段与场景说明，右侧为手持设备、小程序码和线索卡片",
       },
     ],
@@ -85,7 +85,7 @@ const narratives: Record<string, PortfolioNarrative> = {
 const projects = await getProjects();
 if (projects.length === 0) return Astro.redirect("/", 302);
 const byId = new Map(projects.map((project) => [project.id, project]));
-const sections = ["Zhaichangxiang-App", "yiwo-admin", "homagine-website", "wispora"].flatMap((id) => {
+const sections = ["Zhaichangxiang-App", "yiwo-admin", "zhaichangxiang-website", "wispora"].flatMap((id) => {
   const project = byId.get(id);
   const narrative = narratives[id];
   return project && narrative ? [{ id, title: project.data.title, ...narrative }] : [];

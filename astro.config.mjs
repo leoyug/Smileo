@@ -37,6 +37,7 @@ export default defineConfig({
   redirects: {
     "/projects/wanderland": "/projects/wispora",
     "/projects/homagine-app": "/projects/Zhaichangxiang-App",
+    "/projects/homagine-website": "/projects/zhaichangxiang-website",
     "/writing/energy-management-at-35": "/writing/energy-management-at-30",
     "/photos/entry-f02d3fccf3": "/photos/walk-slowly-along-the-forest-path",
     "/photos/the-pier-under-the-blue-night": "/photos/the-pier-under-the-blue-night-sky",

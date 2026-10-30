@@ -11,7 +11,7 @@ status: ongoing
 role: 信息架构、交互与视觉设计、设计规范
 tools: Figma
 featured: false
-order: 5
+order: 4
 cover: /media/projects/yiwo-admin/cover.png
 archiveImages:
   - /media/projects/yiwo-admin/archiveImages/0.png

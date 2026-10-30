@@ -1,6 +1,6 @@
 {
   "name": "smileo",
-  "version": "0.8.1",
+  "version": "0.8.2",
   "private": true,
   "type": "module",
   "scripts": {
@@ -14,13 +14,14 @@
     "test:batch": "node --test scripts/content-batch/store.test.mjs",
     "test:photo-slug": "node --test scripts/photo-slug/generate.test.mjs",
     "test:search": "node --test scripts/admin-search/search.test.mjs",
-    "check": "astro check && npm run photos:audit && npm run order:audit && npm run test:import && npm run test:order && npm run test:batch && npm run test:photo-slug && npm run test:search && npm run test:media && npm run test:motion",
+    "check": "astro check && npm run photos:audit && npm run order:audit && npm run test:import && npm run test:order && npm run test:batch && npm run test:photo-slug && npm run test:search && npm run test:media && npm run test:motion && npm run test:cms",
     "build": "npm run media:prepare && npm run fonts:subset && npm run check && astro build && node scripts/photos/prune-drafts.mjs",
     "preview": "astro preview",
     "media:prepare": "node scripts/media/prepare.mjs",
     "media:sync": "npm run media:prepare && npm run photos:audit && node scripts/media/sync-r2.mjs",
     "test:media": "node --test scripts/media/media.test.mjs",
     "test:motion": "node --import tsx --test scripts/motion/css-time.test.mjs",
+    "test:cms": "node --import tsx --test scripts/cms-projects/*.test.mjs",
     "publish:prepare": "npm run build && npm run media:sync",
     "deploy:check": "wrangler deploy --dry-run --outdir output/workers-dry-run",
     "deploy:site": "wrangler deploy"
