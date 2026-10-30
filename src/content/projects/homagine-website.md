@@ -9,9 +9,9 @@ projectType: PC / 移动端
 website: https://zhaichangxiang.com
 status: archive
 role: UI 与视觉设计
-tools: Figma
+tools: Figma，ChatGPT
 featured: false
-order: 5
+order: 4
 cover: /media/projects/homagine-website/cover.png
 archiveImages:
   - /media/projects/homagine-website/archiveImages/0.png
@@ -76,6 +76,29 @@ relatedArticles: []
 ![宅畅想官网在平板与手机上的首屏、业务漏斗、解决方案和风格图库展示](/media/projects/homagine-website/case-study/05-responsive.webp)
 
 *不同设备延续相同的品牌语言，并根据屏幕空间调整内容组织。*
+
+## 项目成果与价值
+
+随着公司产品线升级和目标客户变化，官网需要承担更清晰的品牌展示、产品说明、线索转化与信任建立功能。本次官网设计围绕「快速传达产品价值、建立品牌信任、引导用户转化」展开。
+
+官网上线后一个月后，咨询量新增 347，比上个月多 27%，客户下单率上升 18%，套餐购买量上升 15%。
+
+<div class="project-outcomes-frame">
+<ul class="project-outcomes">
+  <li class="project-outcomes__metric">
+    <p class="project-outcomes__value"><span class="project-outcomes__figure"><span class="project-outcomes__number">27</span><span class="project-outcomes__unit">%</span></span><img class="project-outcomes__arrow" src="/assets/figma/outcome-rise.svg" alt="" width="24" height="14" /></p>
+    <p class="project-outcomes__label">单月咨询量</p>
+  </li>
+  <li class="project-outcomes__metric">
+    <p class="project-outcomes__value"><span class="project-outcomes__figure"><span class="project-outcomes__number">18</span><span class="project-outcomes__unit">%</span></span><img class="project-outcomes__arrow" src="/assets/figma/outcome-rise.svg" alt="" width="24" height="14" /></p>
+    <p class="project-outcomes__label">客户下单率</p>
+  </li>
+  <li class="project-outcomes__metric">
+    <p class="project-outcomes__value"><span class="project-outcomes__figure"><span class="project-outcomes__number">15</span><span class="project-outcomes__unit">%</span></span><img class="project-outcomes__arrow" src="/assets/figma/outcome-rise.svg" alt="" width="24" height="14" /></p>
+    <p class="project-outcomes__label">套餐购买量</p>
+  </li>
+</ul>
+</div>
 
 ## 交付与下一步
 

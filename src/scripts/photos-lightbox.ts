@@ -1,4 +1,5 @@
 import gsap from "gsap";
+import { cssTimeToMilliseconds } from "../lib/css-time";
 import { playInterfaceSound } from "./sound";
 
 type Photo = {
@@ -144,7 +145,7 @@ const initializePhotosPages = () => {
         const durationValue = getComputedStyle(
           document.documentElement,
         ).getPropertyValue("--lightbox-photo-duration");
-        const travelDuration = (Number.parseFloat(durationValue) || 560) / 1000;
+        const travelDuration = cssTimeToMilliseconds(durationValue, 560) / 1000;
         const element = createTraveler(sourceImage, sourceRect);
         if (!element) return;
         gsap.set(frame, { autoAlpha: 0 });
@@ -311,7 +312,7 @@ const initializePhotosPages = () => {
         const durationValue = getComputedStyle(
           document.documentElement,
         ).getPropertyValue("--lightbox-close-duration");
-        const closeDuration = (Number.parseFloat(durationValue) || 400) / 1000;
+        const closeDuration = cssTimeToMilliseconds(durationValue, 400) / 1000;
 
         transitionAnimation = gsap.timeline({
           onComplete: () => finishClose(historyMode),

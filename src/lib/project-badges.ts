@@ -20,8 +20,8 @@ export type ProjectCategory = keyof typeof projectBadgeVariants;
 
 // Match stable project IDs so sorting or renaming a title does not change its badge.
 const projectCategories: Partial<Record<string, ProjectCategory>> = {
-  wanderland: "personal",
-  "homagine-app": "case-study",
+  wispora: "personal",
+  "Zhaichangxiang-App": "case-study",
   "homagine-website": "case-study",
   "yiwo-admin": "case-study",
 };

@@ -1,4 +1,5 @@
 import type { PhotoStackPhoto } from "../lib/photo-stack-types";
+import { cssTimeToMilliseconds } from "../lib/css-time";
 
 function initializePhotoStacks() {
   document.querySelectorAll<HTMLElement>("[data-photo-stack-gallery]").forEach((root) => {
@@ -45,7 +46,7 @@ function initializePhotoStacks() {
     preview.hidden = false;
     document.body.append(dialog);
 
-    const timing = (token: string) => Number.parseFloat(getComputedStyle(root).getPropertyValue(token)) || 0;
+    const timing = (token: string) => cssTimeToMilliseconds(getComputedStyle(root).getPropertyValue(token));
     const easing = () => getComputedStyle(root).getPropertyValue("--ease-smooth-out").trim();
     const animate = (element: HTMLElement, keys: Keyframe[], duration: number, delay = 0) => {
       const animation = element.animate(keys, { duration: reduced.matches ? 0 : duration, delay: reduced.matches ? 0 : delay, easing: easing(), fill: "both" });

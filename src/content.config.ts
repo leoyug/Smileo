@@ -35,7 +35,12 @@ const articles = defineCollection({
 });
 
 const projects = defineCollection({
-  loader: glob({ pattern: "**/*.{md,mdx}", base: "./src/content/projects" }),
+  loader: glob({
+    pattern: "**/*.{md,mdx}",
+    base: "./src/content/projects",
+    // Keep the CMS filename as the ID, including case, so previews and relationships agree.
+    generateId: ({ entry }) => entry.replace(/\.(md|mdx)$/, ""),
+  }),
   schema: z.object({
     ...publicationFields,
     hidden: z.boolean().default(false),
@@ -51,6 +56,11 @@ const projects = defineCollection({
     featured: z.boolean().default(false),
     order: z.number().int().positive(),
     cover: z.string().startsWith("/").optional(),
+    download: z.object({
+      href: z.string().startsWith("/"),
+      filename: z.string().trim().min(1),
+      label: z.string().trim().min(1),
+    }).optional(),
     archiveImages: z.array(z.string().startsWith("/")).default([]),
     privacyNote: z.string().optional(),
     relatedArticles: z.array(reference("articles")).default([]),

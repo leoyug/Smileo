@@ -1,21 +1,22 @@
 ---
 title: 宅畅想 App
-description: 让家装设计适应现场谈单，围绕创建户型、比较方案与渲染出图，重组面对面沟通时的操作体验。
+description: 家装公司全链路解决方案
 publishedAt: 2026-09-30
-updatedAt: 2026-10-29
-draft: true
-period: 2021.09—至今
+updatedAt: 2026-10-30
+draft: false
+hidden: false
+period: 2021—2025
 projectType: 手机 / Pad / Web
 status: launched
 role: UI 设计，设计系统
 tools: Figma
 featured: true
-order: 2
-cover: /media/projects/homagine-app/cover.png
+order: 9
+cover: /media/projects/Zhaichangxiang-App/cover.png
 archiveImages:
-  - /media/projects/homagine-app/archiveImages/0.png
-  - /media/projects/homagine-app/archiveImages/1.png
-  - /media/projects/homagine-app/archiveImages/2.png
+  - /media/projects/Zhaichangxiang-App/archiveImages/0.png
+  - /media/projects/Zhaichangxiang-App/archiveImages/1.png
+  - /media/projects/Zhaichangxiang-App/archiveImages/2.png
 relatedArticles: []
 ---
 宅畅想面向中小家装公司，支持方案设计、效果展示与客户沟通。我从 2021 年 9 月起参与项目，与另外两名设计师分工协作，持续推进迭代。
@@ -38,7 +39,7 @@ relatedArticles: []
 
 最终版本在首页突出搜索户型，并列提供导入与自由绘制，结合简短说明帮助用户按手头资料选择路径。入口占用更多首屏空间，是为核心任务作出的取舍。
 
-![旧版加号展开创建菜单，与新版首页直接展示搜索、导入和自由绘制的对照](/media/projects/homagine-app/case-study/03-create-entry.webp)
+![旧版加号展开创建菜单，与新版首页直接展示搜索、导入和自由绘制的对照](/media/projects/Zhaichangxiang-App/case-study/03-create-entry.webp)
 
 *从展开菜单后寻找功能，转向在首页直接辨认创建方式。*
 
@@ -48,7 +49,7 @@ relatedArticles: []
 
 风格选择提供大图预览，局部方案补充推荐理由，让画面与说明共同支持判断。
 
-![两套布局方案保留完整户型参照，并以绿色虚线标出局部变化](/media/projects/homagine-app/case-study/07-layout-difference.webp)
+![两套布局方案保留完整户型参照，并以绿色虚线标出局部变化](/media/projects/Zhaichangxiang-App/case-study/07-layout-difference.webp)
 
 *引导用户比较发生变化的区域，减少在整张图中反复寻找差异。*
 
@@ -59,18 +60,16 @@ relatedArticles: []
 1. **设置**
 
    选择房间范围与清晰度
-
 2. **提交**
 
    提示任务状态与预计耗时
-
 3. **完成**
 
    进入效果图继续沟通
 
 *按需调整：点位调整为可选分支，不要求每次出图都经过。*
 
-![渲染设置弹层、按需进入的点位调整，以及渲染完成反馈三个界面](/media/projects/homagine-app/case-study/08-render-flow.webp)
+![渲染设置弹层、按需进入的点位调整，以及渲染完成反馈三个界面](/media/projects/Zhaichangxiang-App/case-study/08-render-flow.webp)
 
 *基础操作集中呈现，精细调整能力继续保留。中间的点位调整按需进入，三幅画面为功能状态示意。*
 
@@ -78,26 +77,36 @@ relatedArticles: []
 
 编辑器底部功能栏是最难推动的一次调整。旧版同时展示一、二级功能，重构涉及功能组织与开发投入。我在需求会上从视觉层级和功能分组出发，说明调整的必要性，并跟进研发与上线验收。
 
-![旧版底部悬浮功能区域与新版固定功能栏的层级和分组对照](/media/projects/homagine-app/case-study/12-editor-toolbar.webp)
+![旧版底部悬浮功能区域与新版固定功能栏的层级和分组对照](/media/projects/Zhaichangxiang-App/case-study/12-editor-toolbar.webp)
 
 *将重构理由落到具体界面：哪些功能同级、如何分组、主要操作怎样呈现。*
 
 跨端适配同样围绕任务展开，设计系统为不同设备提供共同的视觉与组件规则。
 
-- **手机**
+* **手机**
 
   快速创建与选择，聚焦主要入口。
-
-- **Pad**
+* **Pad**
 
   面对面演示与调整，采用横屏分栏。
-
-- **Web**
+* **Web**
 
   深度设计与参数编辑，采用更高密度的工作台。
 
+## 项目成果与价值
+
+根据改版前的预期，用户成交率和七日留存率等核心数据，再经过产品和运营整体方案调整后均符合预期。
+
+通过架构革新与增加易用性大大提高了用户粘性；精简链路帮助决策，显著减少了用户跳出，提升了用户的渲染量；多端设备的支持和智能功能帮助用户提高了成交率。
+
+通过整体改版，根据客服回访与产品现场沟通的方式了解到，用户满意度提升了 60%，活跃用户数量提升了 23%。
+
+![五项改版指标：七日留存提升 15%，活跃用户数量提升 23%，操作路径缩短 37%，用户成交率提升 18%，用户渲染量提升 22%](/media/projects/Zhaichangxiang-App/case-study/13-outcomes.webp)
+
+*用设计方案推动业务目标：留存、活跃、路径、成交与渲染量均有提升。*
+
 ## 交付与下一步
 
-跨端接力、云端保存、提示与推荐、AI 讲解、报价功能均已上线。我在项目中持续负责核心流程与跨端设计，并跟进落地。当前没有可核实的改版效果统计，成果以具体交付呈现。
+跨端接力、云端保存、提示与推荐、AI 讲解、报价功能均已上线。我在项目中持续负责核心流程与跨端设计，并跟进落地。
 
 推荐模块仍是遗憾：受上线节奏影响，功能交付后未能充分打磨。下一步，我会优先检查推荐出现的时机、理由是否清楚，以及用户如何继续比较，让它更好地服务当下的谈单任务。

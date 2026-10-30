@@ -9,9 +9,10 @@ if (!resume) throw new Error("缺少 main 职业履历内容");
 const { data } = resume;
 const website = data.links.find((link) => link.label === "网站")?.href;
 const github = data.links.find((link) => link.label === "GitHub")?.href;
+const resumeDownload = "https://drive.google.com/uc?export=download&id=19dMrGRXBk-m6QzDYb4xuJ-weFKkw9tlX";
 ---
 
-<BaseLayout title="简历｜Leo" description={`${data.name}的职业经历、项目经验与技能。`}>
+<BaseLayout title="简历" description={`${data.name}的职业经历、项目经验与技能。`}>
   <article class="resume reading-column">
     <h1 class="resume__page-title">简历</h1>
     <header class="resume__intro">
@@ -19,7 +20,7 @@ const github = data.links.find((link) => link.label === "GitHub")?.href;
         <h2 class="resume__name">{data.name}</h2>
         <div class="resume__summary">
           {data.introduction.map((paragraph) => <p>{paragraph}</p>)}
-          <p>可以下载我的<TextLink href="/resume">简历</TextLink>，查看我的<TextLink href="/projects">在线作品集</TextLink>或者<TextLink href="/resume">PDF 文件</TextLink>。</p>
+          <p>可以下载我的<TextLink href={resumeDownload} externalIcon={false} download rel="noopener noreferrer">简历</TextLink>，或者查看我的<TextLink href="/portfolio">在线作品集</TextLink>。</p>
         </div>
       </div>
       <nav class="resume__contacts" aria-label="履历联系方式">

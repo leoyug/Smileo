@@ -1,5 +1,8 @@
 ---
 import BaseLayout from "../layouts/BaseLayout.astro";
+import { Code } from "astro:components";
+import { codeHighlighting } from "../lib/code-highlighting.mjs";
+import TooltipGroup from "../components/TooltipGroup.astro";
 import Button from "../components/Button.astro";
 import Card from "../components/Card.astro";
 import ContentRow from "../components/ContentRow.astro";
@@ -21,8 +24,12 @@ import SignatureMark from "../components/SignatureMark.astro";
 import { aiLogos } from "../data/site";
 import { getPhotos } from "../lib/photos";
 import { getPhotoStackPhotos } from "../lib/photo-stack";
+import { getEntry } from "astro:content";
 
 if (import.meta.env.PROD) return Astro.redirect("/");
+const resume = await getEntry("resume", "main");
+if (!resume) throw new Error("缺少 main 职业履历内容");
+const email = resume.data.email;
 const photos = await getPhotos();
 const stackPhotos = await getPhotoStackPhotos();
 
@@ -84,14 +91,31 @@ const tocHeadings = [
   { depth: 2, slug: "toc-demo-reflection", text: "结果与反思" },
 ];
 const fanPhotos = photos.slice(0, 7).map((photo) => ({ photo, label: photo.alt }));
+const codeExample = `:root {
+  --color-brand: #FF760E;
+}
+
+@supports (color: color(display-p3 1 1 1)) {
+  :root {
+    --color-brand: color(display-p3 1 0.4627 0.0549);
+  }
+}`;
 ---
 
-<BaseLayout title="设计系统预览（开发环境）｜Smileo">
+<BaseLayout title="设计系统预览（开发环境）">
   <header class="page-intro wide-column ds-intro">
     <h1>Smileo 设计系统</h1>
     <p>从项目调研中提取的暖纸色、克制排版与低层级表面。这个页面只在开发环境呈现，用于验证变量和组件复用。</p>
   </header>
   <div class="ds-stack wide-column">
+    <section>
+      <SectionHeading title="代码块" description="GitHub 亮暗主题随网站外观切换，使用 Geist Mono、12px 圆角和自适应留白；长行在代码区内横向滚动，支持键盘和复制反馈。" />
+      <div class="article__body reading-column">
+        <p>行内代码如 <code>var(--color-brand)</code> 保持与正文一致的阅读节奏。</p>
+        <Code code={codeExample} lang="css" {...codeHighlighting} />
+        <Code code={'这是一段没有语法高亮的纯文本。\n保留空格、缩进和换行。'} {...codeHighlighting} />
+      </div>
+    </section>
     <section>
       <SectionHeading title="手写签名 · SignatureMark" description="保持首页签名的颜色与 64×48px 尺寸；进入页面后延迟 0.5 秒，再按自然节奏书写一次，书写时长保持 1.5 秒。笔画边缘使用固定的轻微 Melt 纹理，减少动态效果时直接显示完整签名。" />
       <SignatureMark />
@@ -122,7 +146,17 @@ const fanPhotos = photos.slice(0, 7).map((photo) => ({ photo, label: photo.alt }
     </section>
     <section><SectionHeading title="正文与链接颜色" description="正文与链接都使用语义 token，并随亮暗模式同步映射。" /><div class="text-color-demo"><p>普通文字用于连续阅读的段落；<TextLink href="/writing">链接文字</TextLink>用于可点击的内容。</p><code>--color-copy · <output data-color-token="copy">读取中</output></code><code>--color-link · <output data-color-token="link">读取中</output></code></div></section>
     <section><SectionHeading title="动态文字高亮" description="悬停时沿用 Figma 黑色白边箭头光标；悬停时鼠标图标依次描绘线条并显示淡色高亮；描线中途离开会平滑恢复默认图标，再次进入可继续当前过渡；键盘聚焦和减少动态效果时显示静态图标。" /><p>你好，我是Leo，一名<AnimatedHighlight>设计工程师</AnimatedHighlight>。</p></section>
-    <section><SectionHeading title="虚线下划线 · DashedUnderline" description="用于正文关键词的静态强调，文字使用链接色、继承字号并支持换行；文字与线色随主题 token 映射；Figma 示例启用 selection 悬停选中框；动效示例启用 wave 流动波浪下划线，离开时用 150ms 收回，快速返回延续当前过渡；键盘聚焦和减少动态效果时静态显示；AI 示例启用 logos，三枚图片错开向上弹出，离开时收回；走走拍拍示例启用 photo-stack，悬停预览三张照片，离开时用 250ms 收起，文字不响应点击，悬停卡片进一步展开，点击堆叠展开六张照片，按下单张轻微缩小，松开后查看完整照片，其余照片保留在模糊遮罩后；详情仅由底部关闭按钮退出，图库也可按 Esc 关闭，图库收回时由原来的三张预览卡片归位并淡出；圆角始终为短边的 16%，照片按原始比例裁切，过渡只改变裁切窗口，避免拉伸。" /><p>我使用 <DashedUnderline effect="selection">Figma</DashedUnderline> 进行设计，使用 <DashedUnderline effect="pixel-person">Codex</DashedUnderline> 进行构建，喜欢<DashedUnderline effect="wave">动效</DashedUnderline>与<DashedUnderline>用心创作的事物</DashedUnderline>，借助 <DashedUnderline effect="logos" logos={aiLogos}>AI</DashedUnderline> 实现想法，也喜欢<DashedUnderline effect="photo-stack" photos={stackPhotos}>走走拍拍</DashedUnderline>。</p><code>&lt;DashedUnderline effect="wave"&gt;动效&lt;/DashedUnderline&gt;</code><code>{'<DashedUnderline effect="photo-stack" photos={stackPhotos}>走走拍拍</DashedUnderline>'}</code></section>
+    <section>
+      <SectionHeading title="工具提示 · TooltipGroup" description="悬停或键盘聚焦显示名称和说明；触屏点击显示，点击外部或按 Esc 关闭。气泡可悬停，并自动避开屏幕边缘。" />
+      <TooltipGroup id="design-system-tooltip">
+        <Button data-tooltip-name="Figma" data-tooltip-description="界面设计、原型制作与设计协作。" aria-describedby="design-system-tooltip">Figma</Button>
+      </TooltipGroup>
+    </section>
+    <section>
+      <SectionHeading title="联系方式预览 · ContactLinks" description="悬停或键盘聚焦显示平台预览。GitHub 用最近半年的贡献热力图作为内容，右上角标出过去一年的当前贡献次数；其他账号显示头像、姓名与账号；邮件显示收件人、地址和邮票。沿用 TooltipGroup 的主题、边界避让、悬停保持及 Esc 关闭，社交链接在新标签页打开，邮件保留点击复制。" />
+      <ContactLinks variant="social" />
+    </section>
+    <section><SectionHeading title="虚线下划线 · DashedUnderline" description="用于正文关键词的静态强调，文字使用链接色、继承字号并支持换行；文字与线色随主题 token 映射；启用特效时隐藏基础虚线，保留链接色与原有悬停、键盘聚焦交互；Figma 示例启用 selection 悬停选中框；动效示例启用 wave 流动波浪下划线，离开时用 150ms 收回，快速返回延续当前过渡；键盘聚焦和减少动态效果时静态显示；AI 示例启用 logos，三枚图片错开向上弹出，离开时收回；走走拍拍示例启用 photo-stack，悬停预览三张照片，离开时用 250ms 收起，文字不响应点击，悬停卡片进一步展开，点击堆叠展开六张照片，按下单张轻微缩小，松开后查看完整照片，其余照片保留在模糊遮罩后；详情仅由底部关闭按钮退出，图库也可按 Esc 关闭，图库收回时由原来的三张预览卡片归位并淡出；圆角始终为短边的 16%，照片按原始比例裁切，过渡只改变裁切窗口，避免拉伸。" /><p>我使用 <DashedUnderline effect="selection">Figma</DashedUnderline> 进行设计，使用 <DashedUnderline effect="pixel-person">Codex</DashedUnderline> 进行构建，喜欢<DashedUnderline effect="wave">动效</DashedUnderline>与<DashedUnderline>用心创作的事物</DashedUnderline>，借助 <DashedUnderline effect="logos" logos={aiLogos}>AI</DashedUnderline> 实现想法，也喜欢<DashedUnderline effect="photo-stack" photos={stackPhotos}>走走拍拍</DashedUnderline>。</p><code>&lt;DashedUnderline effect="wave"&gt;动效&lt;/DashedUnderline&gt;</code><code>{'<DashedUnderline effect="photo-stack" photos={stackPhotos}>走走拍拍</DashedUnderline>'}</code></section>
     <section><SectionHeading title="数字花园 · 手绘花朵" description="A 款简约潦草线稿，花瓣不规则、减少重描；悬停或键盘聚焦时沿 SVG 路径依次画出茎、叶、花瓣与花心，三朵花略微错开，离开后沿线擦去。花朵随亮暗主题映射文字色，不改变正文布局；减少动态效果时直接显隐。" /><p>这里是 Leo 的<DashedUnderline effect="flowers">数字花园</DashedUnderline>。</p><code>&lt;DashedUnderline effect="flowers"&gt;数字花园&lt;/DashedUnderline&gt;</code></section>
     <section><SectionHeading title="字体与层级" /><div class="type-specimens"><p class="type-display">把复杂的事，设计得清楚一点。</p><p class="type-title">页面标题使用 28px、600 字重。</p><p class="type-body">界面正文与文章正文统一使用 14px；普通内容采用 1.55 行高，长文章采用 1.8 行高。English and numbers 2026.</p><p class="type-meta">说明标签 · 12PX · REGULAR</p><p class="type-script">只留一点手写痕迹。</p></div></section>
     <section><SectionHeading title="间距与圆角" /><div class="space-row">{spaces.map((space) => <div><span style={`width:var(--space-${space})`}></span><code>{space}</code></div>)}</div><div class="radius-row"><i></i><i></i><i></i><i></i></div></section>
@@ -136,8 +170,9 @@ const fanPhotos = photos.slice(0, 7).map((photo) => ({ photo, label: photo.alt }
       </div>
     </section>
     <section><SectionHeading title="按钮" /><div class="component-row"><Button>主要按钮</Button><Button variant="secondary">次要按钮</Button><Button variant="ghost">文字按钮</Button><Button size="small">小按钮</Button></div></section>
-    <section><SectionHeading title="文字链接" description="保留低对比下划线动效；外部网站与邮件链接在悬停或键盘聚焦时展开 Feather 右上箭头，触屏与减少动态效果偏好下静态显示。" /><div class="component-row"><TextLink href="/">查看项目</TextLink><TextLink href="/writing">阅读文章</TextLink><TextLink href="https://github.com">GitHub</TextLink><TextLink href="mailto:hello@example.com">发送邮件</TextLink></div></section>
-    <section><SectionHeading title="复制文字 · TextLink" description="默认显示“邮件”和灰色下划线；悬停或键盘聚焦时显示邮箱地址、展开 Feather 复制图标，下划线沿用其他链接的强调色。点击复制邮箱后，图标切换为勾选，文字变成“已复制”，1.5 秒后按当前悬停或聚焦状态恢复；离开后恢复“邮件”和灰色下划线；文字层可连续反向切换，行尾换行和连续复制期间保留稳定的悬停触发区域。触屏直接显示图标，减少动态效果时立即切换；复制失败时明确提示。" /><div class="component-row"><TextLink href="mailto:hello@example.com" copyText="hello@example.com">邮件</TextLink></div><code>{'<TextLink href="mailto:hello@example.com" copyText="hello@example.com">邮件</TextLink>'}</code></section>
+    <section><SectionHeading title="文字链接" description="保留低对比下划线动效；外部网站与邮件链接在悬停或键盘聚焦时展开 Feather 右上箭头，触屏与减少动态效果偏好下静态显示。" /><div class="component-row"><TextLink href="/">查看项目</TextLink><TextLink href="/writing">阅读文章</TextLink><TextLink href="https://github.com">GitHub</TextLink><TextLink href={`mailto:${email}`}>发送邮件</TextLink></div></section>
+    <section><SectionHeading title="固定文字复制 · TextLink" description="悬停和键盘聚焦保持 Email 原文字，右侧展开复制图标；点击复制后显示勾选与“已复制”，随后恢复原文字。触屏与减少动态效果下直接显示图标。" /><div class="component-row"><TextLink href={`mailto:${email}`} copyText={email} copyLabel="static">Email</TextLink></div><code>{`<TextLink href="mailto:${email}" copyText="${email}" copyLabel="static">Email</TextLink>`}</code></section>
+    <section><SectionHeading title="复制文字 · TextLink" description="默认显示“邮件”和灰色下划线；悬停或键盘聚焦时显示邮箱地址、展开 Feather 复制图标，下划线沿用其他链接的强调色。点击复制邮箱后，图标切换为勾选，文字变成“已复制”，1.5 秒后按当前悬停或聚焦状态恢复；离开后恢复“邮件”和灰色下划线；文字层可连续反向切换，行尾换行和连续复制期间保留稳定的悬停触发区域。触屏直接显示图标，减少动态效果时立即切换；复制失败时明确提示。" /><div class="component-row"><TextLink href={`mailto:${email}`} copyText={email}>邮件</TextLink></div><code>{`<TextLink href="mailto:${email}" copyText="${email}">邮件</TextLink>`}</code></section>
     <section><SectionHeading title="联系方式" description="真实地址从职业履历读取；默认提供 GitHub、Email、X/Twitter 与 RSS。social 变体按关于页顺序展示四个社交入口，使用 32px 横向间距、8px 换行间距和 44px 点击区域；社交链接沿用正文的外链箭头动效，并固定预留图标位置，出现或隐藏时相邻链接不位移；Email 沿用邮箱地址预览、复制图标和复制反馈。" /><ContactLinks /><ContactLinks variant="social" /><code>{'<ContactLinks variant="social" />'}</code></section>
     <section><SectionHeading title="卡片" /><div class="project-grid"><Card><h3>标准卡片</h3><p>用于需要明确表面层级的内容。</p></Card><Card variant="quiet"><h3>安静卡片</h3><p>保留组件结构，但移除阴影和底色。</p></Card></div></section>
     <section><SectionHeading title="项目卡片" description="悬停或键盘聚焦显示项目标签；个人项目、设计案例、实验探索三款使用 Figma 原始图标，图标 16px、文字 12px / 20px，支持亮暗主题。badge 属性独立于上线状态；首页精选卡片按稳定项目 ID 配置标签。" /><div class="project-grid"><ProjectCard title="个人项目" summary="首页 Wispora 使用的标签。" badge="personal" /><ProjectCard title="设计案例" summary="首页宅畅想 App 使用的标签。" badge="case-study" /><ProjectCard title="实验探索" summary="供后续实验项目使用的标签样式。" badge="experiment" /></div><code>{'<ProjectCard badge="personal" ... />'}</code></section>

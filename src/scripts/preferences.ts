@@ -1,4 +1,6 @@
 import { gsap } from "gsap";
+import { cssTimeToMilliseconds } from "../lib/css-time";
+import { setTitleLanguage, syncSiteTitle } from "./site-title";
 import {
   initializeSound,
   playInterfaceSound,
@@ -119,6 +121,7 @@ const initializePreferences = () => {
     savedTheme === "dark" || savedTheme === "light" ? savedTheme : "system";
   applyTheme(preference);
   syncSoundControls(initializeSound());
+  syncSiteTitle();
 };
 
 const syncSoundControls = (preference: SoundPreference) => {
@@ -150,7 +153,7 @@ const setPreferencesPanelOpen = (panel: HTMLElement, open: boolean) => {
       y: 0,
       scale: 1,
       duration:
-        parseFloat(styles.getPropertyValue("--dropdown-open-dur")) / 1000,
+        cssTimeToMilliseconds(styles.getPropertyValue("--dropdown-open-dur")) / 1000,
       ease: "power3.out",
       clearProps: "transform,opacity,visibility",
     },
@@ -216,17 +219,13 @@ if (!themeWindow.__incessantThemeToggleInitialized) {
       }
       const wasSelected =
         preferenceOption.getAttribute("aria-checked") === "true";
-      document
-        .querySelectorAll<HTMLButtonElement>(
-          `[data-preference-group="${group}"]`,
-        )
-        .forEach((option) => {
-          const selected = option === preferenceOption;
-          option.setAttribute("aria-checked", String(selected));
-          option.classList.toggle("is-selected", selected);
-        });
-      if (group === "language" && !wasSelected)
-        playInterfaceSound("toggle", 0.7);
+      if (group === "language") {
+        const language = preferenceOption.dataset.preferenceValue;
+        if (language === "zh-CN" || language === "en") {
+          setTitleLanguage(language);
+          if (!wasSelected) playInterfaceSound("toggle", 0.7);
+        }
+      }
       return;
     }
 

@@ -54,7 +54,7 @@ export function initDetailRouteTransitions() {
     const from = normalizedPath(location.pathname);
     const to = new URL(link.href);
     const targetKind = detailKind(to.pathname);
-    const entersDetail = targetKind === from || from === "/";
+    const entersDetail = targetKind === from || from === "/" || (from === "/portfolio" && targetKind === "/projects");
     if (to.origin !== location.origin || !targetKind || !entersDetail) return;
 
     sessionStorage.setItem(returnContextKey, JSON.stringify({

@@ -7,12 +7,14 @@ import chatgpt from "../assets/figma-footer/chatgpt.png";
 const resume = await getEntry("resume", "main");
 if (!resume) throw new Error("缺少 main 职业履历内容");
 const x = resume.data.links.find((link) => link.label === "X/Twitter")?.href;
+const instagram = resume.data.links.find((link) => link.label === "Instagram")?.href;
 const github = resume.data.links.find((link) => link.label === "GitHub")?.href;
-const links = [
+const links: Array<{ label: string; href?: string; icon: string; rel?: string; target?: string }> = [
   { label: "X / Twitter", href: x, icon: "x" },
+  { label: "Instagram", href: instagram, icon: "instagram" },
   { label: "GitHub", href: github, icon: "github", rel: "me" },
   { label: "发送邮件", href: `mailto:${resume.data.email}`, icon: "email" },
-  { label: "查看简历", href: "/resume", icon: "resume" },
+  { label: "下载简历", href: "https://drive.google.com/file/d/19dMrGRXBk-m6QzDYb4xuJ-weFKkw9tlX/view", icon: "resume", rel: "noopener noreferrer", target: "_blank" },
 ].filter((link) => link.href);
 ---
 
@@ -29,7 +31,7 @@ const links = [
     <div class="site-footer__details">
       <nav class="site-footer__links" aria-label="联系与简历">
         {links.map((link) => (
-          <a href={link.href} aria-label={link.label} title={link.label} rel={link.rel}>
+          <a href={link.href} aria-label={link.label} title={link.label} rel={link.rel} target={link.target}>
             <span class="site-footer__icon" style={`--footer-icon: url('/assets/figma/footer/${link.icon}.svg')`} aria-hidden="true"></span>
           </a>
         ))}

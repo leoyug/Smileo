@@ -9,6 +9,7 @@ import { preparePhotos } from "./scripts/photos/prepare.mjs";
 import { prepareMediaManifest } from "./scripts/media/manifest.mjs";
 import { localContentImport } from "./scripts/import/vite-plugin.mjs";
 import { localPhotoSlugs } from "./scripts/photo-slug/vite-plugin.mjs";
+import { codeHighlighting } from "./src/lib/code-highlighting.mjs";
 
 const require = createRequire(import.meta.url);
 const environment = loadEnv(process.argv[2] === "dev" ? "development" : "production", process.cwd(), "");
@@ -31,8 +32,12 @@ const prepareUploadedPhotos = () => ({
 
 export default defineConfig({
   output: "static",
+  markdown: { shikiConfig: codeHighlighting },
   site: environment.SITE_URL || "https://smileoleo.com",
   redirects: {
+    "/projects/wanderland": "/projects/wispora",
+    "/projects/homagine-app": "/projects/Zhaichangxiang-App",
+    "/writing/energy-management-at-35": "/writing/energy-management-at-30",
     "/photos/entry-f02d3fccf3": "/photos/walk-slowly-along-the-forest-path",
     "/photos/the-pier-under-the-blue-night": "/photos/the-pier-under-the-blue-night-sky",
   },

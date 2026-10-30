@@ -1,7 +1,9 @@
+import { cssTimeToMilliseconds } from "../lib/css-time";
+
 type CopyLink = HTMLAnchorElement & { copyTextCleanup?: () => void };
 
 const milliseconds = (name: string) =>
-  Number.parseFloat(getComputedStyle(document.documentElement).getPropertyValue(name)) || 0;
+  cssTimeToMilliseconds(getComputedStyle(document.documentElement).getPropertyValue(name));
 
 const initializeCopyLinks = () => {
   document.querySelectorAll<CopyLink>("[data-copy-text]").forEach((link) => {
@@ -86,7 +88,7 @@ const initializeCopyLinks = () => {
 
     const updateLabel = () => {
       const state = link.dataset.copyState;
-      const previewing = hovering || link.matches(":focus-visible");
+      const previewing = link.dataset.copyLabelMode !== "static" && (hovering || link.matches(":focus-visible"));
       softSwap(state === "copied" ? "已复制" : state === "error" ? "复制失败" : previewing ? value : initialLabel);
     };
 

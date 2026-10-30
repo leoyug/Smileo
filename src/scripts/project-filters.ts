@@ -60,7 +60,10 @@ const applyCategory = (root: HTMLElement, category: string, announce = false) =>
   });
   root.querySelector("[data-project-filter-panel]")?.setAttribute("aria-labelledby", selected.id);
   const empty = root.querySelector<HTMLElement>("[data-project-filter-empty]");
-  if (empty) empty.hidden = count > 0;
+  if (empty) {
+    empty.hidden = count > 0;
+    empty.textContent = empty.getAttribute(`data-empty-${value}`) ?? empty.dataset.emptyDefault ?? empty.textContent;
+  }
   const tabList = root.querySelector<HTMLElement>("[data-project-filter-tabs]");
   if (tabList) tabList.hidden = false;
   if (announce) {

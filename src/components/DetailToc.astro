@@ -62,13 +62,15 @@ const items = headings.filter(({ depth }) => depth === 2 || depth === 3);
         const target = context?.to ? new URL(context.to) : null;
         const currentPath = location.pathname.replace(/\/+$/, "") || "/";
         const listPath = currentPath.startsWith("/projects/") ? "/projects" : "/writing";
+        const returnsToPortfolio = context?.from === "/portfolio" && listPath === "/projects";
         if (
+          context?.from &&
           target?.origin === location.origin &&
           (target.pathname.replace(/\/+$/, "") || "/") === currentPath &&
           target.search === location.search &&
-          (context?.from === "/" || context?.from === listPath)
+          (context?.from === "/" || context?.from === listPath || returnsToPortfolio)
         ) {
-          const label = context.from === "/" ? "返回主页" : listPath === "/projects" ? "返回项目" : "返回写作";
+          const label = context.from === "/" ? "返回主页" : returnsToPortfolio ? "返回作品集" : listPath === "/projects" ? "返回作品" : "返回写作";
           historyBackLink.href = context.from;
           historyBackLink.setAttribute("aria-label", label);
           const text = historyBackLink.querySelector("span");

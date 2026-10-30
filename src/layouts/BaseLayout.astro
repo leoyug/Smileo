@@ -1,5 +1,6 @@
 ---
 import { mediaUrl } from "../lib/media-url";
+import { siteDescription, siteTitles } from "../lib/site-metadata";
 import SiteHeader from "../components/SiteHeader.astro";
 import SiteFooter from "../components/SiteFooter.astro";
 import { ClientRouter } from "astro:transitions";
@@ -9,19 +10,27 @@ import "../styles/site-responsive.css";
 
 interface Props {
   title?: string;
+  titleEn?: string;
   description?: string;
   wide?: boolean;
   socialImage?: string | null;
   robots?: string;
+  showNavigation?: boolean;
 }
 
 const {
-  title = "Smileo",
-  description = "一个关于设计工程、写作与摄影的长期个人档案。",
+  title,
+  titleEn = title,
+  description = siteDescription,
   wide = false,
   socialImage = "/og-ian-inspired.png",
   robots,
+  showNavigation = true,
 } = Astro.props;
+const localizedTitles = {
+  "zh-CN": title ? `${title}｜${siteTitles["zh-CN"]}` : siteTitles["zh-CN"],
+  en: titleEn ? `${titleEn}｜${siteTitles.en}` : siteTitles.en,
+};
 const canonical = new URL(Astro.url.pathname, Astro.site);
 const resolvedSocialImage = socialImage ? new URL(mediaUrl(socialImage), Astro.site) : null;
 const isDetailRoute = /^\/(?:projects|writing)\/[^/]+\/?$/.test(Astro.url.pathname);
@@ -46,25 +55,29 @@ const isDetailRoute = /^\/(?:projects|writing)\/[^/]+\/?$/.test(Astro.url.pathna
     <link rel="canonical" href={canonical} />
     <meta property="og:type" content="website" />
     <meta property="og:locale" content="zh_CN" />
-    <meta property="og:title" content={title} />
+    <meta property="og:site_name" content={siteTitles["zh-CN"]} />
+    <meta property="og:title" content={localizedTitles["zh-CN"]} />
     <meta property="og:description" content={description} />
     <meta property="og:url" content={canonical} />
     {resolvedSocialImage && <meta property="og:image" content={resolvedSocialImage} />}
     {resolvedSocialImage && <meta property="og:image:width" content="1536" />}
     {resolvedSocialImage && <meta property="og:image:height" content="1024" />}
     <meta name="twitter:card" content={resolvedSocialImage ? "summary_large_image" : "summary"} />
-    <meta name="twitter:title" content={title} />
+    <meta name="twitter:title" content={localizedTitles["zh-CN"]} />
     <meta name="twitter:description" content={description} />
     {resolvedSocialImage && <meta name="twitter:image" content={resolvedSocialImage} />}
     <meta name="generator" content={Astro.generator} />
     <ClientRouter fallback="animate" />
-    <title>{title}</title>
+    <title data-title-zh={localizedTitles["zh-CN"]} data-title-en={localizedTitles.en}>{localizedTitles["zh-CN"]}</title>
+    <script>
+      import "../scripts/site-title";
+    </script>
   </head>
-  <body class:list={{ "body--detail-route": isDetailRoute }}>
+  <body class:list={{ "body--detail-route": isDetailRoute, "body--no-dock": !showNavigation }}>
     {isDetailRoute && <div class="detail-route-backdrop" aria-hidden="true"></div>}
     <!-- THESIS: 中性纸色背景中的一条安静出版栏，把工作、写作与摄影放在同一条长期记录里。 OWN-WORLD: 中性纸色画布、592px 内容栏、手写标记、灰阶文字与原比例摄影。 STORY: 访客先认识 Leo，再依次进入文章、项目与照片，距视口底部 24px 的胶囊导航持续提供方向。 FIRST VIEWPORT: 签名与三行介绍从 80px 开始，正文在首屏直接给出项目、写作和摄影入口。 FORM: 可切换的亮色个人出版物。 -->
     <a class="skip-link" href="#main">跳到主要内容</a>
-    <SiteHeader />
+    {showNavigation && <SiteHeader />}
     <main id="main" class:list={["page-main", { "page-main--wide": wide }]} data-route-main>
       <slot />
     </main>
@@ -75,6 +88,7 @@ const isDetailRoute = /^\/(?:projects|writing)\/[^/]+\/?$/.test(Astro.url.pathna
       import { initDetailRouteTransitions } from "../scripts/detail-route-transitions";
       import "../scripts/list-sounds";
       import "../scripts/project-cover-transitions";
+      import "../scripts/code-blocks";
 
       initRouteMotion();
       initSmoothCorners();

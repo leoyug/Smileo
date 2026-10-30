@@ -37,7 +37,7 @@ const panelId = `${id}-panel`;
   </div>
   <div id={panelId} role="tabpanel" aria-labelledby={`${id}-all`} tabindex="0" data-project-filter-panel>
     <slot />
-    <p class="project-filters__empty" data-project-filter-empty hidden>这个分类下还没有项目。</p>
+    <p class="project-filters__empty" data-project-filter-empty data-empty-default="这个分类下还没有项目。" data-empty-experiment="等待上传中" hidden>这个分类下还没有项目。</p>
   </div>
   <p class="sr-only" role="status" aria-atomic="true" data-project-filter-status></p>
 </div>

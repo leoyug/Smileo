@@ -7,6 +7,7 @@ import { getProjects } from "../lib/projects";
 import { getProjectCategory } from "../lib/project-badges";
 
 const projects = await getProjects();
+const description = "这里收录了我近几年参与的项目与根据自己需求所做产品。每一个我都认真投入，也在一次次实践中逐渐成长。";
 if (projects.length === 0) return Astro.redirect("/", 302);
 const archiveProjectPreviews = projects.map((project) => ({
   source: project.id,
@@ -19,12 +20,12 @@ const archiveProjectPreviews = projects.map((project) => ({
 }));
 ---
 
-<BaseLayout title="项目｜Leo" description="产品设计项目档案。">
+<BaseLayout title="作品" titleEn="Work" description={description}>
   <header class="page-intro reading-column">
-    <h1 data-route-enter>项目</h1>
-    <p data-route-enter>设计项目的过程中，我思考最多的往往是使用时的体验。</p>
+    <h1 data-route-enter>作品</h1>
+    <p data-route-enter>{description}</p>
   </header>
-  <section class="archive-section reading-column" aria-label="项目列表">
+  <section class="archive-section reading-column" aria-label="作品列表">
     <ProjectFilters id="project-categories" rememberSelection>
       <div class="project-archive-list" data-project-archive-list data-route-enter-group>
         {archiveProjectPreviews.map((project) =>

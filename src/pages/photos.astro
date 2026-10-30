@@ -7,6 +7,6 @@ const photos = await getPhotos();
 if (photos.length === 0) return Astro.redirect("/");
 ---
 
-<BaseLayout title="摄影｜Leo" description="沿途看见的光。" robots="noindex,follow">
+<BaseLayout title="摄影" description="沿途看见的光。" robots="noindex,follow">
   <PhotosPage photos={photos} />
 </BaseLayout>

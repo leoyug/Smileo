@@ -11,10 +11,10 @@ const groups = [...articles.reduce((years, article) => {
   const year = String(article.data.publishedAt.getFullYear());
   years.set(year, [...(years.get(year) ?? []), article]);
   return years;
-}, new Map<string, typeof articles>()).entries()].map(([year, entries]) => [year, entries.sort((a, b) => a.data.order - b.data.order)] as const);
+}, new Map<string, typeof articles>()).entries()];
 ---
 
-<BaseLayout title="写作｜Leo" description="生活、设计与学习记录。">
+<BaseLayout title="写作" description="生活、设计与学习记录。">
   <header class="page-intro reading-column"><h1 data-route-enter>写作</h1><p data-route-enter>记录当下的感受与发生过的事情，可以通过 <TextLink href="/rss.xml">RSS</TextLink> 订阅。</p></header>
   {groups.map(([year, entries]) => <section class="archive-section writing-year reading-column" aria-labelledby={`year-${year}`}><div class="section-topline" data-route-enter><h2 id={`year-${year}`}>{year}</h2></div><div data-route-enter-group>{entries.map((article) => <ContentRow title={article.data.title} meta={formatDate(article.data.publishedAt).slice(5).replace(".", "-")} href={`/writing/${article.id}`} density="compact" stackOnMobile={false} />)}</div></section>)}
 </BaseLayout>

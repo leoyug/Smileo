@@ -1,0 +1,153 @@
+---
+import { mediaUrl } from "../lib/media-url";
+import BaseLayout from "../layouts/BaseLayout.astro";
+import TextLink from "../components/TextLink.astro";
+import { getProjects } from "../lib/projects";
+
+type Segment = string | { highlight: string };
+type PortfolioImage = { src: string; alt: string };
+type PortfolioNarrative = {
+  paragraphs: Segment[][];
+  images: PortfolioImage[];
+  more?: { href: string; label: string };
+};
+
+const narratives: Record<string, PortfolioNarrative> = {
+  "Zhaichangxiang-App": {
+    paragraphs: [
+      ["宅畅想面向中小家装公司，支持方案设计、效果展示和现场谈单。我从 2021 年 9 月起参与，负责", { highlight: "创建流程、装修编辑、跨端适配和设计系统" }, "。"],
+      ["谈单时，业务员要找到户型、比较方案，再生成效果图和客户讨论。创建入口不好选、方案看不出差别、出图步骤繁琐，都会打断沟通。我把搜索、导入和自由绘制直接放在首页，", { highlight: "用绿色虚线标出方案差异" }, "，并把基础出图和精细的点位调整分开。"],
+      ["改版之后，用户满意度提升了 60%，活跃用户数量提升了 23%。七日留存、成交率和渲染量也有提升。"],
+    ],
+    images: [
+      {
+        src: "/media/projects/Zhaichangxiang-App/case-study/03-create-entry.webp",
+        alt: "旧版加号展开创建菜单，与新版首页直接展示搜索、导入和自由绘制的对照",
+      },
+      {
+        src: "/media/projects/Zhaichangxiang-App/case-study/07-layout-difference.webp",
+        alt: "两套布局方案保留完整户型参照，并以绿色虚线标出局部变化",
+      },
+    ],
+    more: { href: "/projects/Zhaichangxiang-App", label: "查看完整的案例" },
+  },
+  "yiwo-admin": {
+    paragraphs: [
+      ["亦我家装后台承载设计方案、素材和日常业务管理。功能变多之后，操作入口散开，信息层级和视觉规则也不再一致。"],
+      ["我参与方案、素材、营销和数据统计四个模块，围绕三件事重组界面：", { highlight: "找到方案后开始操作，配置素材时观察效果，查看数据时抓住重点" }, "。"],
+      ["高频操作放在当前目标旁边。复杂参数按基础属性、商品信息和高级参数分组，并和材质预览放在同一视野里。共用的导航和控件，让不同模块保持同一套工作语言。"],
+    ],
+    images: [
+      {
+        src: "/media/projects/yiwo-admin/case-study/01-workspace.webp",
+        alt: "方案工作台局部：左侧业务导航，右侧为户型预览与方案信息",
+      },
+      {
+        src: "/media/projects/yiwo-admin/case-study/03-material-editor.webp",
+        alt: "素材编辑界面：左侧分组表单，右侧材质效果预览与规格贴图",
+      },
+    ],
+    more: { href: "/projects/yiwo-admin", label: "查看改版案例" },
+  },
+  "homagine-website": {
+    paragraphs: [
+      ["官网需要让家装企业看懂产品价值，并愿意继续了解。我负责界面与视觉，和团队把页面组织成", { highlight: "定位、业务问题、解决方案、信任和行动" }, "。"],
+      ["首屏说明这是一套可视化谈单软件，再用从获客到下单的业务链路解释产品参与哪一段工作。深绿色和网格保留软件产品的识别，家居画面则把专业感放回空间和材质里。"],
+      ["上线一个月后，单月咨询量增加 27%，客户下单率上升 18%，套餐购买量上升 15%。"],
+    ],
+    images: [
+      {
+        src: "/media/projects/homagine-website/case-study/01-opening.webp",
+        alt: "深绿色首屏、平台规模数据栏与家装获客转化漏斗纵向相接",
+      },
+      {
+        src: "/media/projects/homagine-website/case-study/02-scenarios.webp",
+        alt: "前期获客解决方案，左侧为业务阶段与场景说明，右侧为手持设备、小程序码和线索卡片",
+      },
+    ],
+    more: { href: "https://zhaichangxiang.com", label: "访问宅畅想官网" },
+  },
+  wispora: {
+    paragraphs: [
+      ["Wispora 是我为自己做的浏览器灵感库。设计和开发时存下的网站、文章和作者，过一段时间往往只记得它能解决什么，却找不到当时放在哪里。"],
+      ["浏览时可以在当前网页快速添加，整理时再进入工作台。封面、描述、标签和本地搜索连在一起，目标是面对一个需求时，", { highlight: "能在一分钟内找回以前保存过的内容" }, "。数据留在当前浏览器里，不需要账号。"],
+      ["目前是 v0.7.3。本地添加、搜索、备份和简报已经可用，扩展商店的发布还在后面。"],
+    ],
+    images: [
+      {
+        src: "/media/projects/wispora/cover.png",
+        alt: "Wispora 标志：橙色圆角方块与白色花形符号，旁边是产品名称",
+      },
+    ],
+  },
+};
+
+const projects = await getProjects();
+if (projects.length === 0) return Astro.redirect("/", 302);
+const byId = new Map(projects.map((project) => [project.id, project]));
+const sections = ["Zhaichangxiang-App", "yiwo-admin", "homagine-website", "wispora"].flatMap((id) => {
+  const project = byId.get(id);
+  const narrative = narratives[id];
+  return project && narrative ? [{ id, title: project.data.title, ...narrative }] : [];
+});
+const description = "这些年做过的项目：家装产品的界面、交互和设计系统，以及我为自己做的灵感库。";
+const opener = sections.find((section) => section.id === "Zhaichangxiang-App");
+---
+
+<BaseLayout title="作品集" titleEn="Portfolio" description={description} showNavigation={false} socialImage={opener ? "/media/projects/Zhaichangxiang-App/cover.png" : undefined}>
+  <header class="portfolio-bar reading-column">
+    <a class="portfolio-bar__brand" href="/">
+      <img class="portfolio-bar__avatar portfolio-bar__avatar--light" src="/assets/figma-v03/about/portrait-light.webp" alt="" width="28" height="28" />
+      <img class="portfolio-bar__avatar portfolio-bar__avatar--dark" src="/assets/figma-v03/about/portrait-particles.webp" alt="" width="28" height="28" />
+      <span>作品集</span>
+    </a>
+    <button class="portfolio-theme" type="button" data-portfolio-theme aria-label="切换到深色模式" aria-pressed="false">
+      <svg class="portfolio-theme__icon--moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+        <path d="M21 14.5A8.5 8.5 0 1 1 9.5 3 7 7 0 0 0 21 14.5z" />
+      </svg>
+      <svg class="portfolio-theme__icon--sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" aria-hidden="true">
+        <circle cx="12" cy="12" r="4" />
+        <path d="M12 3v1.5M12 19.5V21M4.9 4.9l1.1 1.1M18 18l1.1 1.1M3 12h1.5M19.5 12H21M4.9 19.1 6 18M18 6l1.1-1.1" />
+      </svg>
+    </button>
+  </header>
+
+  <section class="portfolio-intro reading-column" aria-labelledby="portfolio-intro-title">
+    <h1 id="portfolio-intro-title">这些年做过的项目</h1>
+    <p>我是一名产品设计师，主要为家装产品<mark class="portfolio-mark">设计界面、梳理交互流程</mark>，并建立<mark class="portfolio-mark">可以继续扩展的设计系统</mark>。这里整理了一些我参与过的项目，介绍当时遇到的问题、我的设计思路和最终方案。</p>
+    <p>文中界面来自项目设计稿，用于说明设计决策与交互。</p>
+    {opener && (
+      <figure class="portfolio-figure">
+        <img src={mediaUrl("/media/projects/Zhaichangxiang-App/cover.png")} alt="宅畅想 App 在手机、平板和电脑上的界面，展示户型与装修方案" width="1920" height="1080" />
+      </figure>
+    )}
+  </section>
+
+  {sections.map((section) => (
+    <section class="portfolio-project reading-column" aria-labelledby={`portfolio-${section.id}`}>
+      <h2 id={`portfolio-${section.id}`}>{section.title}</h2>
+      {section.paragraphs.map((paragraph) => (
+        <p>
+          {paragraph.map((part) => typeof part === "string" ? part : <mark class="portfolio-mark">{part.highlight}</mark>)}
+        </p>
+      ))}
+      {section.images.map((image) => (
+        <figure class="portfolio-figure">
+          <img src={mediaUrl(image.src)} alt={image.alt} loading="lazy" />
+        </figure>
+      ))}
+      {section.more && (
+        <p class="portfolio-more"><TextLink href={section.more.href}>{section.more.label}</TextLink></p>
+      )}
+    </section>
+  ))}
+
+  <section class="portfolio-close reading-column" aria-labelledby="portfolio-close-title">
+    <h2 id="portfolio-close-title">与我联系</h2>
+    <p>如果你现在正有项目需要实现，或者想要寻找设计师，欢迎与我联系。也可以先看一下我的<TextLink href="/">个人网站</TextLink>。</p>
+  </section>
+</BaseLayout>
+
+<script>
+  import "../scripts/portfolio-theme";
+</script>

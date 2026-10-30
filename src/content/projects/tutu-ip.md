@@ -10,7 +10,7 @@ projectType: IP 设计
 status: archive
 role: 待确认
 featured: false
-order: 3
+order: 2
 cover: /media/projects/tutu-ip/cover.png
 archiveImages:
   - /media/projects/tutu-ip/archiveImages/0.png

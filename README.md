@@ -1,6 +1,10 @@
 # Smileo
 
-Smileo是 Leo 的中文个人网站，记录写作、项目、摄影与职业经历。网站使用 Astro 6、TypeScript 和 Content Collections，生成纯静态页面。
+Smileo 是 Leo 的数字花园，记录生活、设计与学习，分享文字、项目与沿途影像。
+
+访问网站：[Leo 的数字花园](https://smileoleo.com)。
+
+网站基于 Astro 6、TypeScript 和 Content Collections 构建，以静态页面发布。浏览器标签页标题跟随语言偏好：中文显示“Leo 的数字花园”，其他语言显示“Leo's digital garden”；也可在网站的偏好面板中切换标题语言。
 
 ## 本地运行
 
@@ -86,7 +90,7 @@ scripts/photos/audit.ts         # 发布图片审计
 
 职业履历以 `src/content/resume/main.json` 为唯一结构化来源。当前照片发布资产与预览已通过技术审计；项目和初版样例文章的作者核对情况见[内容发布核对](./docs/内容发布核对.md)。历史版本记录保留在 `docs/releases/`。
 
-网站目前暂停公开访问，主站及图片请求由 Cloudflare 自定义规则拦截。部署、域名和 R2 文件均保留，恢复方法见[站点暂停与恢复](./docs/站点暂停与恢复.md)。提交或重新部署代码不会自动关闭暂停规则。
+网站已于 2026-10-30 恢复公开访问，当前线上版本为 V0.8.0，主地址为 [smileoleo.com](https://smileoleo.com)。主站及图片的暂停规则已关闭；暂停开关和本次部署记录见[站点暂停与恢复](./docs/站点暂停与恢复.md)。提交或重新部署代码不会自动改变暂停规则。
 
 ## 图片托管（R2）
 
