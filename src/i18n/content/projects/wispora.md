@@ -5,7 +5,7 @@ projectType: "Chrome / Edge browser extension"
 role: "Product design, UI design, design system and development"
 tools: "Figma, Codex, Cursor"
 period: "2026–present"
-downloadLabel: "Download the Wispora Chrome extension"
+downloadLabel: "Download Wispora v0.8.0 for Chrome / Edge"
 ---
 Wispora is a personal web inspiration library for design and development. I can save websites, articles and authors I want to follow, then find them again through covers, descriptions, tags and local search. Built with WXT, React and TypeScript, it stores data in the current browser without an account or a separate backend.
 
@@ -31,7 +31,7 @@ AI is an optional organizing assistant. With a personal API key configured, it c
 
 Visually, I wanted something comfortable for extended browsing: warm gray backgrounds, compact typography and a small amount of brand orange. Semantic tokens unify color, type, corners and interaction states, with shared components based on Intent UI and React Aria. Color consistency between Figma and the browser received specific attention, using Display-P3 as the authoritative definition with an sRGB fallback.
 
-The project is currently v0.7.3. Core local flows work, with backup, restore and content briefings added. Daily summaries and weekly briefings use only saved local information and retain their contents as generated for later reading. Full Chrome and Edge release acceptance is still planned.
+The project is currently v0.8.0. Core local flows work, with backup, restore and content briefings added. Daily summaries and weekly briefings use only saved local information and retain their contents as generated for later reading. Full Chrome and Edge release acceptance is still planned.
 
 ## Challenges
 
