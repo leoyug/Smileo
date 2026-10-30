@@ -1,5 +1,5 @@
 ---
-import { mediaUrl } from "../lib/media-url";
+import { readingImage } from "../lib/display-image";
 import BaseLayout from "../layouts/BaseLayout.astro";
 import TextLink from "../components/TextLink.astro";
 import { getProjects } from "../lib/projects";
@@ -132,7 +132,7 @@ const opener = sections.find((section) => section.id === "Zhaichangxiang-App");
     <p>文中界面来自项目设计稿，用于说明设计决策与交互。</p>
     {opener && (
       <figure class="portfolio-figure">
-        <img src={mediaUrl("/media/projects/Zhaichangxiang-App/cover.png")} alt="宅畅想 App 在手机、平板和电脑上的界面，展示户型与装修方案" width="1920" height="1080" />
+        <img src={readingImage("/media/projects/Zhaichangxiang-App/cover.png")} alt="宅畅想 App 在手机、平板和电脑上的界面，展示户型与装修方案" width="1920" height="1080" />
       </figure>
     )}
   </section>
@@ -147,7 +147,7 @@ const opener = sections.find((section) => section.id === "Zhaichangxiang-App");
       ))}
       {section.images.map((image) => (
         <figure class="portfolio-figure">
-          <img src={mediaUrl(image.src)} alt={image.alt} loading="lazy" />
+          <img src={readingImage(image.src)} alt={image.alt} decoding="async" loading="lazy" />
         </figure>
       ))}
       {section.more && (
