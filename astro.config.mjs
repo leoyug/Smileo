@@ -5,8 +5,11 @@ import { fileURLToPath } from "node:url";
 import react from "@astrojs/react";
 import keystatic from "@keystatic/astro";
 import { collectionSearch } from "./scripts/admin-search/vite-plugin.mjs";
+import { unified } from "@astrojs/markdown-remark";
 import { preparePhotos } from "./scripts/photos/prepare.mjs";
 import { prepareMediaManifest } from "./scripts/media/manifest.mjs";
+import { prepareContentPreviews } from "./scripts/media/previews.mjs";
+import { remarkContentDisplayImages } from "./scripts/media/display-images.mjs";
 import { localContentImport } from "./scripts/import/vite-plugin.mjs";
 import { localPhotoSlugs } from "./scripts/photo-slug/vite-plugin.mjs";
 import { codeHighlighting } from "./src/lib/code-highlighting.mjs";
@@ -19,10 +22,10 @@ const prepareUploadedPhotos = () => ({
   configureServer(server) {
     let timer;
     const schedule = (file) => {
-      if (/-preview-(480|222)\.webp$/.test(file)) return;
+      if (/-preview-(?:480|222|2400)\.webp$/.test(file)) return;
       if (!file.includes("/public/media/") && !file.includes("/src/content/")) return;
       clearTimeout(timer);
-      timer = setTimeout(() => { preparePhotos().then(() => prepareMediaManifest()).catch((error) => server.config.logger.error(String(error))); }, 800);
+      timer = setTimeout(() => { preparePhotos().then(() => prepareContentPreviews()).then(() => prepareMediaManifest()).catch((error) => server.config.logger.error(String(error))); }, 800);
     };
     server.watcher.on("add", schedule);
     server.watcher.on("change", schedule);
@@ -32,7 +35,7 @@ const prepareUploadedPhotos = () => ({
 
 export default defineConfig({
   output: "static",
-  markdown: { shikiConfig: codeHighlighting },
+  markdown: { shikiConfig: codeHighlighting, processor: unified({ remarkPlugins: [remarkContentDisplayImages] }) },
   site: environment.SITE_URL || "https://smileoleo.com",
   redirects: {
     "/en/projects/wanderland": "/en/projects/wispora",

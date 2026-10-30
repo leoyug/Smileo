@@ -1,4 +1,10 @@
 export const thumbnailWidths = [480, 222];
+// Reading images are at most the 768px column, then zoom to 1.6×. 2400px covers that on a 2× screen.
+// 480px covers archive thumbnails and the small photo stacks.
+export const readingPreviewWidth = 2400;
+export const thumbPreviewWidth = 480;
+export const contentPreviewWidths = [readingPreviewWidth, thumbPreviewWidth];
+const previewWidths = new Set([...thumbnailWidths, ...contentPreviewWidths]);
 
 export function assertMediaPath(value) {
   if (!value.startsWith('/media/') || /[\\\0?#]/.test(value) || value.split('/').some(part => part === '.' || part === '..')) {
@@ -9,7 +15,7 @@ export function assertMediaPath(value) {
 
 export function thumbnailPath(source, width) {
   assertMediaPath(source);
-  if (!thumbnailWidths.includes(width)) throw new Error(`不支持的缩略图宽度：${width}`);
+  if (!previewWidths.has(width)) throw new Error(`不支持的缩略图宽度：${width}`);
   return source.replace(/\.[^/.]+$/, `-preview-${width}.webp`);
 }
 

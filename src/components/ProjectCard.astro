@@ -1,5 +1,5 @@
 ---
-import { mediaUrl } from "../lib/media-url";
+import { readingImage } from "../lib/display-image";
 import TextLink from "./TextLink.astro";
 import { projectStatuses } from "../lib/project-status";
 import { projectBadgeVariants, type ProjectCategory } from "../lib/project-badges";
@@ -24,7 +24,7 @@ const linkLabel = ["查看项目", title, badgeContent?.label, label, year].filt
     <span class="project-card__visual">
       {badgeContent && <span class="project-card__attribute" data-project-badge={badge} aria-hidden="true"><img class="project-card__attribute-icon" src={badgeContent.icon} width="16" height="16" alt="" /><span>{badgeContent.label}</span></span>}
       <span class="project-card__media">
-        {image ? <img src={mediaUrl(image)} alt="" loading="lazy" /> : (
+        {image ? <img src={readingImage(image)} alt="" decoding="async" loading="lazy" /> : (
           <span class="project-card__preview">
             <span class="project-card__chrome"></span>
             <span class="project-card__screen">

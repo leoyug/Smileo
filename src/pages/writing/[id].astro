@@ -1,5 +1,5 @@
 ---
-import { mediaUrl } from "../../lib/media-url";
+import { readingImage } from "../../lib/display-image";
 import type { CollectionEntry } from "astro:content";
 import { getCollection, render } from "astro:content";
 import BaseLayout from "../../layouts/BaseLayout.astro";
@@ -20,7 +20,7 @@ const category = entry.data.category ?? entry.data.tags[0];
 <BaseLayout title={`${entry.data.title}`} description={entry.data.description} socialImage={entry.data.cover}>
   <DetailToc headings={headings} ariaLabel="文章目录" className="detail-toc--reading" backHref="/" backLabel="返回主页" returnViaHistory />
   <article class="content-detail reading-column" data-detail-page="article">
-    {entry.data.cover && <img class="content-detail__cover" src={mediaUrl(entry.data.cover)} alt={entry.data.coverAlt ?? ""} data-route-enter />}
+    {entry.data.cover && <img class="content-detail__cover" src={readingImage(entry.data.cover)} alt={entry.data.coverAlt ?? ""} data-route-enter />}
     <header id="overview" data-route-enter>
       <h1>{entry.data.title}</h1>
       {entry.data.subtitle && <p class="article-subtitle">{entry.data.subtitle}</p>}

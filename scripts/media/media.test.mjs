@@ -5,9 +5,10 @@ import path from 'node:path';
 import os from 'node:os';
 import sharp from 'sharp';
 import { resolveMediaUrl, thumbnailPath } from './paths.mjs';
+import { contentDisplayPath, remarkContentDisplayImages } from './display-images.mjs';
 import { bodyMediaReferences, rewriteMediaHtml } from './references.mjs';
 import { createManifest, prepareMediaManifest, manifestFile } from './manifest.mjs';
-import { preparePhotoPreviews } from './previews.mjs';
+import { prepareContentPreviews, preparePhotoPreviews } from './previews.mjs';
 import { syncMedia } from './sync-r2.mjs';
 import { finalizeMediaBuild } from './finalize-build.mjs';
 
@@ -69,16 +70,36 @@ test('previews are proportional, incremental and refreshed when bytes change wit
   assert.notDeepEqual(await readFile(preview), originalBytes);
 });
 
+test('reading images use a display preview and leave photo originals unchanged', () => {
+  assert.equal(contentDisplayPath('/media/projects/shared.jpg'), '/media/projects/shared-preview-2400.webp');
+  assert.equal(contentDisplayPath('/media/photos/one/src.jpg'), '/media/photos/one/src.jpg');
+  assert.equal(contentDisplayPath('/media/projects/shared-preview-2400.webp'), '/media/projects/shared-preview-2400.webp');
+  assert.equal(contentDisplayPath('/assets/cover.png'), '/assets/cover.png');
+  const tree = { type: 'root', children: [{ type: 'image', url: '/media/articles/body.jpg?v=1' }] };
+  remarkContentDisplayImages()(tree);
+  assert.equal(tree.children[0].url, '/media/articles/body-preview-2400.webp?v=1');
+});
+
 test('manifest includes published body/cover/shared assets, excludes drafts and changes keys when bytes change', async t => {
   const { root, put } = await fixture(t);
-  await put('public/media/projects/shared.jpg', 'shared');
-  await put('public/media/articles/body.jpg', 'body');
-  await put('public/media/projects/draft.jpg', 'draft');
+  const image = await sharp({ create: { width: 32, height: 16, channels: 3, background: '#abcdef' } }).jpeg().toBuffer();
+  await put('public/media/projects/shared.jpg', image);
+  await put('public/media/articles/body.jpg', image);
+  await put('public/media/projects/draft.jpg', image);
   await put('src/content/projects/published.md', '---\ndraft: false\ncover: /media/projects/shared.jpg\n---\n![正文](/media/articles/body.jpg)');
   await put('src/content/projects/draft.md', '---\ndraft: true\ncover: /media/projects/shared.jpg\narchiveImages: [/media/projects/draft.jpg]\n---');
+  await prepareContentPreviews(root);
+  const preview = await sharp(path.join(root, 'public/media/projects/shared-preview-2400.webp')).metadata();
+  assert.equal(preview.format, 'webp');
+  assert.equal(preview.width, 32);
   const first = await prepareMediaManifest(root);
-  assert.equal(Object.keys(first.files).length, 5);
+  assert.equal(Object.keys(first.files).length, 8);
   assert.equal(first.files['/media/projects/draft.jpg'], undefined);
+  assert.equal(first.files['/media/projects/draft-preview-2400.webp'], undefined);
+  assert.equal(first.files['/media/articles/body-preview-480.webp'], undefined);
+  assert.match(first.files['/media/projects/shared-preview-2400.webp'], /shared-preview-2400-/);
+  assert.match(first.files['/media/projects/shared-preview-480.webp'], /shared-preview-480-/);
+  assert.match(first.files['/media/articles/body-preview-2400.webp'], /body-preview-2400-/);
   await put('public/media/articles/body.jpg', 'changed');
   const second = await createManifest(root);
   assert.notEqual(first.files['/media/articles/body.jpg'], second.files['/media/articles/body.jpg']);

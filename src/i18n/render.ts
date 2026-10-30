@@ -3,6 +3,7 @@ import matter from 'gray-matter';
 import { createMarkdownProcessor } from '@astrojs/markdown-remark';
 import english from './english.json';
 import { codeHighlighting } from '../lib/code-highlighting.mjs';
+import { remarkContentDisplayImages } from '../../scripts/media/display-images.mjs';
 import { languagePath, withoutLanguage } from './runtime';
 
 type Node = DefaultTreeAdapterMap['node'];
@@ -10,7 +11,7 @@ type Element = DefaultTreeAdapterMap['element'];
 const catalog: Record<string, string> = english;
 const files = import.meta.glob<string>('./content/**/*.md', { query: '?raw', import: 'default', eager: true });
 const originals = import.meta.glob<string>('../content/{articles,projects}/*.md', { query: '?raw', import: 'default', eager: true });
-const processor = createMarkdownProcessor({ shikiConfig: codeHighlighting });
+const processor = createMarkdownProcessor({ shikiConfig: codeHighlighting, remarkPlugins: [remarkContentDisplayImages] });
 export const translations = Object.fromEntries(Object.entries(files).map(([path, raw]) => {
   const entry = matter(raw);
   return [path.replace('./content/', '').replace(/\.md$/, ''), entry];

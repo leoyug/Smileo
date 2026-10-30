@@ -19,8 +19,9 @@ private/cms/
 output/
 .agents/
 
-# 本地凭证与可重新生成的照片预览；发布资产继续保留在 Git。
+# 本地凭证与可重新生成的显示预览；发布资产继续保留在 Git。
 .env*
 !.env.example
-public/media/photos/**/*-preview-480.webp
-public/media/photos/**/*-preview-222.webp
+public/media/**/*-preview-2400.webp
+public/media/**/*-preview-480.webp
+public/media/**/*-preview-222.webp
