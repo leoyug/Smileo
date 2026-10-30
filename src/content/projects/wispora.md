@@ -14,9 +14,9 @@ featured: true
 order: 1
 cover: /media/projects/wispora/cover.png
 download:
-  href: /downloads/wispora-0.7.3-chrome.zip
-  filename: wispora-0.7.3-chrome.zip
-  label: 下载 Wispora Chrome 安装包
+  href: /downloads/Wispora-v0.8.0-Chrome-Edge.zip
+  filename: Wispora-v0.8.0-Chrome-Edge.zip
+  label: 下载 Wispora v0.8.0 Chrome / Edge 安装包
 archiveImages: []
 relatedArticles: []
 ---
@@ -44,7 +44,7 @@ AI 是可选的整理助手。配置自己的 API Key 后，它可以帮助补�
 
 视觉上，我希望它适合长时间浏览，所以使用了暖灰色背景、紧凑的排版和少量品牌橙色。设计系统把颜色、字体、圆角和交互状态统一收进语义 token，共享组件以 Intent UI 和 React Aria 为基础。Figma 和浏览器之间的颜色一致性也做了专门处理，以 Display-P3 为权威值，同时保留 sRGB 回退。
 
-目前项目是 v0.7.3，核心本地流程已经接通，也加入了备份恢复和内容简报。今日总结与一周简报只使用本地已保存的信息，生成后保留当时的内容，方便重新阅读。完整的 Chrome / Edge 扩展发布验收仍在后续计划中。
+目前项目是 v0.8.0，核心本地流程已经接通，也加入了备份恢复和内容简报。今日总结与一周简报只使用本地已保存的信息，生成后保留当时的内容，方便重新阅读。完整的 Chrome / Edge 扩展发布验收仍在后续计划中。
 
 ## 遇到的挑战
 
