@@ -1,6 +1,6 @@
 {
   "name": "smileo",
-  "version": "0.8.5",
+  "version": "0.8.6",
   "private": true,
   "type": "module",
   "scripts": {
@@ -40,6 +40,7 @@
     "cuelume": "0.2.4",
     "cuelume-legacy": "npm:cuelume@0.2.2",
     "exiftool-vendored": "^37.2.0",
+    "gradient-shimmer": "^0.1.1",
     "gray-matter": "^4.0.3",
     "gsap": "^3.15.0",
     "mammoth": "^1.13.0",

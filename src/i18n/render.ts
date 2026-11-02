@@ -162,6 +162,18 @@ export async function localizePage(html: string, pathname: string, site: URL | u
     }
     if ('childNodes' in node) for (const child of node.childNodes) localize(child,skip);
     if ('content' in node) localize(node.content,skip);
+    // English places the inspiration phrase after the linked word of thanks.
+    if (!skip && hasClass(node, 'site-footer__credit-copy') && 'childNodes' in node) {
+      const link = node.childNodes.find(child => hasClass(child, 'site-footer__thanks'));
+      if (link) {
+        setText(link, 'thanks');
+        node.childNodes = [
+          { nodeName: '#text', value: ', and ', parentNode: node },
+          link,
+          { nodeName: '#text', value: ' to every spark.', parentNode: node },
+        ];
+      }
+    }
   }
   // Change root language before visiting children, so Chinese source text is translated.
   const htmlNode = elements.find(node=>isElement(node)&&node.tagName==='html')!;

@@ -13,6 +13,7 @@ import { remarkContentDisplayImages } from "./scripts/media/display-images.mjs";
 import { localContentImport } from "./scripts/import/vite-plugin.mjs";
 import { localPhotoSlugs } from "./scripts/photo-slug/vite-plugin.mjs";
 import { codeHighlighting } from "./src/lib/code-highlighting.mjs";
+import { searchDiscovery } from "./scripts/seo/integration.mjs";
 
 const require = createRequire(import.meta.url);
 const environment = loadEnv(process.argv[2] === "dev" ? "development" : "production", process.cwd(), "");
@@ -52,7 +53,7 @@ export default defineConfig({
     "/photos/entry-f02d3fccf3": "/photos/walk-slowly-along-the-forest-path",
     "/photos/the-pier-under-the-blue-night": "/photos/the-pier-under-the-blue-night-sky",
   },
-  integrations: process.env.NODE_ENV === "production" ? [] : [react(), keystatic(), localContentImport(), localPhotoSlugs()],
+  integrations: [searchDiscovery(), ...(process.env.NODE_ENV === "production" ? [] : [react(), keystatic(), localContentImport(), localPhotoSlugs()])],
   vite: {
     // Keep check/build from replacing the running dev server's optimized dependencies.
     cacheDir: fileURLToPath(new URL(`./node_modules/.vite/${process.argv[2] ?? "astro"}/`, import.meta.url)),

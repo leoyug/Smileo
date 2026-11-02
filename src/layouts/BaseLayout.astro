@@ -24,7 +24,7 @@ const {
   titleEn = title,
   description = siteDescription,
   wide = false,
-  socialImage = "/og-ian-inspired.png",
+  socialImage = "/og-smileo.png",
   robots,
   showNavigation = true,
 } = Astro.props;
@@ -34,6 +34,8 @@ const localizedTitles = {
 };
 const canonical = new URL(Astro.url.pathname, Astro.site);
 const resolvedSocialImage = socialImage ? new URL(mediaUrl(socialImage), Astro.site) : null;
+const isDefaultSocialImage = socialImage === "/og-smileo.png";
+const defaultSocialImageAlt = "Leo — Welcome to Leo's digital garden. About life, work, interests, and questions I'm still figuring out.";
 const isDetailRoute = /^\/(?:projects|writing)\/[^/]+\/?$/.test(Astro.url.pathname);
 ---
 
@@ -71,12 +73,15 @@ const isDetailRoute = /^\/(?:projects|writing)\/[^/]+\/?$/.test(Astro.url.pathna
     <meta property="og:description" content={description} />
     <meta property="og:url" content={canonical} />
     {resolvedSocialImage && <meta property="og:image" content={resolvedSocialImage} />}
-    {resolvedSocialImage && <meta property="og:image:width" content="1536" />}
-    {resolvedSocialImage && <meta property="og:image:height" content="1024" />}
+    {isDefaultSocialImage && <meta property="og:image:width" content="1200" />}
+    {isDefaultSocialImage && <meta property="og:image:height" content="630" />}
+    {isDefaultSocialImage && <meta property="og:image:type" content="image/png" />}
+    {isDefaultSocialImage && <meta property="og:image:alt" content={defaultSocialImageAlt} />}
     <meta name="twitter:card" content={resolvedSocialImage ? "summary_large_image" : "summary"} />
     <meta name="twitter:title" content={localizedTitles["zh-CN"]} />
     <meta name="twitter:description" content={description} />
     {resolvedSocialImage && <meta name="twitter:image" content={resolvedSocialImage} />}
+    {isDefaultSocialImage && <meta name="twitter:image:alt" content={defaultSocialImageAlt} />}
     <meta name="generator" content={Astro.generator} />
     <ClientRouter fallback="animate" />
     <title data-title-zh={localizedTitles["zh-CN"]} data-title-en={localizedTitles.en}>{localizedTitles["zh-CN"]}</title>
