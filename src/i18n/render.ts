@@ -162,6 +162,18 @@ export async function localizePage(html: string, pathname: string, site: URL | u
     }
     if ('childNodes' in node) for (const child of node.childNodes) localize(child,skip);
     if ('content' in node) localize(node.content,skip);
+    // English places the inspiration phrase after the linked word of thanks.
+    if (!skip && hasClass(node, 'site-footer__credit-copy') && 'childNodes' in node) {
+      const link = node.childNodes.find(child => hasClass(child, 'site-footer__thanks'));
+      if (link) {
+        setText(link, 'thanks');
+        node.childNodes = [
+          { nodeName: '#text', value: ', and ', parentNode: node },
+          link,
+          { nodeName: '#text', value: ' to every spark.', parentNode: node },
+        ];
+      }
+    }
   }
   // Change root language before visiting children, so Chinese source text is translated.
   const htmlNode = elements.find(node=>isElement(node)&&node.tagName==='html')!;
@@ -192,5 +204,27 @@ export async function localizePage(html: string, pathname: string, site: URL | u
     }
   }
   wordBoundaries(root);
+  // Keep punctuation attached to an atomic photo-preview label at line wraps.
+  for (const node of elements.filter(node => hasClass(node, 'photo-stack-gallery'))) {
+    if (!isElement(node)) continue;
+    const parent = node.parentNode;
+    if (!parent || !('childNodes' in parent) || !('childNodes' in node)) continue;
+    const index = parent.childNodes.indexOf(node);
+    const next = parent.childNodes.slice(index + 1).find(candidate =>
+      !(isElement(candidate) && ['script', 'style'].includes(candidate.tagName)) &&
+      !(candidate.nodeName === '#text' && !(candidate as DefaultTreeAdapterMap['textNode']).value.trim())
+    );
+    if (!next || next.nodeName !== '#text') continue;
+    const tail = next as DefaultTreeAdapterMap['textNode'];
+    const punctuation = tail.value.match(/^\s*([.,;:!?]+)/)?.[1];
+    if (!punctuation) continue;
+    const wrapper = parseFragment('<span class="inline-punctuation"></span>').childNodes[0] as Element;
+    node.childNodes = node.childNodes.filter(child => child.nodeName !== '#text' || (child as DefaultTreeAdapterMap['textNode']).value.trim());
+    wrapper.parentNode = parent;
+    wrapper.childNodes = [node as Element, { nodeName: '#text', value: punctuation, parentNode: wrapper }];
+    node.parentNode = wrapper;
+    parent.childNodes[index] = wrapper;
+    tail.value = tail.value.replace(/^\s*[.,;:!?]+/, '');
+  }
   return serialize(root);
 }

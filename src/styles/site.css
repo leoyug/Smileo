@@ -1000,34 +1000,51 @@
     height: 64px;
   }
 
-  .project-archive-row__thumb img {
+  .project-archive-row__sheet {
     position: absolute;
     left: 8px;
     top: 7px;
     width: 80px;
     height: 50px;
     border: 3px solid var(--color-photo-paper);
-    object-fit: cover;
     box-shadow: var(--shadow-photo-stack);
     transform-origin: center;
     transform: translate(var(--stack-rest-x), var(--stack-rest-y)) rotate(var(--stack-rest-rotate));
     transition: transform var(--duration-fast) var(--ease-smooth-out), box-shadow var(--duration-fast) var(--ease-smooth-out);
   }
 
-  .project-archive-row__thumb img:nth-child(1) { z-index: 1; }
-  .project-archive-row__thumb img:nth-child(2) { z-index: 2; }
-  .project-archive-row__thumb img:nth-child(3) { z-index: 3; }
+  .project-archive-row__cover {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
 
-  .project-archive-row:is(:focus-visible, .is-transitioning) .project-archive-row__thumb img {
+  .project-archive-row__featured {
+    position: absolute;
+    top: calc(var(--space-1) * -1);
+    right: calc(var(--space-1) * -1);
+    pointer-events: none;
+    transform: rotate(0deg);
+    transform-origin: 50% 100%;
+    filter: drop-shadow(var(--shadow-featured-star));
+    transition: transform var(--duration-fast) var(--ease-smooth-out);
+  }
+
+  .project-archive-row__sheet:nth-child(1) { z-index: 1; }
+  .project-archive-row__sheet:nth-child(2) { z-index: 2; }
+  .project-archive-row__sheet:nth-child(3) { z-index: 3; }
+
+  .project-archive-row:is(:focus-visible, .is-transitioning) .project-archive-row__sheet {
     transform: translate(var(--stack-open-x), var(--stack-open-y)) rotate(var(--stack-open-rotate));
   }
 
-  .project-archive-row:is(:focus-visible, .is-transitioning) .project-archive-row__thumb img:nth-child(3) {
+  .project-archive-row:is(:focus-visible, .is-transitioning) .project-archive-row__sheet:nth-child(3) {
     box-shadow: 0 8px 20px rgb(0 0 0 / 28%);
     transform: translate(var(--stack-open-x), var(--stack-open-y)) rotate(var(--stack-open-rotate)) scale(1.08);
   }
 
-  .project-archive-row.is-transitioning .project-archive-row__thumb img:nth-child(3) {
+  .project-archive-row.is-transitioning .project-archive-row__sheet:nth-child(3) > .project-archive-row__cover {
     view-transition-name: project-cover;
   }
 
@@ -1041,11 +1058,15 @@
   }
 
   @media (hover: hover) and (pointer: fine) {
-    .project-archive-row:hover .project-archive-row__thumb img {
+    .project-archive-row:hover .project-archive-row__featured {
+      transform: rotate(var(--featured-star-angle, 0deg));
+    }
+
+    .project-archive-row:hover .project-archive-row__sheet {
       transform: translate(var(--stack-open-x), var(--stack-open-y)) rotate(var(--stack-open-rotate));
     }
 
-    .project-archive-row:hover .project-archive-row__thumb img:nth-child(3) {
+    .project-archive-row:hover .project-archive-row__sheet:nth-child(3) {
       box-shadow: 0 8px 20px rgb(0 0 0 / 28%);
       transform: translate(var(--stack-open-x), var(--stack-open-y)) rotate(var(--stack-open-rotate)) scale(1.08);
     }
@@ -1067,7 +1088,13 @@
   }
 
   @media (prefers-reduced-motion: reduce) {
-    .project-archive-row:is(:hover, :focus-visible, .is-transitioning) .project-archive-row__thumb img:nth-child(-n+3) {
+    .project-archive-row .project-archive-row__featured,
+    .project-archive-row:hover .project-archive-row__featured {
+      transform: none;
+      transition: none;
+    }
+
+    .project-archive-row:is(:hover, :focus-visible, .is-transitioning) .project-archive-row__sheet:nth-child(-n+3) {
       box-shadow: var(--shadow-photo-stack);
       transform: translate(var(--stack-rest-x), var(--stack-rest-y)) rotate(var(--stack-rest-rotate));
     }
@@ -2317,7 +2344,7 @@
     font-family: var(--font-heading);
     font-size: var(--text-page-title);
     font-weight: var(--weight-bold);
-    color: var(--color-copy);
+    color: var(--color-ink);
     line-height: calc(var(--space-6) + var(--space-1));
   }
 
@@ -2339,7 +2366,7 @@
     font-size: 36px;
     font-weight: var(--weight-regular);
     line-height: 44px;
-    color: var(--color-copy);
+    color: var(--color-ink);
     letter-spacing: .01em;
   }
 

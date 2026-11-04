@@ -2,7 +2,6 @@
 import { thumbImage } from "../../lib/display-image";
 import { mediaUrl } from "../../lib/media-url";
 import type { Photo } from "../../lib/photos";
-import PlaySpinLoader from "../PlaySpinLoader.astro";
 import PhotoCornerMarks from "./PhotoCornerMarks.astro";
 
 interface Props {
@@ -75,7 +74,6 @@ const mobileColumns = balanceColumns(2);
   >
     <div class="photo-lightbox__shell">
       <div class="photo-lightbox__stage">
-        <PlaySpinLoader deferred />
         <figure class="photo-lightbox__frame">
           <img class="photo-lightbox__corner is-top-left" src="/assets/figma-v03/photo-lightbox/corner-top-left.svg" alt="" />
           <img class="photo-lightbox__corner is-top-right" src="/assets/figma-v03/photo-lightbox/corner-top-right.svg" alt="" />

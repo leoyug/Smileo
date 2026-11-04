@@ -25,7 +25,7 @@
       height: calc(var(--space-12) + var(--space-2));
     }
 
-    .project-archive-row__thumb img {
+    .project-archive-row__sheet {
       left: var(--space-2);
       top: var(--space-2);
       width: var(--space-16);
@@ -354,8 +354,17 @@
 
 /* English words wrap at readable boundaries without changing the Chinese layout. */
 @layer site-responsive {
-  html:lang(en) .about-intro {
-    --about-portrait-width: var(--about-portrait-width-en);
+  html:lang(en) .hero__copy {
+    gap: var(--english-paragraph-gap);
+  }
+
+  html:lang(en) .about-sections p {
+    line-height: var(--leading-description);
+  }
+
+  html:lang(en) :is(.page-intro, .photo-index-header, .about-intro__copy, .resume__summary) p + p,
+  html:lang(en) .content-detail[data-detail-page] .article__body > p + p {
+    margin-top: var(--english-paragraph-gap);
   }
 
   html:lang(en) :is(h1, h2, h3) { overflow-wrap: anywhere; }

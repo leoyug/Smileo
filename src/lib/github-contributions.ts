@@ -1,8 +1,9 @@
 import { readFileSync, writeFileSync } from "node:fs";
-import { fileURLToPath } from "node:url";
+import { join } from "node:path";
+import snapshotData from "../data/github-contributions.json";
 
 const HEATMAP_WEEKS = 26;
-const snapshotPath = fileURLToPath(new URL("../data/github-contributions.json", import.meta.url));
+const snapshotPath = join(process.cwd(), "src/data/github-contributions.json");
 
 export type ContributionCell = {
   column: number;
@@ -23,14 +24,11 @@ export function loadGithubContributions(username: string) {
   if (cached) return cached;
   const pending = fetchContributions(username)
     .then((value) => {
-      if (!value) throw new Error("empty");
+      if (!value) return bundledSnapshot();
       writeSnapshot(value);
       return value;
     })
-    .catch(() => {
-      cache.delete(username);
-      return readSnapshot();
-    });
+    .catch(() => bundledSnapshot());
   cache.set(username, pending);
   return pending;
 }
@@ -77,22 +75,23 @@ function parseContributions(html: string): GithubContributions | null {
   return { total, weeks: selected.length, cells };
 }
 
-function readSnapshot(): GithubContributions | null {
-  try {
-    const data = JSON.parse(readFileSync(snapshotPath, "utf8")) as GithubContributions;
-    if (!Number.isFinite(data.total) || !data.weeks || !data.cells?.length) return null;
-    return data;
-  } catch {
-    return null;
-  }
+function bundledSnapshot(): GithubContributions | null {
+  return normalize(snapshotData);
+}
+
+function normalize(data: unknown): GithubContributions | null {
+  if (!data || typeof data !== "object") return null;
+  const value = data as GithubContributions;
+  if (!Number.isFinite(value.total) || !value.weeks || !value.cells?.length) return null;
+  return { total: value.total, weeks: value.weeks, cells: value.cells };
 }
 
 function writeSnapshot(value: GithubContributions) {
-  const next = JSON.stringify(value);
+  const next = `${JSON.stringify(value)}\n`;
   try {
-    if (readFileSync(snapshotPath, "utf8").trim() === next) return;
+    if (readFileSync(snapshotPath, "utf8") === next) return;
+    writeFileSync(snapshotPath, next);
   } catch {
-    // The snapshot is created on the first successful read.
+    // Refreshing the file is optional. The imported snapshot still renders.
   }
-  writeFileSync(snapshotPath, `${next}\n`);
 }

@@ -32,6 +32,14 @@ const initializeProjectTransitions = () => {
     if (link.dataset.transitionReady === "true") return;
     link.dataset.transitionReady = "true";
 
+    const star = link.querySelector<HTMLElement>(".project-archive-row__featured");
+    if (star) link.addEventListener("pointerenter", () => {
+      if (!matchMedia("(hover: hover) and (pointer: fine)").matches
+        || matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+      const angle = (3 + Math.random() * 2) * (Math.random() < 0.5 ? -1 : 1);
+      star.style.setProperty("--featured-star-angle", `${angle}deg`);
+    }, { passive: true });
+
     const markAsSource = (event: MouseEvent | PointerEvent) => {
       if (event.button !== 0 || event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) return;
       links.forEach((item) => item.classList.remove("is-transitioning"));

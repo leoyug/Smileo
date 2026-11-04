@@ -1,7 +1,6 @@
 ---
 import type { HTMLAttributes } from "astro/types";
 import Button from "./Button.astro";
-import PlaySpinLoader from "./PlaySpinLoader.astro";
 import type { PhotoStackPhoto } from "../lib/photo-stack-types";
 
 interface Props extends HTMLAttributes<"span"> { photos: readonly PhotoStackPhoto[] }
@@ -30,7 +29,6 @@ const serialized = JSON.stringify(photos).replaceAll("<", "\\u003c");
         <figure class="photo-stack-gallery__detail-content">
           <div class="photo-stack-gallery__detail-media" data-stack-media>
             <div class="photo-stack-gallery__detail-photo"><img alt="" data-stack-image draggable="false" /></div>
-            <PlaySpinLoader deferred />
           </div>
           <figcaption class="photo-stack-gallery__caption" data-stack-caption></figcaption>
           <p class="photo-stack-gallery__error" role="status" data-stack-error hidden>照片暂时无法加载，正在显示预览图。</p>

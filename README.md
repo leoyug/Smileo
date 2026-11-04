@@ -142,6 +142,12 @@ npm run deploy:site  # 将当前 dist 上传并绑定主域名，不重新构建
 
 官方参考：[静态站点与 404](https://developers.cloudflare.com/workers/static-assets/routing/static-site-generation/)、[静态资产重定向](https://developers.cloudflare.com/workers/static-assets/redirects/)、[Workers 自定义域名](https://developers.cloudflare.com/workers/configuration/routing/custom-domains/)、[域名跳转](https://developers.cloudflare.com/fundamentals/manage-domains/redirect-domain/)。
 
+## 搜索收录与分享图片
+
+`npm run build` 通过 `scripts/seo/integration.mjs` 自动生成 `/sitemap.xml` 和 `/robots.txt`，地址使用 Astro 的 `site` 配置（由 `SITE_URL` 控制）。站点地图读取正式构建 HTML 的 canonical 与 robots 元数据，只包含实际生成且允许索引的页面，并保留中英文替代链接；草稿、跳转页、404、开发设计系统及标有 `noindex` 的页面不会加入。
+
+`robots.txt` 允许抓取并声明站点地图地址，让爬虫可以读取页面上的 `noindex`。摄影列表（中文及英文）允许收录并加入站点地图；单张照片详情继续使用 `noindex,follow`，不加入站点地图。网站默认 OG 图为 `/og-smileo.png`；文章有封面时优先使用封面，无封面或空封面时回退到网站 OG 图，中英文页面沿用同一选择规则。
+
 ## 中英文切换
 
 公开页面提供中文和 English 版本，英文地址为原地址前加 `/en/`。在底部偏好面板中选择语言；独立作品集在页头提供切换入口。切换保留当前页面、查询参数和章节锚点，浏览器会记住选择。直接打开语言地址以该地址为准；再次访问首页时恢复已保存的英文偏好。禁用存储时仍能切换，禁用 JavaScript 时英文地址仍包含完整静态内容。

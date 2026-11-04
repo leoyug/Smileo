@@ -144,7 +144,6 @@
     --content-reading: 37rem; --content-wide: 75rem; --content-showcase: 75rem; --gutter: 1.5rem;
     --photo-lightbox-facts-width: 60rem;
     --about-portrait-width: 13.625rem;
-    --about-portrait-width-en: 12.5rem;
     --about-portrait-ratio: 218 / 252;
     --portrait-theme-filter: none;
     --portrait-pointer-radius: 144px;
@@ -164,6 +163,7 @@
     --pixel-person-preview-travel: var(--space-8);
     --logo-preview-size: var(--space-8);
     --shadow-logo-preview: 0 2px 3px rgb(0 0 0 / 18%);
+    --shadow-featured-star: 0 1px 1px rgb(0 0 0 / 16%);
     --logo-preview-spread: var(--space-6);
     --logo-preview-travel: var(--space-8);
     --logo-preview-rotation: 12deg;
@@ -195,10 +195,14 @@
     --color-photo-stack-detail-backdrop: color-mix(in srgb, var(--color-canvas) 75%, transparent);
     --blur-photo-stack-detail-backdrop: var(--space-5);
     --color-photo-stack-control-hover: color-mix(in srgb, var(--color-ink) 88%, var(--color-canvas));
-    --color-wave-underline: #8585f5;
+    --color-wave-underline: #16B395;
     --wave-underline-period: 12px;
     --wave-underline-height: var(--space-2);
     --duration-wave-underline: 550ms;
+    --duration-text-shimmer: 2450ms;
+    --shimmer-speed: 100;
+    --shimmer-band-width: .85em;
+    --shimmer-highlight-strength: 100%;
     --duration-micro: 80ms; --duration-quick: 150ms; --duration-fast: 250ms; --duration-project-attribute: 300ms; --duration-photo-fan: 420ms; --duration-label-character: 300ms; --duration-text-link: 600ms; --duration-very-slow: 500ms; --duration-highlight-draw: 600ms; --duration-highlight-glint: 200ms; --delay-highlight-glint-first: 420ms; --delay-highlight-glint-second: 480ms; --delay-highlight-glint-third: 540ms; --delay-highlight-glint-fourth: 600ms; --ease-smooth-out: cubic-bezier(.22, 1, .36, 1); --ease-highlight-draw: ease-in-out;
     --copy-icon-size: .875em;
     --copy-icon-gap: var(--space-1);
@@ -256,6 +260,7 @@
   }
 
   :root[data-theme="dark"] {
+    --shimmer-highlight-strength: 72%;
     color-scheme: dark;
     --portrait-theme-filter: none;
     --color-portrait-cursor: var(--color-photo-paper);
@@ -318,6 +323,14 @@
   }
 }
 
+@layer tokens {
+  html:lang(en) {
+    --leading-description: var(--space-6);
+    --leading-article-body: var(--leading-description);
+    --english-paragraph-gap: var(--space-2);
+  }
+}
+
 @layer base {
   html { scroll-padding-block-end: var(--dock-reserve); scrollbar-color: var(--color-muted) var(--color-canvas); }
   body { min-height: 100vh; overflow-x: clip; padding-block-end: var(--dock-page-padding); background: var(--color-canvas); color: var(--color-ink); font: var(--weight-regular) var(--text-body)/1.5rem var(--font-sans); letter-spacing: var(--tracking-body); font-synthesis: none; -webkit-font-smoothing: antialiased; text-rendering: optimizeLegibility; }
@@ -339,6 +352,7 @@
 }
 
 @layer components {
+  .inline-punctuation { white-space: nowrap; }
   .code-block {
     min-width: 0;
     max-width: 100%;
