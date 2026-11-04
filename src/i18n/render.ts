@@ -204,5 +204,27 @@ export async function localizePage(html: string, pathname: string, site: URL | u
     }
   }
   wordBoundaries(root);
+  // Keep punctuation attached to an atomic photo-preview label at line wraps.
+  for (const node of elements.filter(node => hasClass(node, 'photo-stack-gallery'))) {
+    if (!isElement(node)) continue;
+    const parent = node.parentNode;
+    if (!parent || !('childNodes' in parent) || !('childNodes' in node)) continue;
+    const index = parent.childNodes.indexOf(node);
+    const next = parent.childNodes.slice(index + 1).find(candidate =>
+      !(isElement(candidate) && ['script', 'style'].includes(candidate.tagName)) &&
+      !(candidate.nodeName === '#text' && !(candidate as DefaultTreeAdapterMap['textNode']).value.trim())
+    );
+    if (!next || next.nodeName !== '#text') continue;
+    const tail = next as DefaultTreeAdapterMap['textNode'];
+    const punctuation = tail.value.match(/^\s*([.,;:!?]+)/)?.[1];
+    if (!punctuation) continue;
+    const wrapper = parseFragment('<span class="inline-punctuation"></span>').childNodes[0] as Element;
+    node.childNodes = node.childNodes.filter(child => child.nodeName !== '#text' || (child as DefaultTreeAdapterMap['textNode']).value.trim());
+    wrapper.parentNode = parent;
+    wrapper.childNodes = [node as Element, { nodeName: '#text', value: punctuation, parentNode: wrapper }];
+    node.parentNode = wrapper;
+    parent.childNodes[index] = wrapper;
+    tail.value = tail.value.replace(/^\s*[.,;:!?]+/, '');
+  }
   return serialize(root);
 }

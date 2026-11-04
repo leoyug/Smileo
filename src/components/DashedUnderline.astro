@@ -14,7 +14,7 @@ interface Props extends HTMLAttributes<"span"> {
 const { class: className, effect = "none", logos = [], photos = [], ...attributes } = Astro.props;
 const hasPhotoStack = effect === "photo-stack" && photos.length === 6 && new Set(photos.map((photo) => photo.id)).size === 6;
 const hasEffect = effect !== "none" && effect !== "photo-stack";
-const shimmerStyle = effect === "shimmer" ? `--shimmer-gradient: ${buildBandGradient(gradientPresets.sunrise, 105)}; --shimmer-ease: ${easingPresets.smooth}` : undefined;
+const shimmerStyle = effect === "shimmer" ? `--shimmer-gradient: ${buildBandGradient(gradientPresets.sunrise.map(stop => ({ ...stop, color: `color-mix(in oklab, ${stop.color} var(--shimmer-highlight-strength), var(--gs-base))` })), 105)}; --shimmer-ease: ${easingPresets.smooth}` : undefined;
 const waveId = effect === "wave" ? `wave-${crypto.randomUUID()}` : undefined;
 // Separate pen strokes let stems, leaves and petals draw along their own paths.
 const flowerPaths = [
@@ -39,7 +39,7 @@ const flowerPaths = [
 ];
 ---
 
-{hasPhotoStack ? <PhotoStackGallery photos={photos} class={className} {...attributes}><span class="dashed-underline dashed-underline--photo-stack"><slot /></span></PhotoStackGallery> : (<span class:list={["dashed-underline", { "dashed-underline--interactive": hasEffect, "dashed-underline--selection": effect === "selection", "dashed-underline--pixel-person": effect === "pixel-person", "dashed-underline--wave": effect === "wave", "dashed-underline--shimmer": effect === "shimmer", "dashed-underline--logos": effect === "logos", "dashed-underline--flowers": effect === "flowers" }, className]} tabindex={hasEffect ? 0 : undefined} {...attributes}>{effect === "shimmer" ? <span class="dashed-underline__shimmer" style={shimmerStyle}><slot /></span> : <slot />}{effect === "selection" && <span class="dashed-underline__frame" aria-hidden="true"><i></i><i></i><i></i><i></i></span>}{effect === "pixel-person" && <PixelPersonPreview />}{effect === "logos" && <span class="dashed-underline__logos" aria-hidden="true">
+{hasPhotoStack ? <PhotoStackGallery photos={photos} class={className} {...attributes}><span class="dashed-underline dashed-underline--photo-stack"><slot /></span></PhotoStackGallery> : (<span class:list={["dashed-underline", { "dashed-underline--interactive": hasEffect, "dashed-underline--selection": effect === "selection", "dashed-underline--pixel-person": effect === "pixel-person", "dashed-underline--wave": effect === "wave", "dashed-underline--shimmer": effect === "shimmer", "dashed-underline--logos": effect === "logos", "dashed-underline--flowers": effect === "flowers" }, className]} tabindex={hasEffect ? 0 : undefined} {...attributes}>{effect === "shimmer" ? <text-shimmer class="dashed-underline__shimmer" style={shimmerStyle}><slot /></text-shimmer> : <slot />}{effect === "selection" && <span class="dashed-underline__frame" aria-hidden="true"><i></i><i></i><i></i><i></i></span>}{effect === "pixel-person" && <PixelPersonPreview />}{effect === "logos" && <span class="dashed-underline__logos" aria-hidden="true">
     {logos.slice(0, 3).map((logo, index) => <img src={logo.src} alt={logo.alt} width="40" height="40" decoding="async" draggable="false" style={`--logo-index: ${index}; --logo-image-rotation: ${logo.rotation ?? 0}deg`} />)}
   </span>}{effect === "flowers" && <span class="dashed-underline__flowers" aria-hidden="true">
     {flowerPaths.map((flower, index) => <svg class="dashed-underline__flower" style={`--flower-index: ${index}`} viewBox="0 0 60 90" fill="none" focusable="false">
@@ -125,8 +125,9 @@ const flowerPaths = [
   }
 
   .dashed-underline__shimmer {
+    display: inline-block;
     --gs-base: var(--color-link);
-    --gs-spread: var(--space-3);
+    --gs-spread: var(--shimmer-band-width);
     --gs-spread-mid: calc(var(--gs-spread) * .72);
   }
 
@@ -345,3 +346,29 @@ const flowerPaths = [
   }
 
 </style>
+
+<script>
+  class TextShimmer extends HTMLElement {
+    private observer?: ResizeObserver;
+
+    connectedCallback() {
+      this.observer?.disconnect();
+      this.observer = new ResizeObserver(([entry]) => {
+        const width = entry.contentRect.width;
+        const speed = Number.parseFloat(getComputedStyle(this).getPropertyValue("--shimmer-speed"));
+        if (width <= 0 || !Number.isFinite(speed) || speed <= 0) return;
+        // A 300%-wide background travels twice the text width during the
+        // first 60% of the cycle; the remaining 40% is the pause.
+        this.style.setProperty("--duration-text-shimmer", `${(2 * width / speed / .6) * 1000}ms`);
+      });
+      this.observer.observe(this);
+    }
+
+    disconnectedCallback() {
+      this.observer?.disconnect();
+      this.observer = undefined;
+    }
+  }
+
+  if (!customElements.get("text-shimmer")) customElements.define("text-shimmer", TextShimmer);
+</script>
