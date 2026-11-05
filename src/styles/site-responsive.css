@@ -52,7 +52,7 @@
       aspect-ratio: 880 / 536;
     }
 
-    .detail-toc {
+    .detail-toc:not(.detail-toc--demo) {
       width: 44px;
     }
 
@@ -84,11 +84,14 @@
     }
   }
 
-  @media (min-width: 60rem) and (max-width: 79.999rem) {
-    .detail-toc--reading {
-      width: min(var(--detail-toc-width), calc((100vw - var(--content-reading)) / 2 - var(--space-12)));
+  @media (min-width: 60rem) {
+    .detail-toc--reading:not(.detail-toc--demo) {
+      /* Reserve the full gap even when the viewport constrains the sidebar. */
+      width: min(var(--detail-toc-width), calc((100% - var(--content-reading)) / 2 - var(--detail-toc-inline-inset) - var(--detail-toc-content-gap)));
     }
+  }
 
+  @media (min-width: 60rem) and (max-width: 79.999rem) {
     .detail-toc--reading .detail-toc__label {
       position: static;
       max-width: none;
@@ -117,8 +120,8 @@
       gap: var(--space-1);
     }
 
-    .detail-toc__back span,
-    .detail-toc__top span {
+    .detail-toc__back .detail-toc__action-label,
+    .detail-toc__top .detail-toc__action-label {
       display: none;
       opacity: 0;
       transform: translateX(calc(-1 * var(--space-1)));
@@ -126,8 +129,8 @@
       white-space: nowrap;
     }
 
-    .detail-toc__back:is(:hover, :focus-visible) span,
-    .detail-toc__top:is(:hover, :focus-visible) span {
+    .detail-toc__back:is(:hover, :focus-visible) .detail-toc__action-label,
+    .detail-toc__top:is(:hover, :focus-visible) .detail-toc__action-label {
       display: block;
       opacity: 1;
       transform: none;
@@ -147,7 +150,7 @@
       padding-top: 0;
     }
 
-    .detail-toc--reading:not(.detail-toc--demo) .detail-toc__back span {
+    .detail-toc--reading:not(.detail-toc--demo) .detail-toc__back .detail-toc__action-label {
       display: block;
       position: static;
       padding: 0;

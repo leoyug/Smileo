@@ -19,7 +19,7 @@ const category = entry.data.category ?? entry.data.tags[0];
 
 <BaseLayout title={`${entry.data.title}`} description={entry.data.description} socialImage={entry.data.cover || undefined}>
   <DetailToc headings={headings} ariaLabel="文章目录" className="detail-toc--reading" backHref="/" backLabel="返回主页" returnViaHistory />
-  <article class="content-detail reading-column" data-detail-page="article">
+  <article class="content-detail reading-column" data-detail-page="article" data-route-enter-viewport>
     {entry.data.cover && <img class="content-detail__cover" src={readingImage(entry.data.cover)} alt={entry.data.coverAlt ?? ""} data-route-enter />}
     <header id="overview" data-route-enter>
       <h1>{entry.data.title}</h1>

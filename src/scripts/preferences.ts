@@ -15,7 +15,7 @@ const topLevelPaths = new Set([
   "/projects/",
   "/writing/",
   "/photos/",
-  "/about/",
+  "/resume/",
 ]);
 const reducedMotionQuery = window.matchMedia(
   "(prefers-reduced-motion: reduce)",

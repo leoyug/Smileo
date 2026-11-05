@@ -1,6 +1,22 @@
 @layer reset, tokens, base, components, pages, responsive, astro, site, site-responsive;
 
 @font-face {
+  font-family: "Geist";
+  src: url("/fonts/geist/Geist-Variable.woff2") format("woff2");
+  font-weight: 100 900;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Geist";
+  src: url("/fonts/geist/Geist-Italic-Variable.woff2") format("woff2");
+  font-weight: 100 900;
+  font-style: italic;
+  font-display: swap;
+}
+
+@font-face {
   font-family: "Geist Mono";
   src: url("/fonts/geist/GeistMono-Regular.woff2") format("woff2");
   font-weight: 400;
@@ -109,7 +125,7 @@
     --external-arrow-size: .75em;
     --external-arrow-gap: var(--space-1);
     --external-arrow-travel: var(--space-1);
-    --font-sans: "PingFang SC", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", "Noto Sans SC", "Microsoft YaHei", sans-serif;
+    --font-sans: "Geist", "PingFang SC", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", "Noto Sans SC", "Microsoft YaHei", sans-serif;
     --font-serif: Georgia, "Noto Serif SC", "Songti SC", serif; --font-mono: "Geist Mono", "SFMono-Regular", Consolas, monospace; --font-script: "Kaiti SC", "STKaiti", cursive;
     --font-heading: "Chill Jinshu Song Compact", var(--font-sans);
     --text-meta: .75rem; --text-body: .875rem; --text-title: .875rem; --text-lead: 1rem; --text-subhead: 1rem; --text-page-title: 1.5rem; --text-resume-title: 2.25rem; --text-display: 2rem;
@@ -241,6 +257,8 @@
     --dock-page-padding: calc(var(--space-16) + env(safe-area-inset-bottom, 0px));
     --dock-reserve: calc(var(--dock-backdrop-height) + var(--space-4));
     --detail-toc-width: 16.5rem; --detail-toc-label-width: 12.5rem;
+    --detail-toc-inline-inset: calc(var(--space-8) + var(--space-2));
+    --detail-toc-content-gap: var(--space-4);
     --text-detail-toc: .9375rem;
     --page-top-space: var(--space-20);
     --text-article-title: clamp(2rem, calc(1rem + 2.5vw), 3rem);
@@ -278,7 +296,7 @@
     --color-photo-paper: #fff;
 
     --color-ink: #fafafa;
-    --color-copy: #b5b3b0;
+    --color-copy: #a3a19e;
     --color-link: #fafafa;
     --color-muted: #808080;
     --color-faint: #808080;

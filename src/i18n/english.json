@@ -96,6 +96,8 @@
   "在线作品集": "online portfolio",
   "履历联系方式": "Résumé contact details",
   "工作经历": "Experience",
+  "自由设计": "Freelance design",
+  "自由设计，担任产品设计师。": "Freelance work as a product designer.",
   "研究员": "Researcher",
   "UI 设计师": "UI designer",
   "上海亦我信息技术有限公司": "Shanghai Yiwo Information Technology Co., Ltd.",
@@ -115,7 +117,7 @@
   "剪映": "CapCut",
   "Adobe 套件": "Adobe Suite",
   "教育经历": "Education",
-  "电子科技大学": "University of Electronic Science and Technology of China",
+  "电子科技大学": "UESTC",
   "本科·学士学位": "Bachelor's degree",
   "电子信息工程": "Electronic Information Engineering",
   "你好，我是廖如晟，一名拥有5年以上经验的产品设计师。我热衷于体验有趣的应用或者产品，也爱探索各种有创意的设计和博客。": "Hi, I'm Liao Rusheng, a product designer with over five years of experience. I enjoy trying thoughtful applications and products, and exploring creative design and personal websites.",
@@ -379,5 +381,12 @@
   "图片预览": "Image preview",
   "缩小图片": "Close image preview",
   "下载 Wispora v0.8.0 Chrome / Edge 安装包": "Download Wispora v0.8.0 for Chrome / Edge",
-  "生活、设计与学习记录。": "Notes on life, design, and learning."
+  "生活、设计与学习记录。": "Notes on life, design, and learning.",
+  "简介": "Profile",
+  "欢迎来到我的": "Welcome to my",
+  "，我是 Leo，一名产品设计师。": ". I'm Leo, a product designer.",
+  "进行构建。我喜欢探索一切": "to build. I enjoy exploring",
+  "用心创作的事物": "things made with care",
+  "。最近，我开始更多地借助 AI 来": ". Lately, I've been using AI more often to",
+  "——关于生活、工作、兴趣，以及那些还没想明白的问题。": "—about life, work, interests, and questions I'm still figuring out."
 }

@@ -33,19 +33,19 @@ typography:
     fontWeight: 400
     lineHeight: "2.75rem"
   body:
-    fontFamily: "system-ui, -apple-system, BlinkMacSystemFont, Segoe UI, Noto Sans SC, PingFang SC, Microsoft YaHei, sans-serif"
+    fontFamily: "Geist, PingFang SC, system-ui, -apple-system, BlinkMacSystemFont, Segoe UI, Noto Sans SC, Microsoft YaHei, sans-serif"
     fontSize: "0.875rem"
     fontWeight: 400
     lineHeight: "1.5rem"
     letterSpacing: "0"
   lead:
-    fontFamily: "system-ui, -apple-system, BlinkMacSystemFont, Segoe UI, Noto Sans SC, PingFang SC, Microsoft YaHei, sans-serif"
+    fontFamily: "Geist, PingFang SC, system-ui, -apple-system, BlinkMacSystemFont, Segoe UI, Noto Sans SC, Microsoft YaHei, sans-serif"
     fontSize: "1rem"
     fontWeight: 400
     lineHeight: 1.45
     letterSpacing: "0"
   metadata:
-    fontFamily: "system-ui, -apple-system, BlinkMacSystemFont, Segoe UI, Noto Sans SC, PingFang SC, Microsoft YaHei, sans-serif"
+    fontFamily: "Geist, PingFang SC, system-ui, -apple-system, BlinkMacSystemFont, Segoe UI, Noto Sans SC, Microsoft YaHei, sans-serif"
     fontSize: "0.75rem"
     fontWeight: 400
     lineHeight: 1.45
@@ -189,10 +189,10 @@ V0.4.0 是一份在暖纸画布上自然展开、以中文原文和完整英文�
 
 **Display Font:** Chill Jinshu Song Compact（中文标题：Bold 用于大标题，Regular 用于小标题）
 **Resume Name Font:** Chill Jinshu Song Text Regular（仅用于在线履历中的姓名）
-**Body Font:** Geist Mono（拉丁、数字）+ PingFang SC（中文）
-**Label/Mono Font:** 日期、数字和英文统一使用 Geist Mono
+**Body Font:** 全站默认 sans 使用 Geist Sans，中文字符回退到 PingFang SC 与系统中文 sans。
+**Label/Mono Font:** 日期、代码、账号等结构化等宽信息使用 Geist Mono。
 
-**Character:** 中文标题使用寒蝉宋体，Regular 与 Bold 分别承载小标题和大标题；正文维持系统中文无衬线，日期、数字和英文使用 Geist Mono，形成克制且清晰的字形对比。手写 Kaiti 字形只属于 Leo 标记和少量作者批注，不能扩展为界面字体。
+**Character:** 中文标题使用寒蝉宋体，Regular 与 Bold 分别承载小标题和大标题；中文正文维持系统无衬线；英文正文、列表、链接、项目说明、提示和履历文字使用 Geist Sans，日期与代码使用 Geist Mono，形成克制且清晰的字形对比。手写 Kaiti 字形只属于 Leo 标记和少量作者批注，不能扩展为界面字体。
 
 ### Hierarchy
 
@@ -204,7 +204,7 @@ V0.4.0 是一份在暖纸画布上自然展开、以中文原文和完整英文�
 
 **The Quiet Type Rule.** 重要性来自位置、字重、墨色和留白，不通过突然放大的字号、全大写或高对比装饰建立。
 
-**The Mixed Script Rule.** 中文界面共享系统中文 sans，拉丁、数字统一回退到自托管 Geist Mono；script 只保留给作者标记。
+**The Mixed Script Rule.** 原先使用默认字体的地方优先使用自托管 Geist；不支持的字符或加载失败时按原字体栈回退到系统默认字体。
 
 ## Layout
 
@@ -328,3 +328,12 @@ V0.4.0 是一份在暖纸画布上自然展开、以中文原文和完整英文�
 - **Don't** 把每一组内容包成圆角卡片，或用阴影代替留白和结构。
 - **Don't** 在灯箱中按网格卡片比例裁切照片，或在移动端整体缩小正文来换取空间。
 - **Don't** 把照片详情实现为脱离摄影页语境的独立详情版式。
+
+
+### 2026-11-05：首页与简介编排
+
+首页按 Figma `21078:2308` 依次展示签名、四段个人介绍、联系入口、近期文章、精选项目、常用工具和屏幕之外。常用工具及联系方式复用现有实现和真实数据；照片继续沿用亮暗主题的既有组件与 CMS 选图。`/resume` 按 `21165:3473` 直接以姓名作为一级标题，之后为介绍、网站 / GitHub / 邮箱、工作经历、项目经验、技能与工具、教育经历。职业事实继续由 resume 内容维护。底部 dock 仅保留首页、作品、写作、摄影与偏好，不显示“简介”；`/resume` 通过首页“了解更多”和页脚履历入口访问；独立关于页撤除，`/about` 与 `/en/about` 分别跳转到对应语言首页。保留既有变量、组件样式及响应式行为。
+
+首页入场沿用 `--duration-route-enter`、位移和模糊 token 与 `power3.out` 缓动。标题、段落、文章、项目、联系方式和工具图标按文档顺序逐项进入；照片标题与当前主题显示的照片组件分别进入，组件内部交互保持独立。首页下方区块用 `data-route-enter-viewport` 标记，首屏外元素进入视口后只播放一次，重复滚动不重播；首屏内内容直接加入载入序列。键盘聚焦立即结束对应元素的入场，减少动态效果时直接显示全部内容；路由切换清理观察器和动画，历史返回时已滚过的内容保持清晰。
+
+文章与项目详情复用同一套视口入场：正文全部直接子块（标题、段落、列表、引用、图片等）进入视口时播放一次，容器与内部元素不重复动画。直接访问与站内打开均生效；站内打开时封面、标题和元信息继续由共享过渡负责，正文不再使用前三块的独立 View Transition，避免双重位移。键盘聚焦、减少动态效果和历史返回清理沿用公共入场逻辑。

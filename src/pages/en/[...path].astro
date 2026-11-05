@@ -7,7 +7,7 @@ export const getStaticPaths: GetStaticPaths = async () => {
   const articles = await getCollection('articles', ({data}) => import.meta.env.DEV || !data.draft);
   const projects = await getCollection('projects', ({data}) => !data.hidden && (import.meta.env.DEV || !data.draft));
   const photos = await getCollection('photos', ({data}) => !data.draft);
-  const paths = ['', 'about', 'projects', 'writing', 'photos', 'resume', 'portfolio', 'thanks', 'experiments', 'inspiration', '404',
+  const paths = ['', 'projects', 'writing', 'photos', 'resume', 'portfolio', 'thanks', 'experiments', 'inspiration', '404',
     ...articles.map(e=>`writing/${e.id}`), ...projects.map(e=>`projects/${e.id}`), ...photos.map(e=>`photos/${e.id}`)];
   return paths.map(path=>({params:{path:path || undefined}}));
 };

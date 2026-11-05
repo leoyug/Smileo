@@ -12,16 +12,16 @@
   ],
   "experience": [
     {
+      "period": "2025—2026",
+      "role": "产品设计师",
+      "organization": "自由设计",
+      "summary": "自由设计，担任产品设计师。"
+    },
+    {
       "period": "2021—2025",
       "role": "UI 设计师",
       "organization": "上海亦我信息技术有限公司",
       "summary": "负责 App、B 端后台与 Web 页面设计，并参与设计框架与系统的建立。"
-    },
-    {
-      "period": "2016—2020",
-      "role": "研究员",
-      "organization": "上海微波设备研究所",
-      "summary": "完成研究与工程相关工作，并在之后转向自己更愿意长期投入的设计实践。"
     }
   ],
   "projects": [
