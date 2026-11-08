@@ -14,10 +14,9 @@ import TextLink from "../components/TextLink.astro";
 import { getCollection } from "astro:content";
 import { getProjects, projectPreview } from "../lib/projects";
 import { getComponentPhotos } from "../lib/photo-components";
-import { getPhotoStackPhotos } from "../lib/photo-stack";
+import { curatedWorks } from "../data/curated-works";
 import { formatDate } from "../lib/content";
 
-const stackPhotos = await getPhotoStackPhotos();
 const fanPhotos = await getComponentPhotos("homeFan");
 const recentPhotos = await getComponentPhotos("homeDrag");
 const recentArticles = (await getCollection("articles", ({ data }) => import.meta.env.DEV || !data.draft))
@@ -38,7 +37,7 @@ const homeFanPhotos = fanPhotos.map((photo) => ({
     <SignatureMark class="hero__signature" data-route-enter />
     <div class="hero__copy">
       <p data-route-enter>欢迎来到我的<DashedUnderline effect="flowers">数字花园</DashedUnderline>，我是 Leo，一名产品设计师。</p>
-      <p data-route-enter>我使用 <DashedUnderline effect="selection">Figma</DashedUnderline> 进行设计，使用 <DashedUnderline effect="logos" logos={aiLogos}>AI Agent</DashedUnderline> 进行构建。我喜欢探索一切<DashedUnderline effect="photo-stack" photos={stackPhotos}>用心创作的事物</DashedUnderline>。最近，我开始更多地借助 AI 来<DashedUnderline effect="pixel-person">实现自己的想法</DashedUnderline>，并尝试将其融入日常工作流中。</p>
+      <p data-route-enter>我使用 <DashedUnderline effect="selection">Figma</DashedUnderline> 进行设计，使用 <DashedUnderline effect="logos" logos={aiLogos}>AI Agent</DashedUnderline> 进行构建。我喜欢探索一切<DashedUnderline effect="work-stack" photos={curatedWorks}>用心创作的事物</DashedUnderline>。最近，我开始更多地借助 AI 来<DashedUnderline effect="pixel-person">实现自己的想法</DashedUnderline>，并尝试将其融入日常工作流中。</p>
       <p data-route-enter>在这里，你可以{hasProjects ? <>看到我正在折腾的<TextLink href="/projects">项目</TextLink>，也可以探索我记录的</> : <>探索我记录的</>}<TextLink href="/writing">文字</TextLink>与<TextLink href="/photos">影像</TextLink>——关于生活、工作、兴趣，以及那些还没想明白的问题。</p>
       <p data-route-enter>目前我正在寻找全职工作，如果你感兴趣，不妨<TextLink href="/resume">了解更多</TextLink>。</p>
     </div>
@@ -65,7 +64,7 @@ const homeFanPhotos = fanPhotos.map((photo) => ({
 
   <section class="home-section reading-column home-tools" data-route-enter-viewport>
     <div class="section-topline" data-route-enter><h2>常用工具</h2></div>
-      <p class="about-tools__description" data-route-enter>AI 正在将很多表层的设计工作简化及自动化，此时系统思维与化繁为简的能力更显重要。我一直在探索并掌握新工具，下面是我目前常用的一些工具。</p>
+      <p class="home-section__description" data-route-enter>AI 正在将很多表层的设计工作简化及自动化，此时系统思维与化繁为简的能力更显重要。我一直在探索并掌握新工具，下面是我目前常用的一些工具。</p>
       <TooltipGroup id="everyday-tools-tooltip">
       <ul class="about-tools" aria-label="常用工具" data-route-enter-group>
         {everydayTools.map((tool) => (
@@ -83,6 +82,7 @@ const homeFanPhotos = fanPhotos.map((photo) => ({
 
   <section class:list={["home-section reading-column photo-home", { "photo-home--no-fan": homeFanPhotos.length === 0, "photo-home--no-drag": recentPhotos.length === 0 }]} data-route-enter-viewport>
     <div class="section-topline" data-route-enter><h2>屏幕之外</h2></div>
+    <p class="home-section__description photo-home__description" data-route-enter>工作之余，我会和万万一起带着相机到处走走拍拍，也享受创作、游戏和漫画带来的乐趣。</p>
     <div class="photo-home__variant photo-home__variant--fan" data-route-enter>
       <PhotoFanStack photos={homeFanPhotos} label="屏幕之外：悬停展开照片" />
     </div>
@@ -94,7 +94,8 @@ const homeFanPhotos = fanPhotos.map((photo) => ({
 </BaseLayout>
 
 <style>
-  .home-tools { display: grid; gap: var(--space-5); }
-  .home-tools .section-topline { margin-bottom: 0; }
-  .about-tools__description { margin: 0; color: var(--color-copy); font-size: var(--text-body); line-height: var(--leading-description); }
+  .hero__copy > p:has(:global(.photo-stack-gallery[data-preview="true"])) {
+    position: relative;
+    z-index: 2;
+  }
 </style>

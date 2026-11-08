@@ -78,14 +78,14 @@ const layouts = [
         card.removeAttribute("data-dragging");
         if (!isPressed) return;
         isPressed = false;
-        playInterfaceSound("type", 0.45);
+        playInterfaceSound("type");
       };
 
       card.addEventListener("pointerdown", (event) => {
         if (event.button !== 0) return;
         selectCard(card);
         isPressed = true;
-        playInterfaceSound("select", 0.75);
+        playInterfaceSound("select");
         if (!canDrag.matches) return;
         const stackRect = stack.getBoundingClientRect();
         const cardRect = card.getBoundingClientRect();
@@ -125,7 +125,7 @@ const layouts = [
       card.addEventListener("keydown", (event) => {
         if (event.repeat || (event.key !== " " && event.key !== "Enter")) return;
         isPressed = true;
-        playInterfaceSound("select", 0.75);
+        playInterfaceSound("select");
       }, options);
       card.addEventListener("keyup", (event) => {
         if (event.key !== " " && event.key !== "Enter") return;

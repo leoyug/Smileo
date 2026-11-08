@@ -1,36 +1,62 @@
 ---
 import type { HTMLAttributes } from "astro/types";
 import Button from "./Button.astro";
+import JulieRecord from "./JulieRecord.astro";
 import type { PhotoStackPhoto } from "../lib/photo-stack-types";
 
-interface Props extends HTMLAttributes<"span"> { photos: readonly PhotoStackPhoto[] }
-const { photos, class: className, ...attributes } = Astro.props;
-if (photos.length !== 6 || new Set(photos.map((photo) => photo.id)).size !== 6) {
-  throw new Error("PhotoStackGallery 需要六张不同的已发布照片");
+interface Props extends HTMLAttributes<"span"> { photos: readonly PhotoStackPhoto[]; variant?: "photos" | "works" }
+const { photos, variant = "photos", class: className, ...attributes } = Astro.props;
+const isWorks = variant === "works";
+const hasJulie = isWorks && photos.some(({ id }) => id === "julie");
+const expectedCount = isWorks ? 7 : 6;
+if (photos.length !== expectedCount || new Set(photos.map((photo) => photo.id)).size !== expectedCount) {
+  throw new Error(`PhotoStackGallery 需要 ${expectedCount} 张不同的封面`);
 }
+const curatedPreview = isWorks ? ["contra", "julie", "juju-cover"].flatMap((id) => photos.filter((photo) => photo.id === id)) : [];
+const previewPhotos = curatedPreview.length === 3 ? curatedPreview : photos.slice(0, 3);
+const hasOrbit = isWorks && photos.some(({ id }) => id === "orbit");
+const julieArtwork = "/assets/figma/curated-works";
 const galleryId = `photo-stack-${crypto.randomUUID()}`;
-const rotations = [-4, 4, 3, -3, -5, 3];
+const rotations = [-4, 4, 3, -3, -5, 3, -4];
 const serialized = JSON.stringify(photos).replaceAll("<", "\\u003c");
 ---
 
 <span class:list={["photo-stack-gallery", className]} data-photo-stack-gallery {...attributes}>
-  <span class="photo-stack-gallery__trigger" tabindex="0" data-stack-trigger><slot /></span>
-  <button class="photo-stack-gallery__preview" type="button" aria-label="展开照片图库" data-stack-preview hidden>
-    {photos.slice(0, 3).map((photo, index) => <span class="photo-stack-gallery__compact" style={`--compact-index: ${index}`}><span class="photo-stack-gallery__frame"><img src={photo.stackSrc} alt="" width="74" height="99" decoding="async" draggable="false" /></span></span>)}
+  <span class="photo-stack-gallery__trigger" tabindex="0" role={isWorks ? "button" : undefined} aria-haspopup={isWorks ? "dialog" : undefined} data-stack-trigger><slot /></span>
+  <button class="photo-stack-gallery__preview" type="button" aria-label={isWorks ? "展开作品收藏" : "展开照片图库"} data-stack-preview hidden>
+    {previewPhotos.map((photo, index) => <span class="photo-stack-gallery__compact" data-preview-photo={photo.id} style={`--compact-index: ${index}`}><span class="photo-stack-gallery__frame" data-work-art={isWorks ? photo.id : undefined}><img src={photo.stackSrc} alt="" width="74" height="99" decoding="async" draggable="false" />{isWorks && photo.id === "julie" && <span class="photo-stack-gallery__album-label" aria-hidden="true">
+      <img class="photo-stack-gallery__album-title" src={`${julieArtwork}/julie-title.svg`} alt="" draggable="false" />
+      <img class="photo-stack-gallery__album-credit" src={`${julieArtwork}/julie-credit.svg`} alt="" draggable="false" />
+    </span>}</span></span>)}
   </button>
   <template data-stack-template>
-    <dialog class="photo-stack-gallery__dialog" id={galleryId} aria-label="走走拍拍 · 照片图库" data-view="gallery">
+    <dialog class="photo-stack-gallery__dialog" id={galleryId} aria-label={isWorks ? "用心创作的事物" : "走走拍拍 · 照片图库"} data-variant={variant} data-view="gallery">
       <div class="photo-stack-gallery__surface" aria-hidden="true"></div>
       <div class="photo-stack-gallery__stage" data-stack-stage>
-        {photos.map((photo, index) => <button class="photo-stack-gallery__card" type="button" aria-label={`查看照片：${photo.alt}`} data-stack-card={index} style={`--card-rotation: ${rotations[index]}deg`}><span class="photo-stack-gallery__frame"><img src={photo.previewSrc} alt={photo.alt} width="480" height="640" loading="lazy" decoding="async" draggable="false" /></span></button>)}
+        {photos.map((photo, index) => <button class="photo-stack-gallery__card" type="button" aria-label={photo.work?.title ?? `查看照片：${photo.alt}`} data-stack-card={index} style={`--card-rotation: ${rotations[index]}deg`}><span class="photo-stack-gallery__frame" data-work-art={isWorks ? photo.id : undefined}><img src={photo.previewSrc} alt={photo.alt} width="480" height="640" loading="lazy" decoding="async" draggable="false" />{isWorks && photo.id === "julie" && <span class="photo-stack-gallery__album-label" aria-hidden="true">
+      <img class="photo-stack-gallery__album-title" src={`${julieArtwork}/julie-title.svg`} alt="" draggable="false" />
+      <img class="photo-stack-gallery__album-credit" src={`${julieArtwork}/julie-credit.svg`} alt="" draggable="false" />
+    </span>}</span></button>)}
       </div>
       <div class="photo-stack-gallery__detail-backdrop" aria-hidden="true"></div>
       <div class="photo-stack-gallery__detail" data-stack-detail hidden>
         <figure class="photo-stack-gallery__detail-content">
+          {hasJulie && <div class="photo-stack-gallery__record" data-julie-record hidden><JulieRecord /></div>}
           <div class="photo-stack-gallery__detail-media" data-stack-media>
             <div class="photo-stack-gallery__detail-photo"><img alt="" data-stack-image draggable="false" /></div>
+            {isWorks && <div class="photo-stack-gallery__deck" data-work-deck role="group" hidden><div class="photo-stack-gallery__deck-stack" data-deck-stack></div><span class="sr-only" data-deck-status role="status"></span></div>}
+            {hasOrbit && <iframe class="photo-stack-gallery__orbit-clock" data-orbit-clock title="Orbit Clocks · Saturn" sandbox="allow-scripts" tabindex="-1" hidden></iframe>}
           </div>
-          <figcaption class="photo-stack-gallery__caption" data-stack-caption></figcaption>
+          <figcaption class="photo-stack-gallery__caption">
+            {isWorks && <h2 class="photo-stack-gallery__title"><a data-work-link hidden></a><span data-work-title hidden></span>{hasJulie && <img class="photo-stack-gallery__record-title-art" src="/assets/figma/curated-works/julie-title.svg" alt="" />}</h2>}
+            {hasJulie && <p class="photo-stack-gallery__record-credit" data-julie-credit hidden>
+              <span class="sr-only">布朗尼 The Brownie Band</span>
+              <img class="photo-stack-gallery__record-credit-zh" src="/assets/figma/curated-works/julie-credit.svg" alt="" />
+              <img class="photo-stack-gallery__record-credit-en" src="/assets/figma/curated-works/julie-credit-en.svg" alt="" />
+            </p>}
+            <span data-stack-caption></span>
+            {hasJulie && <audio src="/assets/figma/curated-works/julie.mp3" preload="none" data-julie-audio></audio>}
+          </figcaption>
           <p class="photo-stack-gallery__error" role="status" data-stack-error hidden>照片暂时无法加载，正在显示预览图。</p>
         </figure>
       </div>
@@ -50,6 +76,7 @@ const serialized = JSON.stringify(photos).replaceAll("<", "\\u003c");
 <style>
   .photo-stack-gallery { position: relative; display: inline-block; }
   .photo-stack-gallery__trigger { position: relative; display: inline-block; color: inherit; text-decoration: none; cursor: default; }
+  .photo-stack-gallery__trigger[role="button"] { cursor: pointer; }
   .photo-stack-gallery__trigger::before { content: ""; position: absolute; top: 50%; left: calc(-1 * var(--space-1)); right: calc(-1 * var(--space-1)); height: var(--dock-control-size); transform: translateY(-50%); }
   .photo-stack-gallery__preview {
     appearance: none;
@@ -110,10 +137,187 @@ const serialized = JSON.stringify(photos).replaceAll("<", "\\u003c");
   .photo-stack-gallery__detail-content { height: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: var(--space-6); margin: 0; }
   .photo-stack-gallery__detail-media { --photo-frame-width: min(84vw, calc(62dvh * var(--photo-ratio, .75)), var(--photo-stack-detail-max)); --photo-frame-height: calc(var(--photo-frame-width) / var(--photo-ratio, .75)); position: relative; flex: 0 0 auto; width: var(--photo-frame-width); max-height: 62dvh; aspect-ratio: var(--photo-ratio, .75); overflow: clip; background: var(--color-surface-2); box-shadow: var(--shadow-float); }
   .photo-stack-gallery__detail-photo { display: block; width: 100%; height: 100%; cursor: default; }
+  .photo-stack-gallery__orbit-clock {
+    position: absolute; inset: 0; display: block; width: 100%; height: 100%;
+    border: 0; opacity: 0; pointer-events: none; color-scheme: only light;
+    transition: opacity var(--duration-quick) var(--ease-smooth-out);
+  }
+  .photo-stack-gallery__orbit-clock[data-active] { opacity: 1; transition-duration: var(--duration-fast); }
   .photo-stack-gallery__detail-photo img { display: block; width: 100%; height: 100%; object-fit: cover; }
   .photo-stack-gallery__caption, .photo-stack-gallery__error { max-width: var(--container-reading); color: var(--color-muted); font-size: var(--text-body); line-height: var(--leading-description); white-space: normal; text-align: center; }
   .photo-stack-gallery__caption { color: var(--color-copy); }
   .photo-stack-gallery__error { margin: 0; }
+  .photo-stack-gallery__dialog[data-variant="works"] .photo-stack-gallery__stage {
+    --gallery-card-width: max(var(--dock-control-size), min(25vw, var(--photo-stack-card-max), calc((100dvh - var(--dock-reserve) - var(--space-8)) * .21)));
+    --gallery-landscape-width: min(calc(var(--gallery-card-width) * 4 / 3), calc((min(100vw - 2 * var(--space-5), var(--photo-stack-mobile-width)) - 2 * var(--space-3)) / 3));
+    display: grid; grid-template-columns: repeat(3, var(--gallery-landscape-width));
+    justify-items: center; place-content: center; justify-content: space-between; gap: var(--space-4) var(--space-3);
+  }
+  .photo-stack-gallery__dialog[data-variant="works"] .photo-stack-gallery__card { position: relative; inset: auto; }
+  .photo-stack-gallery__card:has(> :is([data-work-art="riikee"], [data-work-art="rows"], [data-work-art="orbit"])) {
+    width: var(--gallery-landscape-width);
+    aspect-ratio: 4 / 3;
+    align-self: center;
+  }
+  .photo-stack-gallery__card > :is([data-work-art="riikee"], [data-work-art="rows"], [data-work-art="orbit"]) {
+    --photo-frame-height: calc(var(--gallery-landscape-width) * 3 / 4);
+  }
+  .photo-stack-gallery__dialog[data-variant="works"] .photo-stack-gallery__card:last-child { grid-column: 2; }
+  @media (min-width: 700px) {
+    .photo-stack-gallery__dialog[data-variant="works"] .photo-stack-gallery__stage {
+      --gallery-card-width: max(var(--dock-control-size), min(16vw, var(--photo-stack-card-max), calc((100dvh - var(--dock-reserve) - var(--space-16)) * .29)));
+      --gallery-landscape-width: min(calc(var(--gallery-card-width) * 4 / 3), calc((min(100vw - 2 * var(--space-12), var(--photo-stack-desktop-width)) - 8 * var(--space-2)) / 4));
+      grid-template-columns: repeat(8, calc(var(--gallery-landscape-width) / 2)); justify-content: space-evenly; gap: var(--space-8) 0;
+    }
+    .photo-stack-gallery__dialog[data-variant="works"] .photo-stack-gallery__card { grid-column: span 2; }
+    .photo-stack-gallery__dialog[data-variant="works"] .photo-stack-gallery__card:nth-child(5) { grid-column: 2 / span 2; }
+    .photo-stack-gallery__dialog[data-variant="works"] .photo-stack-gallery__card:last-child { grid-column: span 2; }
+  }
+  .photo-stack-gallery__dialog[data-variant="works"] .photo-stack-gallery__detail { container-type: inline-size; overflow: auto; overscroll-behavior: contain; }
+  .photo-stack-gallery__dialog[data-variant="works"] .photo-stack-gallery__detail-content {
+    height: auto; min-height: 100%; justify-content: safe center; padding-block: var(--space-5); gap: var(--space-4);
+  }
+  .photo-stack-gallery__dialog[data-variant="works"] .photo-stack-gallery__detail-media {
+    /* Use a length so border-radius resolves identically along both axes. */
+    --photo-frame-width: min(100cqw, calc(52dvh * var(--photo-ratio)), var(--photo-stack-detail-max));
+    max-height: 52dvh;
+  }
+  .photo-stack-gallery__title { margin: 0 0 var(--space-2); font: var(--weight-bold) var(--text-title-sm, 1.25rem) / 1.35 var(--font-heading); color: var(--color-ink); }
+  .photo-stack-gallery__title a { color: var(--color-link); text-decoration: underline; text-underline-offset: .2em; }
+  /* A dragged card can cross the detail inset without enlarging a scroll container. */
+  .photo-stack-gallery__dialog:has([data-work-deck]:not([hidden])) { overflow: clip; }
+  .photo-stack-gallery__dialog[data-variant="works"] .photo-stack-gallery__detail:has([data-work-deck]:not([hidden])) { overflow: visible; }
+  .photo-stack-gallery__dialog[data-variant="works"] .photo-stack-gallery__detail-content:has([data-work-deck]:not([hidden])) { gap: var(--space-8); }
+  .photo-stack-gallery__dialog[data-variant="works"] .photo-stack-gallery__caption {
+    max-inline-size: min(100%, 640px);
+  }
+  .photo-stack-gallery__detail-media:has([data-work-deck]:not([hidden])) {
+    --photo-frame-width: min(72cqw, calc(48dvh * var(--photo-ratio)), var(--photo-stack-detail-max));
+    overflow: visible; background: transparent; box-shadow: none;
+  }
+  .photo-stack-gallery__detail-media:has([data-work-deck]:not([hidden]))::after,
+  .photo-stack-gallery__detail-media:has([data-work-deck]:not([hidden])) .photo-stack-gallery__detail-photo { visibility: hidden; }
+  .photo-stack-gallery__deck, .photo-stack-gallery__deck-stack { position: absolute; inset: 0; }
+  .photo-stack-gallery__deck-stack {
+    inset-inline: -18%;
+    display: grid; place-items: center; grid-template: minmax(0, 1fr) / minmax(0, 1fr);
+    touch-action: none; cursor: grab; user-select: none;
+  }
+  .photo-stack-gallery__deck-stack[data-dragging] { cursor: grabbing; }
+  .photo-stack-gallery__deck-stack :global([data-deck-card]) {
+    grid-area: 1 / 1;
+    width: min(100%, 82cqw, calc(var(--photo-frame-height) * var(--deck-ratio)));
+    max-width: none; height: auto; box-sizing: border-box;
+    padding: var(--space-4);
+    border-radius: 0;
+    background: var(--color-photo-paper) url("/assets/figma/curated-works/photo-paper.webp") repeat;
+    background-size: 12rem;
+    box-shadow: var(--shadow-card);
+    pointer-events: none;
+  }
+  .photo-stack-gallery__deck-stack :global([data-deck-card] > img) {
+    display: block;
+    width: 100%;
+    height: auto;
+    /* Blend the print edge into the continuous paper beneath it. */
+    --print-edge: 1px;
+    mask-image:
+      linear-gradient(to right, transparent, black var(--print-edge), black calc(100% - var(--print-edge)), transparent),
+      linear-gradient(to bottom, transparent, black var(--print-edge), black calc(100% - var(--print-edge)), transparent);
+    mask-composite: intersect;
+  }
+  [data-work-art="retro"], [data-work-art="julie"] { background: var(--color-photo-paper); }
+  [data-work-art="retro"] > img,
+  [data-work-art="retro"] .photo-stack-gallery__detail-photo img {
+    position: absolute; inset: 10%; width: 80%; height: 80%; object-fit: contain;
+  }
+  [data-work-art="juju-cover"] > img { width: 107.17%; height: 107.17%; max-width: none; }
+  [data-work-art="rows"] { background: #f5f5f2; }
+  [data-work-art="orbit"] { background: #050807; }
+  .photo-stack-gallery__detail-media[data-work-art="orbit"] {
+    overflow: visible; background: transparent; box-shadow: none;
+  }
+  .photo-stack-gallery__detail-media[data-work-art="orbit"]::before {
+    content: ""; position: absolute; inset: 0; border-radius: inherit;
+    background: #050807; box-shadow: var(--shadow-float); pointer-events: none;
+  }
+  .photo-stack-gallery__detail-media[data-work-art="orbit"] .photo-stack-gallery__detail-photo {
+    position: relative; overflow: clip; border-radius: inherit;
+  }
+  .photo-stack-gallery__detail-media[data-work-art="orbit"]::before,
+  .photo-stack-gallery__detail-media[data-work-art="orbit"]::after,
+  .photo-stack-gallery__detail-media[data-work-art="orbit"] .photo-stack-gallery__detail-photo {
+    transition: opacity var(--duration-quick) var(--ease-smooth-out);
+  }
+  .photo-stack-gallery__detail-media:has(> .photo-stack-gallery__orbit-clock[data-active])::before,
+  .photo-stack-gallery__detail-media:has(> .photo-stack-gallery__orbit-clock[data-active])::after,
+  .photo-stack-gallery__detail-media:has(> .photo-stack-gallery__orbit-clock[data-active]) .photo-stack-gallery__detail-photo {
+    opacity: 0; transition-duration: var(--duration-fast);
+  }
+  :is([data-work-art="rows"], [data-work-art="orbit"]) img { object-fit: contain; }
+  [data-work-art="julie"] { container-type: inline-size; }
+  [data-work-art="julie"] > img {
+    position: absolute; top: 6.667%; left: 8.889%; width: 82.222%; height: 61.667%;
+    border-radius: calc(100cqw * 64 / 900);
+  }
+  .photo-stack-gallery__album-label {
+    position: absolute; inset-inline: 0; top: 75%;
+    display: grid; justify-items: center; align-items: center;
+    grid-template-rows: calc(100cqw * 80 / 900) calc(100cqw * 48 / 900);
+    gap: calc(100cqw * 40 / 900);
+  }
+  .photo-stack-gallery__album-label > img { width: auto; }
+  .photo-stack-gallery__album-label > .photo-stack-gallery__album-title { height: 8.8cqw; }
+  .photo-stack-gallery__album-label > .photo-stack-gallery__album-credit { height: calc(100cqw * 44 / 900); }
+  .photo-stack-gallery__detail[data-julie] { display: grid; align-items: safe center; }
+  .photo-stack-gallery__dialog[data-variant="works"] .photo-stack-gallery__detail[data-julie] .photo-stack-gallery__detail-content {
+    /* Scale the 2200 × 1132 Figma frame within the detail viewport. */
+    --julie-panel-width: min(50cqw, calc(var(--photo-stack-desktop-width) / 2));
+    --julie-unit: calc(var(--julie-panel-width) / 2200);
+    min-height: 0;
+    display: grid;
+    grid-template-columns: minmax(0, 1000fr) minmax(0, 581fr);
+    align-content: center;
+    align-items: center;
+    gap: calc(186 * var(--julie-unit));
+    width: var(--julie-panel-width);
+    margin-inline: auto;
+    padding: calc(196 * var(--julie-unit)) calc(237 * var(--julie-unit)) calc(196 * var(--julie-unit)) calc(196 * var(--julie-unit));
+    background: color-mix(in srgb, var(--color-photo-paper) 80%, transparent);
+    border-radius: calc(120 * var(--julie-unit));
+    overflow: clip;
+  }
+  .photo-stack-gallery__detail[data-julie] .photo-stack-gallery__title {
+    font-size: calc(96 * var(--julie-unit));
+    line-height: calc(104 * var(--julie-unit));
+    margin: 0 0 calc(40 * var(--julie-unit));
+  }
+  .photo-stack-gallery__record-title-art, .photo-stack-gallery__record-credit-en { display: none; }
+  .photo-stack-gallery__detail[data-julie] [data-work-title] {
+    position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%);
+  }
+  .photo-stack-gallery__detail[data-julie] .photo-stack-gallery__record-title-art,
+  .photo-stack-gallery__record-credit-zh,
+  :global(html:lang(en)) .photo-stack-gallery__record-credit-en {
+    display: block; width: auto; height: 1.1em; max-width: 100%; margin-inline: auto;
+  }
+  :global(html:lang(en)) .photo-stack-gallery__record-credit-zh { display: none; }
+  .photo-stack-gallery__record-credit {
+    margin: 0;
+    color: #52534f;
+    font-family: var(--font-heading);
+    font-size: calc(48 * var(--julie-unit));
+    line-height: calc(56 * var(--julie-unit));
+  }
+  @media (max-width: 639px) {
+    .photo-stack-gallery__dialog[data-variant="works"] .photo-stack-gallery__detail[data-julie] .photo-stack-gallery__detail-content {
+      grid-template-columns: minmax(0, 1fr);
+      gap: calc(var(--space-5) / 2);
+      padding-inline: calc(196 * var(--julie-unit));
+    }
+    .photo-stack-gallery__detail[data-julie] .photo-stack-gallery__title { font-size: max(.75rem, calc(96 * var(--julie-unit))); }
+    .photo-stack-gallery__record-credit { font-size: max(.5rem, calc(48 * var(--julie-unit))); }
+  }
   .photo-stack-gallery__control { position: absolute; z-index: 4; left: 50%; bottom: max(var(--space-6), env(safe-area-inset-bottom)); width: var(--dock-height); height: var(--dock-height); min-height: var(--dock-height); padding: 0; transform: translateX(-50%); }
   .photo-stack-gallery__control svg { width: var(--dock-icon-size); height: var(--dock-icon-size); }
   .photo-stack-gallery__control path { fill: none; stroke: currentColor; stroke-width: 1.75; stroke-linecap: round; stroke-linejoin: round; }
@@ -136,6 +340,10 @@ const serialized = JSON.stringify(photos).replaceAll("<", "\\u003c");
     .photo-stack-gallery__card:nth-child(6) { top: 50%; right: 17%; bottom: auto; }
   }
   @media (prefers-reduced-motion: reduce) {
+    .photo-stack-gallery__orbit-clock,
+    .photo-stack-gallery__detail-media[data-work-art="orbit"]::before,
+    .photo-stack-gallery__detail-media[data-work-art="orbit"]::after,
+    .photo-stack-gallery__detail-media[data-work-art="orbit"] .photo-stack-gallery__detail-photo { transition: none; }
     .photo-stack-gallery__preview, .photo-stack-gallery__compact, .photo-stack-gallery__frame, .photo-stack-gallery__detail-backdrop { transition: none !important; }
     .photo-stack-gallery__card:hover .photo-stack-gallery__frame, .photo-stack-gallery__card:focus-visible .photo-stack-gallery__frame, .photo-stack-gallery__card:active .photo-stack-gallery__frame { transform: rotate(var(--card-rotation)); }
     .photo-stack-gallery__control:active { transform: translateX(-50%); }

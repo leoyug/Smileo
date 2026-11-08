@@ -335,6 +335,7 @@
     .content-detail[data-project-id="Zhaichangxiang-App"] .article__body > :is(ol, ul) {
       grid-template-columns: minmax(0, 1fr);
       gap: var(--space-4);
+      row-gap: var(--space-5);
     }
   }
 
@@ -365,14 +366,14 @@
     line-height: var(--leading-description);
   }
 
-  html:lang(en) :is(.page-intro, .photo-index-header, .about-intro__copy, .resume__summary) p + p,
-  html:lang(en) .content-detail[data-detail-page] .article__body > p + p {
+  html:lang(en) :is(.page-intro, .photo-index-header, .about-intro__copy, .resume__summary) p + p {
     margin-top: var(--english-paragraph-gap);
   }
 
   html:lang(en) :is(h1, h2, h3) { overflow-wrap: anywhere; }
   html:lang(en) .preferences-panel {
     width: max-content;
+    min-width: min(16rem, calc(100vw - 2 * var(--gutter)));
     max-width: calc(100vw - 2 * var(--gutter));
   }
   html:lang(en) .preferences-panel__row h2,

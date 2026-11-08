@@ -728,11 +728,18 @@
 
   .hero__copy {
     gap: var(--space-2);
+  }
+
+  .hero__copy,
+  .home-section__description {
     color: var(--color-copy);
   }
 
+  :is(.home-tools, .photo-home) > .section-topline { margin-bottom: var(--space-4); }
+  .home-section__description { margin: 0 0 var(--space-5); }
+
   .hero__copy .text-link {
-    color: var(--color-ink);
+    color: var(--color-link);
   }
 
   .hero-highlight {
@@ -1431,6 +1438,7 @@
   }
 
   .detail-toc__icon {
+    color: inherit;
     width: var(--space-6);
     height: var(--space-6);
     flex-shrink: 0;
@@ -1842,6 +1850,14 @@
     margin-top: var(--space-2);
   }
 
+  .content-detail[data-detail-page] .article__body p + p {
+    margin-top: var(--space-3);
+  }
+
+  .content-detail[data-detail-page] .article__body li + li {
+    margin-top: var(--space-1);
+  }
+
   .content-detail[data-detail-page] .article__body > * + blockquote,
   .content-detail[data-detail-page] .article__body > blockquote + * {
     margin-top: var(--space-6);
@@ -1914,11 +1930,11 @@
   }
 
   .content-detail--project-case .article__body > p:has(> :is(img, .article-image-zoom-trigger):only-child) + p:has(> em:only-child) {
-    margin-top: var(--space-3);
+    margin-top: var(--space-2);
     margin-bottom: var(--space-8);
     color: var(--color-copy);
     font-size: var(--text-meta);
-    line-height: var(--leading-relaxed);
+    line-height: 1.5;
     text-align: center;
   }
 
@@ -1926,7 +1942,12 @@
     display: grid;
     grid-template-columns: repeat(3, minmax(0, 1fr));
     gap: var(--space-6);
+    row-gap: calc(var(--space-6) + var(--space-1));
     margin-block: var(--space-6);
+  }
+
+  .content-detail[data-project-id="Zhaichangxiang-App"] .article__body > :is(ol, ul) > li + li {
+    margin-top: 0;
   }
 
   .content-detail[data-project-id="Zhaichangxiang-App"] .article__body > ol {
@@ -1948,7 +1969,7 @@
   }
 
   .content-detail[data-project-id="Zhaichangxiang-App"] .article__body > :is(ol, ul) li > p + p {
-    margin-top: var(--space-1);
+    margin-top: var(--space-2);
   }
 
   .content-detail[data-project-id="Zhaichangxiang-App"] .article__body > ol + p:has(> em:only-child) {
@@ -2405,6 +2426,7 @@
   .resume__summary p { margin: 0; }
 
   .hero__copy p,
+  .home-section__description,
   .page-intro p,
   .photo-index-header p,
   .about-intro__copy p,

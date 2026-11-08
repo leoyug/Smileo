@@ -6,14 +6,15 @@ import PhotoStackGallery from "./PhotoStackGallery.astro";
 import type { PhotoStackPhoto } from "../lib/photo-stack-types";
 
 interface Props extends HTMLAttributes<"span"> {
-  effect?: "none" | "selection" | "pixel-person" | "wave" | "shimmer" | "logos" | "photo-stack" | "flowers";
+  effect?: "none" | "selection" | "pixel-person" | "wave" | "shimmer" | "logos" | "photo-stack" | "work-stack" | "flowers";
   logos?: readonly { src: string; alt: string; rotation?: number }[];
   photos?: readonly PhotoStackPhoto[];
 }
 
 const { class: className, effect = "none", logos = [], photos = [], ...attributes } = Astro.props;
-const hasPhotoStack = effect === "photo-stack" && photos.length === 6 && new Set(photos.map((photo) => photo.id)).size === 6;
-const hasEffect = effect !== "none" && effect !== "photo-stack";
+const isWorkStack = effect === "work-stack";
+const hasPhotoStack = isWorkStack || effect === "photo-stack" && photos.length === 6 && new Set(photos.map((photo) => photo.id)).size === 6;
+const hasEffect = effect !== "none" && effect !== "photo-stack" && !isWorkStack;
 const shimmerStyle = effect === "shimmer" ? `--shimmer-gradient: ${buildBandGradient(gradientPresets.sunrise.map(stop => ({ ...stop, color: `color-mix(in oklab, ${stop.color} var(--shimmer-highlight-strength), var(--gs-base))` })), 105)}; --shimmer-ease: ${easingPresets.smooth}` : undefined;
 const waveId = effect === "wave" ? `wave-${crypto.randomUUID()}` : undefined;
 // Separate pen strokes let stems, leaves and petals draw along their own paths.
@@ -39,7 +40,7 @@ const flowerPaths = [
 ];
 ---
 
-{hasPhotoStack ? <PhotoStackGallery photos={photos} class={className} {...attributes}><span class="dashed-underline dashed-underline--photo-stack"><slot /></span></PhotoStackGallery> : (<span class:list={["dashed-underline", { "dashed-underline--interactive": hasEffect, "dashed-underline--selection": effect === "selection", "dashed-underline--pixel-person": effect === "pixel-person", "dashed-underline--wave": effect === "wave", "dashed-underline--shimmer": effect === "shimmer", "dashed-underline--logos": effect === "logos", "dashed-underline--flowers": effect === "flowers" }, className]} tabindex={hasEffect ? 0 : undefined} {...attributes}>{effect === "shimmer" ? <text-shimmer class="dashed-underline__shimmer" style={shimmerStyle}><slot /></text-shimmer> : <slot />}{effect === "selection" && <span class="dashed-underline__frame" aria-hidden="true"><i></i><i></i><i></i><i></i></span>}{effect === "pixel-person" && <PixelPersonPreview />}{effect === "logos" && <span class="dashed-underline__logos" aria-hidden="true">
+{hasPhotoStack ? <PhotoStackGallery photos={photos} variant={isWorkStack ? "works" : "photos"} class={className} {...attributes}><span class="dashed-underline dashed-underline--photo-stack"><slot /></span></PhotoStackGallery> : (<span class:list={["dashed-underline", { "dashed-underline--interactive": hasEffect, "dashed-underline--selection": effect === "selection", "dashed-underline--pixel-person": effect === "pixel-person", "dashed-underline--wave": effect === "wave", "dashed-underline--shimmer": effect === "shimmer", "dashed-underline--logos": effect === "logos", "dashed-underline--flowers": effect === "flowers" }, className]} tabindex={hasEffect ? 0 : undefined} {...attributes}>{effect === "shimmer" ? <text-shimmer class="dashed-underline__shimmer" style={shimmerStyle}><slot /></text-shimmer> : <slot />}{effect === "selection" && <span class="dashed-underline__frame" aria-hidden="true"><i></i><i></i><i></i><i></i></span>}{effect === "pixel-person" && <PixelPersonPreview />}{effect === "logos" && <span class="dashed-underline__logos" aria-hidden="true">
     {logos.slice(0, 3).map((logo, index) => <img src={logo.src} alt={logo.alt} width="40" height="40" decoding="async" draggable="false" style={`--logo-index: ${index}; --logo-image-rotation: ${logo.rotation ?? 0}deg`} />)}
   </span>}{effect === "flowers" && <span class="dashed-underline__flowers" aria-hidden="true">
     {flowerPaths.map((flower, index) => <svg class="dashed-underline__flower" style={`--flower-index: ${index}`} viewBox="0 0 60 90" fill="none" focusable="false">

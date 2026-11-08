@@ -80,8 +80,8 @@
 
     /* Content: hierarchy for readable, non-interactive information. */
     --color-ink: #242424;
-    --color-copy: #595959;
-    --color-link: #242424;
+    --color-copy: #626262;
+    --color-link: #1f1f1f;
     --color-muted: #646464;
     --color-faint: #6b6b6b;
     --color-subtle: color-mix(in srgb, var(--color-faint) 80%, var(--color-canvas));
@@ -208,8 +208,8 @@
     --photo-stack-detail-max: 42rem;
     --photo-stack-radius-ratio: .16;
     --photo-stack-press-scale: .97;
-    --color-photo-stack-detail-backdrop: color-mix(in srgb, var(--color-canvas) 75%, transparent);
-    --blur-photo-stack-detail-backdrop: var(--space-5);
+    --color-photo-stack-detail-backdrop: color-mix(in srgb, var(--color-canvas) 82%, transparent);
+    --blur-photo-stack-detail-backdrop: var(--space-6);
     --color-photo-stack-control-hover: color-mix(in srgb, var(--color-ink) 88%, var(--color-canvas));
     --color-wave-underline: #16B395;
     --wave-underline-period: 12px;
@@ -343,7 +343,7 @@
 
 @layer tokens {
   html:lang(en) {
-    --leading-description: var(--space-6);
+    --leading-description: 1.375rem;
     --leading-article-body: var(--leading-description);
     --english-paragraph-gap: var(--space-2);
   }
@@ -392,8 +392,9 @@
   }
   .code-block__language { font-family: var(--font-mono); }
   .code-block__copy {
+    position: relative;
+    isolation: isolate;
     min-height: calc(var(--space-8) + var(--space-3));
-    min-width: var(--space-16);
     margin-inline-end: calc(-1 * var(--space-2));
     padding: 0 var(--space-2);
     border: 0;
@@ -403,7 +404,17 @@
     font: inherit;
     cursor: pointer;
   }
-  .code-block__copy:is(:hover, :focus-visible) { color: var(--color-ink); background: var(--color-inline-code-bg); }
+  /* Keep the 44px hit area while giving the highlight a compact 28px height. */
+  .code-block__copy::before {
+    content: "";
+    position: absolute;
+    z-index: -1;
+    inset: var(--space-2) 0;
+    border-radius: inherit;
+    pointer-events: none;
+  }
+  .code-block__copy:is(:hover, :focus-visible) { color: var(--color-ink); }
+  .code-block__copy:is(:hover, :focus-visible)::before { background: var(--color-inline-code-bg); }
   .code-block__copy:disabled { cursor: wait; }
   .code-block__copy:focus-visible { outline-offset: calc(-1 * var(--space-1)); box-shadow: none; }
   .code-block pre {
@@ -525,7 +536,7 @@
   .hero__signature { width: 4rem; height: 3rem; }
   .hero__copy { display: grid; gap: .5rem; color: var(--color-copy); }
   .hero__copy p { line-height: 1.5rem; }
-  .hero__copy a { color: var(--color-ink); text-decoration-thickness: 1px; text-underline-offset: 3px; }
+  .hero__copy a { color: var(--color-link); text-decoration-thickness: 1px; text-underline-offset: 3px; }
   .hero__actions { display: flex; flex-wrap: wrap; gap: var(--space-3); padding-top: var(--space-2); }
   .home-section { margin-top: 5rem; }
   .photo-home__variant--drag { display: none; }
