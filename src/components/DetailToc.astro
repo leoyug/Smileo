@@ -16,12 +16,12 @@ interface Props {
   returnViaHistory?: boolean;
 }
 
-const { headings, ariaLabel, className = "", backHref = "/writing/", backLabel = "返回写作", backIcon = "/assets/figma-v03/detail/back.svg", topIcon = "/assets/figma-v03/detail/to-top.svg", returnViaHistory = false } = Astro.props;
+const { headings, ariaLabel, className = "", backHref = "/writing/", backLabel = "返回写作", backIcon = "/assets/figma/detail-toc/back.svg", topIcon = "/assets/figma/detail-toc/to-top.svg", returnViaHistory = false } = Astro.props;
 const items = headings.filter(({ depth }) => depth === 2 || depth === 3);
 ---
 
 <aside class:list={["detail-toc", className]} data-detail-toc>
-  <a class="detail-toc__back" href={backHref} aria-label={backLabel} data-detail-history-back={returnViaHistory ? "" : undefined}><img src={backIcon} alt="" /><span>{backLabel}</span></a>
+  <a class="detail-toc__back" href={backHref} aria-label={backLabel} data-detail-history-back={returnViaHistory ? "" : undefined}><span class="detail-toc__icon" style={`--detail-toc-icon: url('${backIcon}')`} aria-hidden="true"></span><span class="detail-toc__action-label">{backLabel}</span></a>
   {items.length > 0 && (
     <nav aria-label={ariaLabel}>
       <ol class="detail-toc__list">
@@ -42,7 +42,7 @@ const items = headings.filter(({ depth }) => depth === 2 || depth === 3);
       </ol>
     </nav>
   )}
-  <a class="detail-toc__top" href="#main" aria-label="回到顶部"><img src={topIcon} alt="" /><span>回到顶部</span></a>
+  <a class="detail-toc__top" href="#main" aria-label="回到顶部" aria-hidden="true" inert><span class="detail-toc__icon" style={`--detail-toc-icon: url('${topIcon}')`} aria-hidden="true"></span><span class="detail-toc__action-label">回到顶部</span></a>
 </aside>
 
 <script>
@@ -54,6 +54,8 @@ const items = headings.filter(({ depth }) => depth === 2 || depth === 3);
     toc.dataset.initialized = "true";
     const controller = new AbortController();
     const signal = controller.signal;
+    const topLink = toc.querySelector<HTMLAnchorElement>(".detail-toc__top");
+    const isDemo = toc.classList.contains("detail-toc--demo");
 
     const historyBackLink = toc.querySelector<HTMLAnchorElement>("[data-detail-history-back]");
     if (historyBackLink) {
@@ -75,7 +77,7 @@ const items = headings.filter(({ depth }) => depth === 2 || depth === 3);
           const label = withoutLanguage(context.from) === "/" ? uiText("返回主页", "Back home") : returnsToPortfolio ? uiText("返回作品集", "Back to portfolio") : withoutLanguage(listPath) === "/projects" ? uiText("返回作品", "Back to work") : uiText("返回写作", "Back to writing");
           historyBackLink.href = context.from;
           historyBackLink.setAttribute("aria-label", label);
-          const text = historyBackLink.querySelector("span");
+          const text = historyBackLink.querySelector(".detail-toc__action-label");
           if (text) text.textContent = label;
         }
       } catch {
@@ -124,11 +126,6 @@ const items = headings.filter(({ depth }) => depth === 2 || depth === 3);
       })
       .filter((entry): entry is { link: HTMLAnchorElement; heading: HTMLElement } => entry !== null);
 
-    if (entries.length === 0) {
-      toc.detailTocCleanup = () => { controller.abort(); delete toc.dataset.initialized; };
-      return;
-    }
-
     let activeIndex = -1;
     let lockedIndex: number | null = null;
     let frame = 0;
@@ -147,6 +144,17 @@ const items = headings.filter(({ depth }) => depth === 2 || depth === 3);
 
     const update = () => {
       frame = 0;
+      const scrollingElement = document.scrollingElement ?? document.documentElement;
+      const scrollRange = scrollingElement.scrollHeight - scrollingElement.clientHeight;
+      if (topLink) {
+        const visible = isDemo || (scrollRange > 0 && window.scrollY >= scrollRange * 0.3);
+        if (topLink.dataset.visible !== String(visible)) {
+          topLink.dataset.visible = String(visible);
+          topLink.setAttribute("aria-hidden", String(!visible));
+          topLink.inert = !visible;
+        }
+      }
+      if (entries.length === 0) return;
 
       if (lockedIndex !== null) {
         setActive(lockedIndex);
@@ -195,9 +203,12 @@ const items = headings.filter(({ depth }) => depth === 2 || depth === 3);
         releaseLock();
       }
     }, { signal });
+    const resizeObserver = new ResizeObserver(requestUpdate);
+    resizeObserver.observe(document.body);
     update();
     toc.detailTocCleanup = () => {
       controller.abort();
+      resizeObserver.disconnect();
       cancelAnimationFrame(frame);
       delete toc.dataset.initialized;
     };

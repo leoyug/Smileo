@@ -12,12 +12,11 @@ const github = data.links.find((link) => link.label === "GitHub")?.href;
 const resumeDownload = "https://drive.google.com/uc?export=download&id=19dMrGRXBk-m6QzDYb4xuJ-weFKkw9tlX";
 ---
 
-<BaseLayout title="简历" description={`${data.name}的职业经历、项目经验与技能。`}>
+<BaseLayout title="简介" description={`${data.name}的职业经历、项目经验与技能。`}>
   <article class="resume reading-column">
-    <h1 class="resume__page-title">简历</h1>
     <header class="resume__intro">
       <div class="resume__heading">
-        <h2 class="resume__name">{data.name}</h2>
+        <h1 class="resume__page-title">{data.name}</h1>
         <div class="resume__summary">
           {data.introduction.map((paragraph) => <p>{paragraph}</p>)}
           <p>可以下载我的<TextLink href={resumeDownload} externalIcon={false} download rel="noopener noreferrer">简历</TextLink>，或者查看我的<TextLink href="/portfolio">在线作品集</TextLink>。</p>
@@ -25,8 +24,8 @@ const resumeDownload = "https://drive.google.com/uc?export=download&id=19dMrGRXB
       </div>
       <nav class="resume__contacts" aria-label="履历联系方式">
         {website && <a href={website}><span class="resume__contact-icon resume__contact-icon--web" aria-hidden="true"></span>{new URL(website).hostname}</a>}
-        <a href={`mailto:${data.email}`}><span class="resume__contact-icon resume__contact-icon--mail" aria-hidden="true"></span>{data.email}</a>
         {github && <a href={github} rel="me"><span class="resume__contact-icon resume__contact-icon--github" aria-hidden="true"></span>{github.replace(/^https?:\/\//, "")}</a>}
+        <a href={`mailto:${data.email}`}><span class="resume__contact-icon resume__contact-icon--mail" aria-hidden="true"></span>{data.email}</a>
       </nav>
     </header>
 
@@ -67,3 +66,8 @@ const resumeDownload = "https://drive.google.com/uc?export=download&id=19dMrGRXB
     </section>}
   </article>
 </BaseLayout>
+
+<style>
+  .resume__intro { margin-top: 0; }
+  .resume__heading { gap: var(--space-6); }
+</style>

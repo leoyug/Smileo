@@ -52,7 +52,7 @@
       aspect-ratio: 880 / 536;
     }
 
-    .detail-toc {
+    .detail-toc:not(.detail-toc--demo) {
       width: 44px;
     }
 
@@ -84,11 +84,14 @@
     }
   }
 
-  @media (min-width: 60rem) and (max-width: 79.999rem) {
-    .detail-toc--reading {
-      width: min(var(--detail-toc-width), calc((100vw - var(--content-reading)) / 2 - var(--space-12)));
+  @media (min-width: 60rem) {
+    .detail-toc--reading:not(.detail-toc--demo) {
+      /* Reserve the full gap even when the viewport constrains the sidebar. */
+      width: min(var(--detail-toc-width), calc((100% - var(--content-reading)) / 2 - var(--detail-toc-inline-inset) - var(--detail-toc-content-gap)));
     }
+  }
 
+  @media (min-width: 60rem) and (max-width: 79.999rem) {
     .detail-toc--reading .detail-toc__label {
       position: static;
       max-width: none;
@@ -117,8 +120,8 @@
       gap: var(--space-1);
     }
 
-    .detail-toc__back span,
-    .detail-toc__top span {
+    .detail-toc__back .detail-toc__action-label,
+    .detail-toc__top .detail-toc__action-label {
       display: none;
       opacity: 0;
       transform: translateX(calc(-1 * var(--space-1)));
@@ -126,8 +129,8 @@
       white-space: nowrap;
     }
 
-    .detail-toc__back:is(:hover, :focus-visible) span,
-    .detail-toc__top:is(:hover, :focus-visible) span {
+    .detail-toc__back:is(:hover, :focus-visible) .detail-toc__action-label,
+    .detail-toc__top:is(:hover, :focus-visible) .detail-toc__action-label {
       display: block;
       opacity: 1;
       transform: none;
@@ -147,7 +150,7 @@
       padding-top: 0;
     }
 
-    .detail-toc--reading:not(.detail-toc--demo) .detail-toc__back span {
+    .detail-toc--reading:not(.detail-toc--demo) .detail-toc__back .detail-toc__action-label {
       display: block;
       position: static;
       padding: 0;
@@ -332,6 +335,7 @@
     .content-detail[data-project-id="Zhaichangxiang-App"] .article__body > :is(ol, ul) {
       grid-template-columns: minmax(0, 1fr);
       gap: var(--space-4);
+      row-gap: var(--space-5);
     }
   }
 
@@ -362,14 +366,14 @@
     line-height: var(--leading-description);
   }
 
-  html:lang(en) :is(.page-intro, .photo-index-header, .about-intro__copy, .resume__summary) p + p,
-  html:lang(en) .content-detail[data-detail-page] .article__body > p + p {
+  html:lang(en) :is(.page-intro, .photo-index-header, .about-intro__copy, .resume__summary) p + p {
     margin-top: var(--english-paragraph-gap);
   }
 
   html:lang(en) :is(h1, h2, h3) { overflow-wrap: anywhere; }
   html:lang(en) .preferences-panel {
     width: max-content;
+    min-width: min(16rem, calc(100vw - 2 * var(--gutter)));
     max-width: calc(100vw - 2 * var(--gutter));
   }
   html:lang(en) .preferences-panel__row h2,

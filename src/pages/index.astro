@@ -5,17 +5,20 @@ import DraggablePhotoStack from "../components/DraggablePhotoStack.astro";
 import PhotoFanStack from "../components/PhotoFanStack.astro";
 import ProjectCard from "../components/ProjectCard.astro";
 import DashedUnderline from "../components/DashedUnderline.astro";
+import ContactLinks from "../components/ContactLinks.astro";
+import TooltipGroup from "../components/TooltipGroup.astro";
+import { Image } from "astro:assets";
+import { aiLogos, everydayTools } from "../data/site";
 import SignatureMark from "../components/SignatureMark.astro";
 import TextLink from "../components/TextLink.astro";
-import { getCollection, getEntry } from "astro:content";
+import { getCollection } from "astro:content";
 import { getProjects, projectPreview } from "../lib/projects";
 import { getComponentPhotos } from "../lib/photo-components";
+import { curatedWorks } from "../data/curated-works";
 import { formatDate } from "../lib/content";
 
 const fanPhotos = await getComponentPhotos("homeFan");
 const recentPhotos = await getComponentPhotos("homeDrag");
-const resume = await getEntry("resume", "main");
-if (!resume) throw new Error("缺少 main 职业履历内容");
 const recentArticles = (await getCollection("articles", ({ data }) => import.meta.env.DEV || !data.draft))
   .sort((left, right) => right.data.publishedAt.getTime() - left.data.publishedAt.getTime())
   .slice(0, 3);
@@ -33,34 +36,66 @@ const homeFanPhotos = fanPhotos.map((photo) => ({
     <h1 class="sr-only">Leo 的个人网站</h1>
     <SignatureMark class="hero__signature" data-route-enter />
     <div class="hero__copy">
-      <p data-route-enter>这里是 <TextLink href="/about">Leo</TextLink> 的<DashedUnderline effect="flowers">数字花园</DashedUnderline>。</p>
-      <p data-route-enter>在这里，你可以{hasProjects ? <>看到我正在折腾的<TextLink href="/projects">东西</TextLink>，也可以探索我记录的</> : <>探索我记录的</>}<TextLink href="/writing">文字</TextLink>与<TextLink href="/photos">影像</TextLink>—关于生活、工作、兴趣，以及那些尚未想明白的问题。</p>
-      {/* <p data-route-enter>你可以在 {x && <TextLink href={x}>X</TextLink>}、{github && <TextLink href={github} rel="me">GitHub</TextLink>}、{xiaohongshu && <TextLink href={xiaohongshu}>小红书</TextLink>}上找到我，也可以<TextLink href={`mailto:${resume.data.email}`}>给我发邮件</TextLink>。</p> */}
+      <p data-route-enter>欢迎来到我的<DashedUnderline effect="flowers">数字花园</DashedUnderline>，我是 Leo，一名产品设计师。</p>
+      <p data-route-enter>我使用 <DashedUnderline data-touch-effect="" effect="selection">Figma</DashedUnderline> 进行设计，使用 <DashedUnderline data-touch-effect="" effect="logos" logos={aiLogos}>AI Agent</DashedUnderline> 进行构建。我喜欢探索一切<DashedUnderline effect="work-stack" photos={curatedWorks}>用心创作的事物</DashedUnderline>。最近，我开始更多地借助 AI 来<DashedUnderline data-touch-effect="" effect="pixel-person">实现自己的想法</DashedUnderline>，并尝试将其融入日常工作流中。</p>
+      <p data-route-enter>在这里，你可以{hasProjects ? <>看到我正在折腾的<TextLink href="/projects" class="home-intro__projects-link">项目</TextLink>，也可以探索我记录的</> : <>探索我记录的</>}<TextLink href="/writing">文字</TextLink>与<TextLink href="/photos">影像</TextLink>——关于生活、工作、兴趣，以及那些还没想明白的问题。</p>
+      <p data-route-enter>目前我正在寻找全职工作，如果你感兴趣，不妨<TextLink href="/resume">了解更多</TextLink>。</p>
     </div>
   </section>
 
-  <section class="home-section reading-column writing-home">
+  <section class="home-section reading-column contact-section" data-route-enter-viewport>
+    <div class="section-topline" data-route-enter><h2>联系到我</h2></div>
+    <ContactLinks variant="social" routeEnter hoverSound />
+  </section>
+
+  <section class="home-section reading-column writing-home" data-route-enter-viewport>
     <div class="section-topline" data-route-enter><h2>最近在想</h2></div>
     <div class="home-list" data-route-enter-group>
       {recentArticles.map((article) => <ContentRow title={article.data.title} meta={formatDate(article.data.publishedAt).replaceAll(".", "-")} href={`/writing/${article.id}`} density="compact" />)}
     </div>
   </section>
 
-  {featuredProjectPreviews.length > 0 && <section class="home-section reading-column project-home">
+  {featuredProjectPreviews.length > 0 && <section class="home-section reading-column project-home" data-route-enter-viewport>
     <div class="section-topline" data-route-enter><h2>精选项目</h2></div>
     <div class="project-grid" data-route-enter-group>
       {featuredProjectPreviews.map((project) => <ProjectCard {...project} />)}
     </div>
   </section>}
 
-  <section class:list={["home-section reading-column photo-home", { "photo-home--no-fan": homeFanPhotos.length === 0, "photo-home--no-drag": recentPhotos.length === 0 }]} data-route-enter>
-    <div class="section-topline"><h2>屏幕之外</h2></div>
-    <div class="photo-home__variant photo-home__variant--fan">
+  <section class="home-section reading-column home-tools" data-route-enter-viewport>
+    <div class="section-topline" data-route-enter><h2>常用工具</h2></div>
+      <p class="home-section__description" data-route-enter>我一直在探索并掌握新工具，下面是我目前常用的一些工具。</p>
+      <TooltipGroup id="everyday-tools-tooltip">
+      <ul class="about-tools" aria-label="常用工具" data-route-enter-group>
+        {everydayTools.map((tool) => (
+          <li class:list={["about-tools__item", `about-tools__item--${tool.variant}`]}>
+            <button type="button" class="about-tools__trigger" aria-label={tool.alt} aria-describedby="everyday-tools-tooltip" data-tooltip-name={tool.alt} data-tooltip-description={tool.description}>
+            <span class="about-tools__image">
+              <Image src={tool.src} alt="" width={tool.variant === "cropped" ? 61 : 48} height={tool.variant === "cropped" ? 61 : 48} densities={[1, 2]} format="webp" loading="lazy" />
+            </span>
+            </button>
+          </li>
+        ))}
+      </ul>
+      </TooltipGroup>
+  </section>
+
+  <section class:list={["home-section reading-column photo-home", { "photo-home--no-fan": homeFanPhotos.length === 0, "photo-home--no-drag": recentPhotos.length === 0 }]} data-route-enter-viewport>
+    <div class="section-topline" data-route-enter><h2>屏幕之外</h2></div>
+    <p class="home-section__description photo-home__description" data-route-enter>工作之余，我会和万万一起带着相机到处走走拍拍，也享受创作、游戏和漫画带来的乐趣。</p>
+    <div class="photo-home__variant photo-home__variant--fan" data-route-enter>
       <PhotoFanStack photos={homeFanPhotos} label="屏幕之外：悬停展开照片" />
     </div>
-    <div class="photo-home__variant photo-home__variant--drag">
+    <div class="photo-home__variant photo-home__variant--drag" data-route-enter>
       {recentPhotos.length > 0 && <DraggablePhotoStack photos={recentPhotos} label="屏幕之外：桌面端可拖拽照片" />}
     </div>
   </section>
 
 </BaseLayout>
+
+<style>
+  .hero__copy > p:has(:global(.photo-stack-gallery[data-preview="true"])) {
+    position: relative;
+    z-index: 2;
+  }
+</style>

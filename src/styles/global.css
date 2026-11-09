@@ -1,6 +1,22 @@
 @layer reset, tokens, base, components, pages, responsive, astro, site, site-responsive;
 
 @font-face {
+  font-family: "Geist";
+  src: url("/fonts/geist/Geist-Variable.woff2") format("woff2");
+  font-weight: 100 900;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Geist";
+  src: url("/fonts/geist/Geist-Italic-Variable.woff2") format("woff2");
+  font-weight: 100 900;
+  font-style: italic;
+  font-display: swap;
+}
+
+@font-face {
   font-family: "Geist Mono";
   src: url("/fonts/geist/GeistMono-Regular.woff2") format("woff2");
   font-weight: 400;
@@ -28,6 +44,22 @@
   font-family: "Chill Jinshu Song Compact";
   src: url("/fonts/chill-jinshu-song/compact-bold-v3.woff2") format("woff2");
   font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "New Spirit Condensed";
+  src: url("/fonts/new-spirit/medium-condensed.woff2") format("woff2");
+  font-weight: 500;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "New Spirit Regular Condensed";
+  src: url("/fonts/new-spirit/regular-condensed.woff2") format("woff2");
+  font-weight: 400;
   font-style: normal;
   font-display: swap;
 }
@@ -64,8 +96,8 @@
 
     /* Content: hierarchy for readable, non-interactive information. */
     --color-ink: #242424;
-    --color-copy: #595959;
-    --color-link: #242424;
+    --color-copy: #626262;
+    --color-link: #1f1f1f;
     --color-muted: #646464;
     --color-faint: #6b6b6b;
     --color-subtle: color-mix(in srgb, var(--color-faint) 80%, var(--color-canvas));
@@ -109,13 +141,16 @@
     --external-arrow-size: .75em;
     --external-arrow-gap: var(--space-1);
     --external-arrow-travel: var(--space-1);
-    --font-sans: "PingFang SC", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", "Noto Sans SC", "Microsoft YaHei", sans-serif;
+    --font-sans: "Geist", "PingFang SC", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", "Noto Sans SC", "Microsoft YaHei", sans-serif;
     --font-serif: Georgia, "Noto Serif SC", "Songti SC", serif; --font-mono: "Geist Mono", "SFMono-Regular", Consolas, monospace; --font-script: "Kaiti SC", "STKaiti", cursive;
     --font-heading: "Chill Jinshu Song Compact", var(--font-sans);
+    --font-section-heading: var(--font-heading);
+    --font-resume-name: "Chill Jinshu Song Text", var(--font-sans);
     --text-meta: .75rem; --text-body: .875rem; --text-title: .875rem; --text-lead: 1rem; --text-subhead: 1rem; --text-page-title: 1.5rem; --text-resume-title: 2.25rem; --text-display: 2rem;
     --text-tab: .8125rem;
     --text-xs: var(--text-meta); --text-sm: var(--text-body); --text-ui: var(--text-body); --text-base: var(--text-body); --text-lg: var(--text-lead); --text-xl: var(--text-page-title); --text-2xl: 1.5rem; --text-3xl: 1.75rem; --text-4xl: var(--text-display);
     --weight-regular: 400; --weight-medium: 500; --weight-semibold: 600; --weight-bold: 700;
+    --weight-heading: var(--weight-bold);
     --leading-tight: 1.2; --leading-title: 1.4; --leading-copy: 1.45; --leading-relaxed: 1.7;
     --leading-description: 1.625rem;
     --tracking-body: 0; --tracking-title: -.015em; --tracking-display: -.025em;
@@ -192,8 +227,8 @@
     --photo-stack-detail-max: 42rem;
     --photo-stack-radius-ratio: .16;
     --photo-stack-press-scale: .97;
-    --color-photo-stack-detail-backdrop: color-mix(in srgb, var(--color-canvas) 75%, transparent);
-    --blur-photo-stack-detail-backdrop: var(--space-5);
+    --color-photo-stack-detail-backdrop: color-mix(in srgb, var(--color-canvas) 82%, transparent);
+    --blur-photo-stack-detail-backdrop: var(--space-6);
     --color-photo-stack-control-hover: color-mix(in srgb, var(--color-ink) 88%, var(--color-canvas));
     --color-wave-underline: #16B395;
     --wave-underline-period: 12px;
@@ -241,6 +276,8 @@
     --dock-page-padding: calc(var(--space-16) + env(safe-area-inset-bottom, 0px));
     --dock-reserve: calc(var(--dock-backdrop-height) + var(--space-4));
     --detail-toc-width: 16.5rem; --detail-toc-label-width: 12.5rem;
+    --detail-toc-inline-inset: calc(var(--space-8) + var(--space-2));
+    --detail-toc-content-gap: var(--space-4);
     --text-detail-toc: .9375rem;
     --page-top-space: var(--space-20);
     --text-article-title: clamp(2rem, calc(1rem + 2.5vw), 3rem);
@@ -278,7 +315,7 @@
     --color-photo-paper: #fff;
 
     --color-ink: #fafafa;
-    --color-copy: #b5b3b0;
+    --color-copy: #a3a19e;
     --color-link: #fafafa;
     --color-muted: #808080;
     --color-faint: #808080;
@@ -325,7 +362,11 @@
 
 @layer tokens {
   html:lang(en) {
-    --leading-description: var(--space-6);
+    --font-heading: "New Spirit Condensed", var(--font-sans);
+    --font-section-heading: "New Spirit Regular Condensed", var(--font-sans);
+    --font-resume-name: var(--font-heading);
+    --weight-heading: var(--weight-regular);
+    --leading-description: 1.375rem;
     --leading-article-body: var(--leading-description);
     --english-paragraph-gap: var(--space-2);
   }
@@ -374,8 +415,9 @@
   }
   .code-block__language { font-family: var(--font-mono); }
   .code-block__copy {
+    position: relative;
+    isolation: isolate;
     min-height: calc(var(--space-8) + var(--space-3));
-    min-width: var(--space-16);
     margin-inline-end: calc(-1 * var(--space-2));
     padding: 0 var(--space-2);
     border: 0;
@@ -385,7 +427,17 @@
     font: inherit;
     cursor: pointer;
   }
-  .code-block__copy:is(:hover, :focus-visible) { color: var(--color-ink); background: var(--color-inline-code-bg); }
+  /* Keep the 44px hit area while giving the highlight a compact 28px height. */
+  .code-block__copy::before {
+    content: "";
+    position: absolute;
+    z-index: -1;
+    inset: var(--space-2) 0;
+    border-radius: inherit;
+    pointer-events: none;
+  }
+  .code-block__copy:is(:hover, :focus-visible) { color: var(--color-ink); }
+  .code-block__copy:is(:hover, :focus-visible)::before { background: var(--color-inline-code-bg); }
   .code-block__copy:disabled { cursor: wait; }
   .code-block__copy:focus-visible { outline-offset: calc(-1 * var(--space-1)); box-shadow: none; }
   .code-block pre {
@@ -456,7 +508,7 @@
   .tag-list { display: flex; flex-wrap: wrap; gap: .5rem; }
   .tag { width: fit-content; padding: .22rem .5rem; border: 1px solid var(--color-line); border-radius: var(--radius-xs); color: var(--color-muted); font-size: var(--text-meta); }
   .section-heading { display: grid; gap: .75rem; margin-bottom: 1.25rem; }
-  .section-heading h2 { font-family: var(--font-heading); font-size: var(--text-subhead); font-weight: var(--weight-regular); }
+  .section-heading h2 { font-family: var(--font-section-heading); font-size: var(--text-subhead); font-weight: var(--weight-regular); }
   .section-heading__description { color: var(--color-muted); }
   .empty-state { padding-block: var(--space-8); color: var(--color-muted); }
   .section-topline { height: 1.25rem; margin-bottom: 1.25rem; }
@@ -507,7 +559,7 @@
   .hero__signature { width: 4rem; height: 3rem; }
   .hero__copy { display: grid; gap: .5rem; color: var(--color-copy); }
   .hero__copy p { line-height: 1.5rem; }
-  .hero__copy a { color: var(--color-ink); text-decoration-thickness: 1px; text-underline-offset: 3px; }
+  .hero__copy a { color: var(--color-link); text-decoration-thickness: 1px; text-underline-offset: 3px; }
   .hero__actions { display: flex; flex-wrap: wrap; gap: var(--space-3); padding-top: var(--space-2); }
   .home-section { margin-top: 5rem; }
   .photo-home__variant--drag { display: none; }
@@ -560,7 +612,7 @@
   .resume__contacts a { min-height: 2.75rem; display: inline-flex; align-items: center; padding-inline: var(--space-3); border: 1px solid var(--color-line); border-radius: var(--radius-xs); color: var(--color-muted); font-family: var(--font-mono); font-size: var(--text-meta); text-decoration: none; }
   .resume__contacts a:hover { border-color: var(--color-muted); color: var(--color-ink); }
   .resume__section { margin-top: var(--space-20); }
-  .resume__section > h2 { margin-bottom: var(--space-5); color: var(--color-muted); font-family: var(--font-heading); font-size: var(--text-subhead); font-weight: var(--weight-regular); }
+  .resume__section > h2 { margin-bottom: var(--space-5); color: var(--color-muted); font-family: var(--font-section-heading); font-size: var(--text-subhead); font-weight: var(--weight-regular); }
   .resume-timeline { display: grid; gap: var(--space-12); list-style: none; }
   .resume-timeline li { position: relative; display: grid; grid-template-columns: 7rem minmax(0, 1fr); gap: var(--space-6); padding-left: var(--space-5); }
   .resume-timeline li::before { position: absolute; top: .55rem; left: 0; width: 6px; height: 6px; border-radius: 50%; background: var(--color-accent); content: ""; }

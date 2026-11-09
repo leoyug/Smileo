@@ -9,7 +9,7 @@ import {
 export type SoundPreference = "on" | "off";
 
 const soundStorageKey = "incessant-sound";
-const defaultVolume = 0.32;
+const defaultVolume = 1;
 const legacySounds = {
   chime: true,
   droplet: true,
@@ -40,9 +40,9 @@ export const initializeSound = (): SoundPreference => {
   return preference;
 };
 
-export const playInterfaceSound = (sound: InterfaceSound, volume = 1) => {
-  if (sound in legacySounds) playLegacy(sound as keyof typeof legacySounds, { volume });
-  else play(sound as SoundName, { volume });
+export const playInterfaceSound = (sound: InterfaceSound) => {
+  if (sound in legacySounds) playLegacy(sound as keyof typeof legacySounds);
+  else play(sound as SoundName);
 };
 
 export const setSoundPreference = (preference: SoundPreference) => {
@@ -54,11 +54,11 @@ export const setSoundPreference = (preference: SoundPreference) => {
   if (preference === "on") {
     setEnabled(true);
     setLegacyEnabled(true);
-    playLegacy("chime", { volume: 0.75 });
+    playLegacy("chime");
     return;
   }
 
-  playLegacy("droplet", { volume: 0.55 });
+  playLegacy("droplet");
   setEnabled(false);
   setLegacyEnabled(false);
 };

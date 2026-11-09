@@ -58,6 +58,7 @@ const { id, variant = "default" } = Astro.props;
       const controller = new AbortController();
       const { signal } = controller;
       let active: HTMLElement | null = null;
+      let renderedTrigger: HTMLElement | null = null;
       let pointerInside = false;
       let retainUntil = 0;
       let timer: ReturnType<typeof setTimeout>;
@@ -86,11 +87,12 @@ const { id, variant = "default" } = Astro.props;
         clearTimeout(timer);
         if (active) observer.unobserve(active);
         active = null;
+        renderedTrigger = null;
         pointerInside = false;
         bubble.dataset.show = 'false';
         if (bubble.matches(':popover-open')) bubble.hidePopover();
       };
-      const visibleFor = (trigger: HTMLElement) => bubble.dataset.show === 'true' && bubble.matches(':popover-open') && active === trigger;
+      const visibleFor = (trigger: HTMLElement) => active === trigger && renderedTrigger === trigger && bubble.dataset.show === 'true' && bubble.matches(':popover-open');
       const show = (trigger: HTMLElement, delay = 0) => {
         clearTimeout(timer);
         if (visibleFor(trigger)) return;
@@ -110,6 +112,7 @@ const { id, variant = "default" } = Astro.props;
           }
           if (!bubble.matches(':popover-open')) bubble.showPopover();
           place();
+          renderedTrigger = trigger;
           // Commit the initial geometry before fading the bubble in.
           void bubble.offsetWidth;
           bubble.dataset.show = 'true';

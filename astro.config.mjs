@@ -39,6 +39,8 @@ export default defineConfig({
   markdown: { shikiConfig: codeHighlighting, processor: unified({ remarkPlugins: [remarkContentDisplayImages] }) },
   site: environment.SITE_URL || "https://smileoleo.com",
   redirects: {
+    "/about": "/",
+    "/en/about": "/en/",
     "/en/projects/wanderland": "/en/projects/wispora",
     "/en/projects/homagine-app": "/en/projects/Zhaichangxiang-App",
     "/en/projects/homagine-website": "/en/projects/zhaichangxiang-website",

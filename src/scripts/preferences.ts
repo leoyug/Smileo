@@ -15,7 +15,7 @@ const topLevelPaths = new Set([
   "/projects/",
   "/writing/",
   "/photos/",
-  "/about/",
+  "/resume/",
 ]);
 const reducedMotionQuery = window.matchMedia(
   "(prefers-reduced-motion: reduce)",
@@ -72,7 +72,7 @@ const closePreferences = (restoreFocus = false) => {
   );
   toggle?.setAttribute("aria-expanded", "false");
   if (restoreFocus) toggle?.focus();
-  playInterfaceSound("close", 0.55);
+  playInterfaceSound("close");
 };
 
 const themeWindow = window as Window & {
@@ -100,13 +100,13 @@ if (!themeWindow.__incessantThemeToggleInitialized) {
       const isOpen = toggle.getAttribute("aria-expanded") === "true";
       toggle.setAttribute("aria-expanded", String(!isOpen));
       setPreferencesPanelOpen(panel, !isOpen);
-      playInterfaceSound(isOpen ? "close" : "open", isOpen ? 0.55 : 0.6);
+      playInterfaceSound(isOpen ? "close" : "open");
       return;
     }
 
     if (themeOption) {
       const preference = themeOption.dataset.themeValue as ThemePreference;
-      playInterfaceSound("toggle", 0.7);
+      playInterfaceSound("toggle");
       transitionTheme(preference, themeOption);
       return;
     }
@@ -126,7 +126,7 @@ if (!themeWindow.__incessantThemeToggleInitialized) {
         const language = preferenceOption.dataset.preferenceValue;
         if (language === "zh-CN" || language === "en") {
           setTitleLanguage(language);
-          if (!wasSelected) playInterfaceSound("toggle", 0.7);
+          if (!wasSelected) playInterfaceSound("toggle");
         }
       }
       return;
@@ -180,7 +180,7 @@ if (!themeWindow.__incessantThemeToggleInitialized) {
     const path = location.pathname.endsWith("/")
       ? location.pathname
       : `${location.pathname}/`;
-    if (topLevelPaths.has(withoutLanguage(path))) playInterfaceSound("navigate", 0.55);
+    if (topLevelPaths.has(withoutLanguage(path))) playInterfaceSound("navigate");
   });
 }
 

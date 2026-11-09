@@ -141,7 +141,7 @@ const initializePhotosPages = () => {
         sourceImage: HTMLImageElement,
         targetRect: DOMRect,
       ) => {
-        if (!dialog || !frame) return;
+        if (!dialog || !frame || !image) return;
 
         const durationValue = getComputedStyle(
           document.documentElement,
@@ -152,13 +152,34 @@ const initializePhotosPages = () => {
         gsap.set(frame, { autoAlpha: 0 });
 
         transitionAnimation = gsap.timeline({
-          onComplete: () => {
+          onComplete: async () => {
+            transitionAnimation = null;
+            // The zoom can finish before the full-size image arrives. Keep
+            // the enlarged preview until its replacement is decoded and painted.
+            try {
+              await image.decode();
+            } catch {
+              // A failed full-size request still leaves the preview visible.
+              return;
+            }
+            const isCurrent = () =>
+              traveler === element && dialog.open && !isClosing;
+            if (!isCurrent()) return;
+
+            dialog.removeAttribute("data-image-loading");
+            stage?.setAttribute("aria-busy", "false");
             dialog.classList.remove("is-fallback-opening");
             dialog.classList.add("is-settled");
+            gsap.set(frame, { clearProps: "opacity,visibility,transform" });
+            // Let the real image become fully opaque underneath the preview,
+            // then give the browser a frame to paint it before removing the cover.
+            await Promise.allSettled(
+              image.getAnimations().map((animation) => animation.finished),
+            );
+            await new Promise<void>((resolve) => requestAnimationFrame(() => resolve()));
+            if (!isCurrent()) return;
             element.remove();
             traveler = null;
-            gsap.set(frame, { clearProps: "opacity,visibility,transform" });
-            transitionAnimation = null;
           },
         });
         transitionAnimation.fromTo(
@@ -204,7 +225,7 @@ const initializePhotosPages = () => {
         if (!dialog.open) dialog.showModal();
         document.documentElement.classList.add("has-photo-lightbox");
         dialog.focus();
-        if (push) playInterfaceSound("loading", 0.8);
+        if (push) playInterfaceSound("loading");
         requestAnimationFrame(() => {
           fitPhotoFrame(sourceRatio);
           dialog.classList.add("is-opening");
@@ -282,7 +303,7 @@ const initializePhotosPages = () => {
       const closePhoto = (historyMode: CloseHistoryMode) => {
         if (!dialog?.open || !frame || !image || isClosing) return;
         isClosing = true;
-        playInterfaceSound("loading", 0.8);
+        playInterfaceSound("loading");
 
         const sourceLink = getClosingSource();
         const sourceImage =

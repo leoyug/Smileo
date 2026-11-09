@@ -56,7 +56,7 @@ const panelId = `${id}-panel`;
   .project-filter-tabs__tab { position: relative; display: inline-flex; flex: none; align-items: center; justify-content: center; gap: 0; padding: var(--space-1) var(--space-3) var(--space-1) calc(var(--space-2) + var(--space-1) / 2); border: 0; border-radius: var(--radius-pill); background: transparent; color: color-mix(in srgb, var(--color-muted) 80%, var(--color-ink)); font: inherit; font-size: var(--text-tab); font-weight: var(--weight-medium); line-height: var(--space-6); white-space: nowrap; cursor: pointer; transition: color var(--duration-quick) var(--ease-smooth-out); }
   .project-filter-tabs__tab:focus-visible { outline-offset: 0; }
   .project-filter-tabs__icon-slot { position: relative; display: inline-flex; flex: none; align-items: center; width: 0; height: var(--space-4); opacity: 0; transition: none; }
-  .project-filter-tabs__tab:is([aria-selected="true"], [data-selected="true"]) .project-filter-tabs__icon-slot { width: calc(var(--space-4) + var(--space-1) / 2); opacity: 1; }
+  .project-filter-tabs__tab:is([aria-selected="true"], [data-selected="true"]) .project-filter-tabs__icon-slot { width: calc(var(--space-4) + var(--space-1)); opacity: 1; }
   .project-filter-tabs__icon { position: absolute; inset: 0 auto auto 0; display: block; min-width: var(--space-4); max-width: none; filter: var(--project-attribute-icon-filter); opacity: .6; }
   .project-filter-tabs__active { position: absolute; z-index: 1; inset: 0; display: flex; align-items: center; gap: 0; padding: var(--space-1); border-radius: var(--radius-pill); background: var(--color-canvas); pointer-events: none; }
   :global([data-theme="dark"]) .project-filter-tabs__active { background: var(--color-surface-2); }

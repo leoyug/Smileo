@@ -1,0 +1,32 @@
+<div class="julie-record">
+  <div class="julie-record__disc-frame" data-julie-disc-frame>
+    <img class="julie-record__disc" data-julie-disc src="/assets/figma/curated-works/julie-record.png" width="512" height="512" alt="" decoding="async" loading="lazy" draggable="false" />
+  </div>
+  <img class="julie-record__sleeve" data-julie-sleeve src="/assets/figma/curated-works/julie.webp" width="1080" height="1080" alt="布朗尼乐队《Julie》的人物画封面" decoding="async" loading="lazy" draggable="false" />
+</div>
+
+<style>
+  .julie-record { position: relative; width: 100%; aspect-ratio: 1000 / 740; }
+  .julie-record__sleeve, .julie-record__disc-frame, .julie-record__disc { position: absolute; display: block; }
+  .julie-record__sleeve {
+    inset: 0 auto auto 0;
+    width: 74%;
+    height: auto;
+    border-radius: 0;
+  }
+  .julie-record__disc-frame {
+    inset: 50% auto auto 32%;
+    width: calc(74% * .9);
+    transform: translate(-44%, -50%);
+    visibility: hidden;
+    aspect-ratio: 1;
+    overflow: clip;
+  }
+  .julie-record__disc {
+    inset: -5.17% auto auto -5.17%;
+    width: 110.34%;
+    max-width: none;
+    height: auto;
+  }
+  [data-julie-disc-frame][data-extended] { transform: translate(0, -50%); visibility: visible; }
+</style>
