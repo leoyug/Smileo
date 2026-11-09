@@ -57,6 +57,28 @@ const flowerPaths = [
   </span>}</span>
 )}
 
+<script>
+  let activeEffect: HTMLElement | null = null;
+  const coarsePointer = matchMedia("(hover: none) and (pointer: coarse)");
+
+  function clearTouchEffect() {
+    if (activeEffect) activeEffect.dataset.touchEffect = "";
+    activeEffect = null;
+  }
+
+  document.addEventListener("click", (event) => {
+    const target = event.target instanceof Element ? event.target.closest<HTMLElement>("[data-touch-effect]") : null;
+    if (target !== activeEffect) clearTouchEffect();
+    const isTouch = event instanceof PointerEvent && event.pointerType
+      ? event.pointerType === "touch" || event.pointerType === "pen"
+      : coarsePointer.matches && event.detail > 0;
+    if (!target || !isTouch) return;
+    target.dataset.touchEffect = "active";
+    activeEffect = target;
+  });
+  document.addEventListener("astro:before-swap", clearTouchEffect);
+</script>
+
 <style>
   .dashed-underline {
     color: var(--color-link);
@@ -116,12 +138,12 @@ const flowerPaths = [
   .dashed-underline__frame i:nth-child(3) { top: 100%; left: 0; }
   .dashed-underline__frame i:nth-child(4) { top: 100%; left: 100%; }
 
-  .dashed-underline--selection:focus-visible {
+  .dashed-underline--selection:is(:focus-visible, [data-touch-effect="active"]) {
     text-decoration-color: transparent;
     outline: none;
   }
 
-  .dashed-underline--selection:focus-visible .dashed-underline__frame {
+  .dashed-underline--selection:is(:focus-visible, [data-touch-effect="active"]) .dashed-underline__frame {
     opacity: 1;
   }
 
@@ -299,12 +321,12 @@ const flowerPaths = [
     transition-delay: calc(var(--flower-index) * var(--delay-garden-flower) + var(--flower-stroke-start) + var(--flower-stroke-index) * var(--flower-stroke-duration) / var(--flower-stroke-count));
   }
 
-  .dashed-underline--logos:focus-visible .dashed-underline__logos {
+  .dashed-underline--logos:is(:focus-visible, [data-touch-effect="active"]) .dashed-underline__logos {
     visibility: visible;
     transition-delay: 0s;
   }
 
-  .dashed-underline--logos:focus-visible .dashed-underline__logos img {
+  .dashed-underline--logos:is(:focus-visible, [data-touch-effect="active"]) .dashed-underline__logos img {
     opacity: 1;
     transform: translate(calc((var(--logo-index) - 1) * var(--logo-preview-spread)), var(--logo-lift, 0px)) rotate(calc((var(--logo-index) - 1) * var(--logo-preview-rotation) + var(--logo-image-rotation)));
     transition-duration: var(--duration-project-attribute);

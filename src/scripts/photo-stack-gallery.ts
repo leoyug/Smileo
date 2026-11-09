@@ -49,6 +49,7 @@ function initializePhotoStacks() {
     const travelers = new Set<HTMLElement>();
     let view: "rest" | "preview" | "gallery" | "detail" = "rest";
     let busy = false;
+    let queueDetail: ((index: number) => void) | undefined;
     let closing = false;
     let selected = -1;
     let motionEpoch = 0;
@@ -128,7 +129,10 @@ function initializePhotoStacks() {
       hiddenCover?.style.removeProperty("visibility");
       hiddenCover = undefined;
       sleeve?.style.removeProperty("visibility");
-      if (view === "gallery") detail.hidden = true;
+      if (view === "gallery") {
+        detail.hidden = true;
+        if (deckRoot && !deckRoot.hidden) deck?.hide();
+      }
       frames.forEach((frame, index) => {
         if (view === "detail" && index === selected) frame.style.visibility = "hidden";
         else frame.style.removeProperty("visibility");
@@ -137,6 +141,7 @@ function initializePhotoStacks() {
       preview.style.removeProperty("visibility");
       delete root.dataset.returning;
       busy = false;
+      queueDetail = undefined;
       dialog.removeAttribute("data-moving");
       revealOrbitClock();
     };
@@ -155,6 +160,8 @@ function initializePhotoStacks() {
     const fly = (frame: HTMLElement, from: DOMRect, to: DOMRect, fromRotation: number, toRotation: number, duration: number, options: { fadeIn?: boolean; dissolve?: boolean; layer?: number; radii?: [number, number] } = {}) => {
       if (reduced.matches) return;
       const traveler = frame.cloneNode(true) as HTMLElement;
+      const travelerImage = traveler instanceof HTMLImageElement ? traveler : traveler.querySelector("img");
+      if (travelerImage) travelerImage.loading = "eager";
       traveler.classList.add("photo-stack-gallery__traveler");
       traveler.setAttribute("aria-hidden", "true");
       traveler.style.removeProperty("visibility");
@@ -404,7 +411,11 @@ function initializePhotoStacks() {
       void finishMotion(epoch, () => { root.dataset.preview = "false"; });
     };
     const showDetail = (index: number) => {
-      if (busy || view !== "gallery") return;
+      if (view !== "gallery") return;
+      if (busy) {
+        queueDetail?.(index);
+        return;
+      }
       const photo = photos[index];
       if (!photo) return;
       if (isWorks) playInterfaceSound("toggle");
@@ -450,6 +461,7 @@ function initializePhotoStacks() {
       if (deck && exhibit?.length) deck.show(exhibit);
       error.hidden = true;
       detail.hidden = false;
+      detail.inert = false;
       detail.scrollTop = 0;
       stage.hidden = false;
       stage.inert = true;
@@ -514,13 +526,19 @@ function initializePhotoStacks() {
       const coverSource = cover && departingCover ? measureCover(departingCover, departingAngle) : null;
       const departingRadius = departingCover ? Number.parseFloat(getComputedStyle(departingCover).borderRadius) : 0;
       const panelOpacity = getComputedStyle(detail).opacity;
-      const source = isJulie ? null : media.getBoundingClientRect();
+      const frontCard = deckRoot?.querySelector<HTMLElement>('[data-deck-card][aria-hidden="false"]');
+      const source = isJulie ? null : frontCard?.getBoundingClientRect() ?? media.getBoundingClientRect();
+      const fadeDeck = !!frontCard && !reduced.matches;
       const epoch = beginMotion();
       imageEpoch++;
       view = "gallery";
       dialog.dataset.view = "gallery";
-      detail.hidden = !isJulie || reduced.matches;
-      deck?.hide();
+      detail.hidden = reduced.matches || (!isJulie && !fadeDeck);
+      if (fadeDeck) {
+        // Keep the prints and their layout visible while the gallery cover takes over.
+        detail.inert = true;
+        animate(detail, [{ opacity: panelOpacity }, { opacity: 0 }], timing("--duration-project-attribute"));
+      } else deck?.hide();
       stage.hidden = false;
       stage.inert = false;
       labelControl(isWorks ? galleryLabel : uiText("关闭照片图库", "Close photo gallery"));
@@ -542,10 +560,17 @@ function initializePhotoStacks() {
         const detailImage = detailFrame.querySelector("img");
         if (detailImage && !isWorks) detailImage.src = image.src;
         const duration = photos[selected].id === "orbit" ? "--duration-project-attribute" : "--duration-very-slow";
-        fly(detailFrame, source, measureFrame(frames[selected]), 0, cardRotation[selected], timing(duration));
+        const frame = frames[selected];
+        const radii: [number, number] | undefined = frontCard ? [0, Number.parseFloat(getComputedStyle(frame).borderRadius)] : undefined;
+        fly(detailFrame, source, measureFrame(frame), 0, cardRotation[selected], timing(duration), { radii, fadeIn: fadeDeck });
         if (!reduced.matches) frames[selected].style.visibility = "hidden";
       }
-      void finishMotion(epoch, () => cards[selected].focus({ preventScroll: true }));
+      let nextIndex: number | undefined;
+      if (isWorks) queueDetail = (index) => { nextIndex = index; };
+      void finishMotion(epoch, () => {
+        if (nextIndex !== undefined) showDetail(nextIndex);
+        else cards[selected].focus({ preventScroll: true });
+      });
     };
     const closeGallery = () => {
       if (closing) { finishClose(); return; }

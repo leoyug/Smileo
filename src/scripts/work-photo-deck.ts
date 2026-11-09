@@ -83,10 +83,10 @@ export function initializeWorkPhotoDeck(root: HTMLElement, reduced: MediaQueryLi
     cards[active].style.transform = dragPose(gesture.width, gesture.dx, gesture.dy);
   };
 
-  const animate = (card: HTMLElement, from: string, to: string, token: string) => {
+  const animate = (card: HTMLElement, from: string, to: string, token: string, durationScale = 1) => {
     const styles = getComputedStyle(root);
     const animation = card.animate([{ transform: from }, { transform: to }], {
-      duration: cssTimeToMilliseconds(styles.getPropertyValue(token)),
+      duration: cssTimeToMilliseconds(styles.getPropertyValue(token)) * durationScale,
       easing: styles.getPropertyValue("--ease-smooth-out").trim(),
     });
     card.style.transform = to;
@@ -94,8 +94,9 @@ export function initializeWorkPhotoDeck(root: HTMLElement, reduced: MediaQueryLi
     return animation.finished.catch(() => {}).finally(() => animations.delete(animation));
   };
 
-  const settle = async (shouldAdvance: boolean, width: number, height: number, dx: number, dy: number) => {
+  const settle = async (shouldAdvance: boolean, width: number, height: number, dx: number, dy: number, keyboardDirection?: -1 | 1) => {
     if (settling || !cards.length) return;
+    if (shouldAdvance) playFlip();
     if (reduced.matches) {
       if (shouldAdvance) advance();
       return;
@@ -107,15 +108,19 @@ export function initializeWorkPhotoDeck(root: HTMLElement, reduced: MediaQueryLi
     const card = cards[index];
     const from = dragPose(width, dx, dy);
     if (shouldAdvance) {
+      const durationScale = keyboardDirection === undefined ? 1 : 1.15;
       // Clear the stack along the drag direction before changing layers.
-      const clearance = .84 / Math.hypot(dx / width, dy / height);
-      const outside = clearance > 1 ? dragPose(width, dx * clearance, dy * clearance) : from;
-      if (clearance > 1) await animate(card, from, outside, "--duration-quick");
+      const travel = Math.hypot(dx / width, dy / height);
+      const clearance = .84 / travel;
+      const outside = travel === 0
+        ? dragPose(width, (keyboardDirection ?? 1) * width * .84, 0)
+        : clearance > 1 ? dragPose(width, dx * clearance, dy * clearance) : from;
+      if (clearance > 1) await animate(card, from, outside, "--duration-quick", durationScale);
       if (epoch !== revision) return;
       const before = cards.map((_, position) => pose(depth(position)));
       advance();
       await Promise.all(cards.map((photo, position) =>
-        animate(photo, position === index ? outside : before[position], pose(depth(position)), "--duration-fast"),
+        animate(photo, position === index ? outside : before[position], pose(depth(position)), "--duration-fast", durationScale),
       ));
     } else {
       await animate(card, from, pose(depth(index)), "--duration-quick");
@@ -131,7 +136,6 @@ export function initializeWorkPhotoDeck(root: HTMLElement, reduced: MediaQueryLi
     stop();
     const threshold = Math.min(64, width * .16);
     const shouldAdvance = commit && Math.hypot(dx, dy) >= threshold;
-    if (shouldAdvance) playFlip();
     void settle(shouldAdvance, width, height, dx, dy);
   };
 
@@ -154,13 +158,11 @@ export function initializeWorkPhotoDeck(root: HTMLElement, reduced: MediaQueryLi
   stack.addEventListener("pointercancel", (event) => finishGesture(event, false), options);
   stack.addEventListener("lostpointercapture", (event) => finishGesture(event, false), options);
   root.closest("dialog")?.addEventListener("keydown", (event) => {
-    if (root.hidden || !cards.length || root.closest("[data-stack-detail]")?.hasAttribute("hidden")) return;
-    if (event.key !== "ArrowLeft" && event.key !== "ArrowRight") return;
+    if (root.hidden || !cards.length || root.closest("[data-stack-detail]:is([hidden], [inert])")) return;
+    const flipsLeft = event.key === "ArrowLeft" || event.key === "ArrowUp";
+    if (!flipsLeft && event.key !== "ArrowRight" && event.key !== "ArrowDown") return;
     event.preventDefault();
-    if (!settling && !gesture) {
-      playFlip();
-      advance();
-    }
+    if (!gesture) void settle(true, stack.clientWidth, stack.clientHeight, 0, 0, flipsLeft ? -1 : 1);
   }, options);
   reduced.addEventListener("change", () => { stop(); render(); }, options);
   signal.addEventListener("abort", () => {

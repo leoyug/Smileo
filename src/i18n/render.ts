@@ -162,6 +162,7 @@ export async function localizePage(html: string, pathname: string, site: URL | u
     }
     if ('childNodes' in node) for (const child of node.childNodes) localize(child,skip);
     if ('content' in node) localize(node.content,skip);
+    if (!skip && hasClass(node, 'home-intro__projects-link')) setText(node, 'projects');
     // English places the inspiration phrase after the linked word of thanks.
     if (!skip && hasClass(node, 'site-footer__credit-copy') && 'childNodes' in node) {
       const link = node.childNodes.find(child => hasClass(child, 'site-footer__thanks'));

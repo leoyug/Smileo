@@ -37,8 +37,8 @@ const homeFanPhotos = fanPhotos.map((photo) => ({
     <SignatureMark class="hero__signature" data-route-enter />
     <div class="hero__copy">
       <p data-route-enter>欢迎来到我的<DashedUnderline effect="flowers">数字花园</DashedUnderline>，我是 Leo，一名产品设计师。</p>
-      <p data-route-enter>我使用 <DashedUnderline effect="selection">Figma</DashedUnderline> 进行设计，使用 <DashedUnderline effect="logos" logos={aiLogos}>AI Agent</DashedUnderline> 进行构建。我喜欢探索一切<DashedUnderline effect="work-stack" photos={curatedWorks}>用心创作的事物</DashedUnderline>。最近，我开始更多地借助 AI 来<DashedUnderline effect="pixel-person">实现自己的想法</DashedUnderline>，并尝试将其融入日常工作流中。</p>
-      <p data-route-enter>在这里，你可以{hasProjects ? <>看到我正在折腾的<TextLink href="/projects">项目</TextLink>，也可以探索我记录的</> : <>探索我记录的</>}<TextLink href="/writing">文字</TextLink>与<TextLink href="/photos">影像</TextLink>——关于生活、工作、兴趣，以及那些还没想明白的问题。</p>
+      <p data-route-enter>我使用 <DashedUnderline data-touch-effect="" effect="selection">Figma</DashedUnderline> 进行设计，使用 <DashedUnderline data-touch-effect="" effect="logos" logos={aiLogos}>AI Agent</DashedUnderline> 进行构建。我喜欢探索一切<DashedUnderline effect="work-stack" photos={curatedWorks}>用心创作的事物</DashedUnderline>。最近，我开始更多地借助 AI 来<DashedUnderline data-touch-effect="" effect="pixel-person">实现自己的想法</DashedUnderline>，并尝试将其融入日常工作流中。</p>
+      <p data-route-enter>在这里，你可以{hasProjects ? <>看到我正在折腾的<TextLink href="/projects" class="home-intro__projects-link">项目</TextLink>，也可以探索我记录的</> : <>探索我记录的</>}<TextLink href="/writing">文字</TextLink>与<TextLink href="/photos">影像</TextLink>——关于生活、工作、兴趣，以及那些还没想明白的问题。</p>
       <p data-route-enter>目前我正在寻找全职工作，如果你感兴趣，不妨<TextLink href="/resume">了解更多</TextLink>。</p>
     </div>
   </section>

@@ -40,13 +40,13 @@ const isolateSvg = (source: string, theme: string) => {
   :global([data-theme="dark"]) .pixel-person-preview__dark { display: block; }
   .pixel-person-preview :global(svg) { display: block; width: 100%; height: 100%; }
   .pixel-person-preview :global(svg *) { animation-play-state: paused !important; }
-  :global(.dashed-underline--pixel-person:focus-visible) .pixel-person-preview {
+  :global(.dashed-underline--pixel-person:is(:focus-visible, [data-touch-effect="active"])) .pixel-person-preview {
     visibility: visible;
     opacity: 1;
     transform: translate(-50%, 0);
     transition: transform var(--duration-project-attribute) var(--ease-smooth-out), opacity var(--duration-project-attribute) var(--ease-smooth-out), visibility 0s;
   }
-  :global(.dashed-underline--pixel-person:focus-visible) .pixel-person-preview :global(svg *) { animation-play-state: running !important; }
+  :global(.dashed-underline--pixel-person:is(:focus-visible, [data-touch-effect="active"])) .pixel-person-preview :global(svg *) { animation-play-state: running !important; }
   @media (hover: hover) and (pointer: fine) {
     :global(.dashed-underline--pixel-person:hover) .pixel-person-preview {
       visibility: visible;
