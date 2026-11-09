@@ -175,7 +175,8 @@ const serialized = JSON.stringify(photos).replaceAll("<", "\\u003c");
   }
   .photo-stack-gallery__dialog[data-variant="works"] .photo-stack-gallery__detail { container-type: inline-size; overflow: auto; overscroll-behavior: contain; }
   .photo-stack-gallery__dialog[data-variant="works"] .photo-stack-gallery__detail-content {
-    height: auto; min-height: 100%; justify-content: safe center; padding-block: var(--space-5); gap: var(--space-4);
+    --work-detail-gap: var(--space-12);
+    height: auto; min-height: 100%; justify-content: safe center; padding-block: var(--space-5); gap: var(--work-detail-gap);
   }
   .photo-stack-gallery__dialog[data-variant="works"] .photo-stack-gallery__detail-media {
     /* Use a length so border-radius resolves identically along both axes. */
@@ -187,7 +188,6 @@ const serialized = JSON.stringify(photos).replaceAll("<", "\\u003c");
   /* A dragged card can cross the detail inset without enlarging a scroll container. */
   .photo-stack-gallery__dialog:has([data-work-deck]:not([hidden])) { overflow: clip; }
   .photo-stack-gallery__dialog[data-variant="works"] .photo-stack-gallery__detail:has([data-work-deck]:not([hidden])) { overflow: visible; }
-  .photo-stack-gallery__dialog[data-variant="works"] .photo-stack-gallery__detail-content:has([data-work-deck]:not([hidden])) { gap: var(--space-8); }
   .photo-stack-gallery__dialog[data-variant="works"] .photo-stack-gallery__caption {
     max-inline-size: min(100%, 640px);
   }
@@ -312,7 +312,7 @@ const serialized = JSON.stringify(photos).replaceAll("<", "\\u003c");
   @media (max-width: 639px) {
     .photo-stack-gallery__dialog[data-variant="works"] .photo-stack-gallery__detail[data-julie] .photo-stack-gallery__detail-content {
       grid-template-columns: minmax(0, 1fr);
-      gap: calc(var(--space-5) / 2);
+      gap: var(--work-detail-gap);
       padding-inline: calc(196 * var(--julie-unit));
     }
     .photo-stack-gallery__detail[data-julie] .photo-stack-gallery__title { font-size: max(.75rem, calc(96 * var(--julie-unit))); }

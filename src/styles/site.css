@@ -1136,10 +1136,6 @@
     padding-block: 4px;
   }
 
-  .writing-year .section-topline h2 {
-    font-family: var(--font-heading);
-  }
-
   .writing-year .content-row--compact + .content-row--compact {
     margin-top: 16px;
   }
@@ -1752,7 +1748,7 @@
   .content-detail[data-detail-page] h1 {
     font-family: var(--font-heading);
     font-size: var(--text-article-title);
-    font-weight: var(--weight-regular);
+    font-weight: var(--weight-heading);
     line-height: var(--leading-article-title);
     letter-spacing: 0;
   }
@@ -1877,7 +1873,7 @@
     color: var(--color-ink);
     font-family: var(--font-heading);
     font-size: var(--text-article-heading);
-    font-weight: var(--weight-regular);
+    font-weight: var(--weight-heading);
     line-height: 1.75rem;
   }
 
@@ -2397,7 +2393,7 @@
   }
 
   .resume__name {
-    font-family: "Chill Jinshu Song Text", var(--font-sans);
+    font-family: var(--font-resume-name);
     font-size: 36px;
     font-weight: var(--weight-regular);
     line-height: 44px;
@@ -2409,14 +2405,10 @@
   .contact-section h2,
   .about-sections h2,
   .resume__section > h2 {
-    font-family: var(--font-heading);
+    font-family: var(--font-section-heading);
     font-size: var(--text-subhead);
-    font-weight: 400;
+    font-weight: var(--weight-regular);
     line-height: 24px;
-  }
-
-  .writing-year .section-topline h2 {
-    font-family: var(--font-heading);
   }
 
   .resume__summary {

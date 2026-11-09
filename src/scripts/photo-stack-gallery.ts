@@ -2,6 +2,7 @@ import { uiText } from "../i18n/runtime";
 import type { PhotoStackPhoto } from "../lib/photo-stack-types";
 import { initializeWorkPhotoDeck } from "./work-photo-deck";
 import { cssTimeToMilliseconds } from "../lib/css-time";
+import { playInterfaceSound } from "./sound";
 
 function initializePhotoStacks() {
   document.querySelectorAll<HTMLElement>("[data-photo-stack-gallery]").forEach((root) => {
@@ -372,6 +373,7 @@ function initializePhotoStacks() {
     };
     const openGallery = () => {
       if (dialog.open || busy) return;
+      if (isWorks) playInterfaceSound("toggle");
       if (audio) audio.preload = "auto";
       photos.forEach((photo) => {
         const first = photo.work?.images?.[0];
@@ -405,6 +407,7 @@ function initializePhotoStacks() {
       if (busy || view !== "gallery") return;
       const photo = photos[index];
       if (!photo) return;
+      if (isWorks) playInterfaceSound("toggle");
       const source = measureFrame(frames[index]);
       const sourceRotation = rotation(frames[index]);
       const cover = photo.id === "julie" ? frames[index].querySelector<HTMLImageElement>(":scope > img") : null;
@@ -546,6 +549,7 @@ function initializePhotoStacks() {
     };
     const closeGallery = () => {
       if (closing) { finishClose(); return; }
+      if (isWorks) playInterfaceSound("toggle");
       const sources = frames.map(measureFrame);
       const sourceRotations = frames.map(rotation);
       const epoch = beginMotion();
@@ -572,6 +576,7 @@ function initializePhotoStacks() {
     const back = () => {
       if (returningRecord) return;
       if (view === "detail") {
+        if (isWorks && !returningOrbit) playInterfaceSound("toggle");
         if (discFrame?.hasAttribute("data-extended")) retractRecord();
         else if (orbitClock?.hasAttribute("data-active") && !busy && !reduced.matches) {
           const opacity = getComputedStyle(orbitClock).opacity;

@@ -28,6 +28,16 @@ export function initializeWorkPhotoDeck(root: HTMLElement, reduced: MediaQueryLi
   let frame = 0;
   let settling = false;
   let revision = 0;
+  let flipAudio: HTMLAudioElement | undefined;
+  let nextFlipSound = 1;
+
+  const playFlip = () => {
+    if (document.documentElement.dataset.soundPreference !== "on") return;
+    const audio = flipAudio ??= new Audio();
+    audio.src = `/sounds/craft-flip-${nextFlipSound}.m4a`;
+    nextFlipSound = nextFlipSound % 3 + 1;
+    void audio.play().catch(() => {});
+  };
 
   const wrap = (index: number) => (index + cards.length) % cards.length;
   const depth = (index: number) => wrap(index - active);
@@ -121,6 +131,7 @@ export function initializeWorkPhotoDeck(root: HTMLElement, reduced: MediaQueryLi
     stop();
     const threshold = Math.min(64, width * .16);
     const shouldAdvance = commit && Math.hypot(dx, dy) >= threshold;
+    if (shouldAdvance) playFlip();
     void settle(shouldAdvance, width, height, dx, dy);
   };
 
@@ -146,10 +157,16 @@ export function initializeWorkPhotoDeck(root: HTMLElement, reduced: MediaQueryLi
     if (root.hidden || !cards.length || root.closest("[data-stack-detail]")?.hasAttribute("hidden")) return;
     if (event.key !== "ArrowLeft" && event.key !== "ArrowRight") return;
     event.preventDefault();
-    if (!settling && !gesture) advance();
+    if (!settling && !gesture) {
+      playFlip();
+      advance();
+    }
   }, options);
   reduced.addEventListener("change", () => { stop(); render(); }, options);
-  signal.addEventListener("abort", stop, { once: true });
+  signal.addEventListener("abort", () => {
+    stop();
+    flipAudio?.pause();
+  }, { once: true });
 
   root.setAttribute("aria-label", uiText("展览照片", "Exhibition photos"));
 
@@ -176,6 +193,7 @@ export function initializeWorkPhotoDeck(root: HTMLElement, reduced: MediaQueryLi
     },
     hide() {
       stop();
+      flipAudio?.pause();
       root.hidden = true;
       stack.replaceChildren();
       cards = [];

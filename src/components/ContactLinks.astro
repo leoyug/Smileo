@@ -5,8 +5,8 @@ import TooltipGroup from "./TooltipGroup.astro";
 import contactAvatars from "../data/contact-avatars.json";
 import { loadGithubContributions } from "../lib/github-contributions";
 
-interface Props { class?: string; variant?: "default" | "social"; routeEnter?: boolean; }
-const { class: className, variant = "default", routeEnter = false } = Astro.props;
+interface Props { class?: string; variant?: "default" | "social"; routeEnter?: boolean; hoverSound?: boolean; }
+const { class: className, variant = "default", routeEnter = false, hoverSound = false } = Astro.props;
 const resume = await getEntry("resume", "main");
 if (!resume) throw new Error("缺少 main 职业履历内容");
 const github = resume.data.links.find((link) => link.label === "GitHub")?.href;
@@ -45,6 +45,7 @@ const profileLinks = links.filter((link) => link.href && link.label !== "RSS").m
       href={link.href}
       rel={link.rel}
       target={link.href.startsWith("https:") ? "_blank" : undefined}
+      data-hover-sound={hoverSound || undefined}
       aria-describedby={link.label !== "RSS" ? tooltipId : undefined}
       data-tooltip-name={link.label !== "RSS" ? link.label : undefined}
       data-tooltip-template={link.label}
