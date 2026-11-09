@@ -3,6 +3,7 @@ import matter from 'gray-matter';
 import { createMarkdownProcessor } from '@astrojs/markdown-remark';
 import english from './english.json';
 import { codeHighlighting } from '../lib/code-highlighting.mjs';
+import { formatProjectFactList } from '../lib/project-facts';
 import { remarkContentDisplayImages } from '../../scripts/media/display-images.mjs';
 import { languagePath, withoutLanguage } from './runtime';
 
@@ -144,6 +145,11 @@ export async function localizePage(html: string, pathname: string, site: URL | u
       }
       if (attr(node,'data-language-switch') !== undefined) { setAttr(node,'href',base); setText(node,'中文'); }
       if (node.tagName === 'code' || node.tagName === 'pre') return;
+      const factList = attr(node, 'data-project-fact-list');
+      if (!skip && factList !== undefined) {
+        setText(node, formatProjectFactList(translateText(factList, headings)));
+        return;
+      }
       if (attr(node,'data-preference-group') === 'language') setAttr(node,'data-language-href',languagePath(base,attr(node,'data-preference-value') === 'en'?'en':'zh-CN'));
       if (node.tagName === 'meta') {
         const name = attr(node,'name') ?? attr(node,'property');

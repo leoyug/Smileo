@@ -1,0 +1,27 @@
+---
+import { formatProjectFactList } from "../lib/project-facts";
+
+interface Props {
+  role?: string;
+  projectType?: string;
+  period?: string;
+  tools?: string;
+}
+
+const { role, projectType, period, tools } = Astro.props;
+const facts = [
+  { label: "职责", value: role, list: true },
+  { label: "平台", value: projectType, list: false },
+  { label: "时间", value: period, list: false },
+  { label: "工具", value: tools, list: true },
+];
+---
+
+<dl class="detail-facts detail-facts--project" aria-label="项目信息">
+  {facts.map(({ label, value, list }) => value && (
+    <div>
+      <dt>{label}</dt>
+      <dd data-project-fact-list={list ? value : undefined}>{list ? formatProjectFactList(value) : value}</dd>
+    </div>
+  ))}
+</dl>

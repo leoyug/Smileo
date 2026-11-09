@@ -39,7 +39,7 @@ relatedProjects: []
 * [一饭封神](https://neodb.social/tv/season/1F4lsk9ar78ovNwRNpRVTz) (2025-07-20)
 * [嗜血法医：杀魔复生](https://neodb.social/tv/season/0KDoXRXp5WpautOJVStz) (2025-07-20)
 * [SAKAMOTO DAYS (坂本日常)](https://neodb.social/tv/season/6En2oxib1Fi9gzrcGXDdbq) (2025-07-16)
-* [拜托了冰箱2 since 2014](https://neodb.social/tv/season/0ScPjGF8F7v5dIXXJZio7y) (2025-01-20)
+* [拜托了冰箱 2 since 2014](https://neodb.social/tv/season/0ScPjGF8F7v5dIXXJZio7y) (2025-01-20)
 * [Severance 第二季](https://neodb.social/tv/season/2iGcyQRlEuz7fvMuAIlsKK) (2025-01-20)
 
 #### *在玩*
@@ -53,7 +53,7 @@ relatedProjects: []
 * [Just a To the Moon Series Beach Episode 《去月球系列海滩特别篇》](https://neodb.social/game/4NRPTBEeTlMOi1QJfnSQvi) (2025-05-19)
 * [孤山速降](https://neodb.social/game/4Wq56NQB4kqXkidWbySZrj) (2025-05-18)
 * [V Rising](https://neodb.social/game/6QjH9WT956Wla7dVwE1UyB) (2025-05-15)
-* [足球经理2024](https://neodb.social/game/2FaEzWOgXQ83CsLYiwZm17) (2024-11-26)
+* [足球经理 2024](https://neodb.social/game/2FaEzWOgXQ83CsLYiwZm17) (2024-11-26)
 
 ### 年度最佳 (2025)
 

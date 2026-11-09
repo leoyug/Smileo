@@ -4,7 +4,7 @@ description: "A personal visual inspiration library"
 projectType: "Chrome / Edge browser extension"
 role: "Product design, UI design, design system and development"
 tools: "Figma, Codex, Cursor"
-period: "2026–present"
+period: "2026–Present"
 downloadLabel: "Download Wispora v0.8.0 for Chrome / Edge"
 ---
 Wispora is a personal web inspiration library for design and development. I can save websites, articles and authors I want to follow, then find them again through covers, descriptions, tags and local search. Built with WXT, React and TypeScript, it stores data in the current browser without an account or a separate backend.

@@ -57,6 +57,15 @@
 }
 
 @font-face {
+  font-family: "New Spirit Condensed Latin";
+  src: url("/fonts/new-spirit/medium-condensed.woff2") format("woff2");
+  font-weight: 500;
+  font-style: normal;
+  font-display: swap;
+  unicode-range: U+0030-0039, U+0041-005A, U+0061-007A;
+}
+
+@font-face {
   font-family: "New Spirit Regular Condensed";
   src: url("/fonts/new-spirit/regular-condensed.woff2") format("woff2");
   font-weight: 400;
@@ -96,7 +105,7 @@
 
     /* Content: hierarchy for readable, non-interactive information. */
     --color-ink: #242424;
-    --color-copy: #626262;
+    --color-copy: #686868;
     --color-link: #1f1f1f;
     --color-muted: #646464;
     --color-faint: #6b6b6b;
@@ -144,6 +153,7 @@
     --font-sans: "Geist", "PingFang SC", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", "Noto Sans SC", "Microsoft YaHei", sans-serif;
     --font-serif: Georgia, "Noto Serif SC", "Songti SC", serif; --font-mono: "Geist Mono", "SFMono-Regular", Consolas, monospace; --font-script: "Kaiti SC", "STKaiti", cursive;
     --font-heading: "Chill Jinshu Song Compact", var(--font-sans);
+    --font-detail-heading-zh: "New Spirit Condensed Latin", var(--font-heading);
     --font-section-heading: var(--font-heading);
     --font-resume-name: "Chill Jinshu Song Text", var(--font-sans);
     --text-meta: .75rem; --text-body: .875rem; --text-title: .875rem; --text-lead: 1rem; --text-subhead: 1rem; --text-page-title: 1.5rem; --text-resume-title: 2.25rem; --text-display: 2rem;
@@ -188,6 +198,9 @@
     --color-portrait-cursor-outline: var(--color-photo-paper);
     --portrait-cursor-outline-width: .5px;
     --color-highlight-wash: color-mix(in srgb, var(--color-ink) 10%, transparent);
+    --color-selection-background: #C5DFDC;
+    --color-selection-text: var(--color-link);
+    --selection-inline-padding: calc(var(--space-1) / 2);
     --color-selection-frame: #0d99ff;
     --color-selection-handle: #fff;
     --selection-frame-inset-block: calc(var(--space-1) / 2);
@@ -344,6 +357,8 @@
     --color-accent-soft: #14352f;
     --color-portfolio-mark: #264038;
     --color-portfolio-mark-ink: #fafafa;
+    --color-selection-background: #44615D;
+    --color-selection-text: var(--color-photo-paper);
     --color-control-idle: var(--color-muted);
     --color-control-emphasis: var(--color-ink);
     --color-control-selected: var(--color-ink);
@@ -378,7 +393,35 @@
   a { color: inherit; text-decoration-color: var(--color-line); }
   button, a { -webkit-tap-highlight-color: transparent; }
   :focus-visible { outline: 2px solid var(--color-accent); outline-offset: 3px; box-shadow: 0 0 0 4px var(--color-ink); }
-  ::selection { background: var(--color-accent-soft); color: var(--color-ink); }
+  ::selection { background: var(--color-selection-background); color: var(--color-selection-text); }
+  [data-selection-host] { isolation: isolate; }
+  [data-selection-host="static"] { position: relative; }
+  [data-selection-host]::selection,
+  [data-selection-host] *::selection { background: transparent; }
+  [data-selection-blank]::selection,
+  [data-selection-blank] *::selection { background: transparent; color: currentColor; }
+  .text-selection-overlay {
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    pointer-events: none;
+    user-select: none;
+  }
+  .text-selection-overlay > span {
+    position: absolute;
+    box-sizing: content-box;
+    margin-inline-start: calc(-1 * var(--selection-inline-padding));
+    padding-inline: var(--selection-inline-padding);
+    background: var(--color-selection-background);
+    border-radius: var(--radius-xs);
+  }
+  .text-selection-overlay > [data-selection-flush-start] {
+    margin-inline-start: 0;
+    padding-inline-start: 0;
+  }
+  .text-selection-overlay > [data-selection-flush-end] {
+    padding-inline-end: 0;
+  }
   .skip-link { position: fixed; z-index: 100; top: 1rem; left: 1rem; padding: .6rem 1rem; border-radius: var(--radius-pill); background: var(--color-ink); color: var(--color-canvas); transform: translateY(-200%); }
   .skip-link:focus { transform: none; }
   .sr-only { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0,0,0,0); white-space: nowrap; border: 0; }

@@ -1753,6 +1753,10 @@
     letter-spacing: 0;
   }
 
+  html:lang(zh) .content-detail[data-detail-page] > header h1 {
+    font-family: var(--font-detail-heading-zh);
+  }
+
   .content-detail[data-detail-page] .article-subtitle {
     max-width: none;
     margin-top: var(--space-4);
@@ -1819,19 +1823,44 @@
 
   .content-detail[data-detail-page] .detail-facts--project {
     display: grid;
-    /* Time is usually the short value, so it yields width to the other columns and the gaps. */
-    grid-template-columns: minmax(0, 1.15fr) minmax(0, 1.15fr) minmax(0, 0.85fr) minmax(0, 1.15fr);
+    grid-template-columns: repeat(4, minmax(0, 1fr));
     align-items: start;
-    gap: var(--space-4);
+    gap: var(--space-6);
     padding-block: var(--space-4);
-    border-block: 1px solid var(--color-article-divider);
+    border-block-start: 1px solid var(--color-article-divider);
+    border-block-end: 0;
+  }
+
+  html:not([data-theme="dark"]) .content-detail[data-detail-page] .detail-facts {
+    border-block-color: var(--color-line-subtle);
+  }
+
+  .detail-facts--project > div {
+    gap: calc(var(--space-1) * 1.5);
+  }
+
+  html:lang(en) .detail-facts--project > div {
+    gap: var(--space-1);
+  }
+
+  html:lang(en) .detail-facts--project dt {
+    font-family: var(--font-mono);
+    text-transform: uppercase;
   }
 
   .detail-facts--project dd {
     color: var(--color-ink);
+    font-family: var(--font-sans);
     overflow-wrap: anywhere;
   }
 
+  html:not([data-theme="dark"]) .detail-facts--project dd {
+    color: var(--color-link);
+  }
+
+  .detail-facts--project [data-project-fact-list] {
+    white-space: pre-line;
+  }
   .content-detail[data-detail-page].content-detail--project-case :is(h1, .article__body h2) {
     font-weight: var(--weight-bold);
   }
