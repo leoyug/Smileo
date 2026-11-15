@@ -12,7 +12,9 @@ export const codeHighlighting = {
       const pre = root.children.find(node => node.type === 'element' && node.tagName === 'pre');
       if (!pre) return;
       const language = this.options.lang || 'text';
-      const label = ['text', 'txt', 'plaintext'].includes(language) ? '纯文本' : language;
+      const title = this.options.meta?.__raw?.match(/(?:^|\s)title=(?:"([^"]+)"|'([^']+)'|([^\s"']+))/);
+      const label = (title?.[1] ?? title?.[2] ?? title?.[3])?.trim()
+        || (['text', 'txt', 'plaintext'].includes(language) ? '纯文本' : language);
       pre.properties.tabindex = 0;
       pre.properties.ariaLabel = `${label} 代码，可横向滚动`;
       root.children = [{
@@ -20,12 +22,12 @@ export const codeHighlighting = {
         children: [{
           type: 'element', tagName: 'figcaption', properties: { className: ['code-block__header'] },
           children: [{
-            type: 'element', tagName: 'span', properties: { className: ['code-block__language'] },
+            type: 'element', tagName: 'span', properties: { className: ['code-block__title'] },
             children: [{ type: 'text', value: label }],
           }, {
             type: 'element', tagName: 'button',
-            properties: { type: 'button', className: ['code-block__copy'], hidden: true, ariaLabel: `复制 ${label} 代码`, 'data-code-copy': '' },
-            children: [{ type: 'text', value: '复制代码' }],
+            properties: { type: 'button', className: ['code-block__copy'], hidden: true, ariaLabel: '复制代码', 'data-code-copy': '' },
+            children: [],
           }, {
             type: 'element', tagName: 'span',
             properties: { className: ['sr-only'], role: 'status', ariaLive: 'polite', ariaAtomic: 'true', 'data-code-status': '' },

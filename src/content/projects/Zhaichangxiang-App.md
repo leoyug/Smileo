@@ -5,11 +5,13 @@ publishedAt: 2026-09-30
 updatedAt: 2026-10-30
 draft: false
 hidden: false
-period: 2021—2025
-projectType: 手机 / Pad / Web
+period: 2022-2025
+projectType: |-
+  App
+  Web
 status: launched
 role: UI 设计，设计系统
-tools: Figma，Adobe 套件
+tools: Figma，Adobe Creative suit
 featured: true
 order: 9
 cover: /media/projects/Zhaichangxiang-App/cover.png

@@ -31,12 +31,10 @@ document.addEventListener("click", async (event) => {
   if (!button.isConnected) return;
   button.disabled = false;
   button.dataset.feedback = copied ? "success" : "error";
-  button.textContent = copied ? uiText("已复制", "Copied") : uiText("复制失败", "Copy failed");
   status.textContent = copied ? uiText("代码已复制", "Code copied") : uiText("复制失败，请选中代码手动复制。", "Copy failed. Select and copy the code manually.");
 
   const delay = cssTimeToMilliseconds(getComputedStyle(document.documentElement).getPropertyValue("--copy-feedback-duration"));
   const timer = setTimeout(() => {
-    button.textContent = uiText("复制代码", "Copy code");
     delete button.dataset.feedback;
     status.textContent = "";
     resetTimers.delete(timer);

@@ -54,6 +54,10 @@ function initializePhotoStacks() {
     let selected = -1;
     let motionEpoch = 0;
     let imageEpoch = 0;
+    const clearImageLoading = () => {
+      delete media.dataset.imageLoading;
+      media.removeAttribute("aria-busy");
+    };
     let hideTimer: ReturnType<typeof setTimeout> | undefined;
     let coverTraveler: HTMLElement | undefined;
     let hiddenCover: HTMLImageElement | undefined;
@@ -367,6 +371,7 @@ function initializePhotoStacks() {
       preview.getBoundingClientRect();
       clearMotion();
       imageEpoch++;
+      clearImageLoading();
       if (dialog.open) dialog.close();
       unlockScroll();
       stage.hidden = false;
@@ -513,7 +518,7 @@ function initializePhotoStacks() {
       }).catch(() => {
         if (loadEpoch === imageEpoch && view === "detail" && !signal.aborted) error.hidden = false;
       }).finally(() => {
-        if (loadEpoch === imageEpoch && !signal.aborted) { delete media.dataset.imageLoading; media.setAttribute("aria-busy", "false"); }
+        if (loadEpoch === imageEpoch && !signal.aborted) clearImageLoading();
       });
       void finishMotion(epoch, () => {});
     };
@@ -531,6 +536,7 @@ function initializePhotoStacks() {
       const fadeDeck = !!frontCard && !reduced.matches;
       const epoch = beginMotion();
       imageEpoch++;
+      clearImageLoading();
       view = "gallery";
       dialog.dataset.view = "gallery";
       detail.hidden = reduced.matches || (!isJulie && !fadeDeck);

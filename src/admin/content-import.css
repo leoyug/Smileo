@@ -1,7 +1,7 @@
 .import-app { background: var(--color-canvas); color: var(--color-ink); font-family: var(--font-sans); }
 .import-main { width: min(100% - 2 * var(--gutter), 52rem); margin: 0 auto; padding: var(--space-16) 0 var(--space-24); }
 .import-header { display: flex; align-items: start; justify-content: space-between; gap: var(--space-8); margin-bottom: var(--space-12); }
-.import-header h1 { font-family: var(--font-heading); font-size: var(--text-4xl); font-weight: var(--weight-medium); line-height: var(--leading-title); margin: var(--space-2) 0 var(--space-3); }
+.import-header h1 { font-family: var(--font-heading); font-size: var(--text-display); font-weight: var(--weight-medium); line-height: var(--leading-title); margin: var(--space-2) 0 var(--space-3); }
 .import-header p:last-child, .import-drop p, .import-preview-intro, .import-submit p { color: var(--color-copy); font-size: var(--text-body); line-height: var(--leading-relaxed); }
 .import-eyebrow { color: var(--color-muted); font-size: var(--text-meta); letter-spacing: .08em; }
 .import-back { color: var(--color-accent-ink); white-space: nowrap; font-size: var(--text-body); text-decoration: none; padding: var(--space-3); min-height: 44px; }
@@ -14,8 +14,8 @@
 .import-category label:has(input:focus-visible) { outline: 2px solid var(--color-accent); outline-offset: 3px; }
 .import-drop { display: grid; justify-items: center; text-align: center; gap: var(--space-4); padding: var(--space-12) var(--space-8); background: var(--color-surface); border: 2px dashed var(--color-line); border-radius: var(--radius-lg); transition: border-color var(--duration-quick), background var(--duration-quick); }
 .import-drop.is-dragging { border-color: var(--color-accent); background: var(--color-accent-soft); }
-.import-drop-icon { width: 3rem; height: 3rem; display: grid; place-items: center; border-radius: var(--radius-pill); background: var(--color-accent-soft); color: var(--color-accent-ink); font-size: var(--text-2xl); }
-.import-drop h2, .import-preview h2 { font-size: var(--text-xl); font-weight: var(--weight-semibold); }
+.import-drop-icon { width: 3rem; height: 3rem; display: grid; place-items: center; border-radius: var(--radius-pill); background: var(--color-accent-soft); color: var(--color-accent-ink); font-size: var(--primitive-size-24); }
+.import-drop h2, .import-preview h2 { font-size: var(--text-page-title); font-weight: var(--weight-semibold); }
 .import-drop > p { max-width: 29rem; }
 .import-actions { display: flex; flex-wrap: wrap; justify-content: center; gap: var(--space-3); margin-top: var(--space-2); }
 .import-button { display: inline-flex; align-items: center; justify-content: center; min-height: 44px; padding: var(--space-3) var(--space-5); border: 1px solid var(--color-line); border-radius: var(--radius-sm); background: var(--color-surface); color: var(--color-ink); font: inherit; font-size: var(--text-body); font-weight: var(--weight-medium); cursor: pointer; text-decoration: none; }

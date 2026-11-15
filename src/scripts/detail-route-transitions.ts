@@ -71,11 +71,12 @@ export function initDetailRouteTransitions() {
     const fromDetail = detailKind(event.from.pathname);
     const toDetail = detailKind(event.to.pathname);
     const opensDetailFromHome = withoutLanguage(normalizedPath(event.from.pathname)) === "/" && !!toDetail;
+    const closesWritingToHome = fromDetail === "/writing" && withoutLanguage(normalizedPath(event.to.pathname)) === "/";
 
     if (toDetail && (fromList === toDetail || opensDetailFromHome)) {
       event.newDocument.documentElement.dataset.detailTransition = "open";
       event.newDocument.documentElement.dataset.detailTransitionKind = toDetail.slice(1);
-    } else if (fromDetail && (fromDetail === toList || withoutLanguage(normalizedPath(event.to.pathname)) === "/")) {
+    } else if (fromDetail && (fromDetail === toList || closesWritingToHome)) {
       event.newDocument.documentElement.dataset.detailTransition = "close";
       event.newDocument.documentElement.dataset.detailTransitionKind = fromDetail.slice(1);
     }

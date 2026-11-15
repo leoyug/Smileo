@@ -6,7 +6,7 @@ const latin = /\p{Script=Latin}/u;
 const otherLetter = /(?=\p{Letter})\P{Script=Latin}/u;
 const trailingPunctuation = /^(?:(?![\p{Ps}\p{Pi}])\p{P})+/u;
 const segmenter = typeof Intl.Segmenter === "function" ? new Intl.Segmenter("en", { granularity: "word" }) : null;
-const nativeOnly = "input, textarea, select, button, [contenteditable], pre, code, svg";
+const nativeOnly = "input, textarea, select, button, [contenteditable], pre, svg";
 const textHost = "p, h1, h2, h3, h4, h5, h6, li, dt, dd, figcaption, td, th, blockquote, div";
 const forcedColors = matchMedia("(forced-colors: active)");
 const overlays = new Map<HTMLElement, HTMLSpanElement>();
@@ -52,6 +52,7 @@ function* selectedTextNodes(range: Range) {
 }
 
 function trimSelection(range: Range) {
+  if ([range.startContainer, range.endContainer].some((node) => node.parentElement?.closest("code"))) return range;
   const text = range.toString();
   const trimmed = text.trim();
   if (!trimmed || text === trimmed) return range;
@@ -82,7 +83,8 @@ function collectFragments(range: Range) {
     if (!rects.length) continue;
 
     const parent = node.parentElement;
-    const host = parent?.closest(textHost);
+    // Paint above the inline code background and below its text.
+    const host = parent?.closest("code") ?? parent?.closest(textHost);
     if (!(host instanceof HTMLElement) || parent?.closest(nativeOnly)) return null;
     const group = groups.get(host) ?? [];
     const selected = node.data.slice(start, end);
@@ -148,7 +150,7 @@ function drawSelection(groups: Map<HTMLElement, Fragment[]>) {
       overlay, origin, lines: getLines(groups.get(host) ?? []),
       scaleX: origin.width / overlay.offsetWidth || 1,
       scaleY: origin.height / overlay.offsetHeight || 1,
-      lineHeight: Number.parseFloat(getComputedStyle(host).lineHeight),
+      lineHeight: host.matches("code") ? 0 : Number.parseFloat(getComputedStyle(host).lineHeight),
     };
   });
   for (const { overlay, origin, lines, scaleX, scaleY, lineHeight } of geometry) {
@@ -178,7 +180,8 @@ function updateSelection() {
   }
   const highlight = wordHighlightRange(trimSelection(selection.getRangeAt(0)));
   const groups = collectFragments(highlight);
-  const blank = !!groups && /^en(?:-|$)/i.test(root.lang) && !/[\p{L}\p{N}]/u.test(highlight.toString());
+  const blank = !!groups && /^en(?:-|$)/i.test(root.lang) && !/[\p{L}\p{N}]/u.test(highlight.toString())
+    && !Array.from(groups.keys()).some((host) => host.matches("code"));
   root.toggleAttribute("data-selection-blank", blank);
   if (!blank && groups?.size) drawSelection(groups);
   else clearOverlays();
@@ -194,6 +197,19 @@ function useNativeSelection() {
   document.documentElement.removeAttribute("data-selection-blank");
   clearOverlays();
 }
+
+function prepareInlineCode() {
+  for (const code of document.querySelectorAll("code:not(pre code)")) {
+    if (code.querySelector(":scope > [data-inline-code-text]")) continue;
+    const text = document.createElement("span");
+    text.setAttribute("data-inline-code-text", "");
+    text.append(...code.childNodes);
+    code.append(text);
+  }
+}
+
+prepareInlineCode();
+document.addEventListener("astro:page-load", prepareInlineCode);
 
 document.addEventListener("pointerdown", (event) => {
   if (event.button !== 0 || !(event.target instanceof Element)) return;
@@ -229,7 +245,10 @@ document.addEventListener("keydown", (event) => {
 }, true);
 document.addEventListener("pointercancel", useNativeSelection);
 document.addEventListener("astro:before-swap", useNativeSelection);
-window.addEventListener("blur", useNativeSelection);
+window.addEventListener("blur", () => {
+  // Losing focus can interrupt a drag without clearing the text selection.
+  pointerId = null;
+});
 window.addEventListener("resize", scheduleUpdate);
 document.fonts.addEventListener("loadingdone", scheduleUpdate);
 forcedColors.addEventListener("change", useNativeSelection);

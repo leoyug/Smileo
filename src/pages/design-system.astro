@@ -27,6 +27,7 @@ import { getPhotos } from "../lib/photos";
 import { curatedWorks } from "../data/curated-works";
 import { getPhotoStackPhotos } from "../lib/photo-stack";
 import { getEntry } from "astro:content";
+import tokenStyles from "../styles/global.css?raw";
 
 if (import.meta.env.PROD) return Astro.redirect("/");
 const resume = await getEntry("resume", "main");
@@ -34,6 +35,53 @@ if (!resume) throw new Error("缺少 main 职业履历内容");
 const email = resume.data.email;
 const photos = await getPhotos();
 const stackPhotos = await getPhotoStackPhotos();
+
+const foundationStyles = tokenStyles.match(/@layer tokens\s*\{\s*:root\s*\{([^}]+)\}/)?.[1] ?? "";
+const primitives = Array.from(foundationStyles.matchAll(/(--(?:primitive-)?([a-z]+)-([\w-]+)):\s*([^;]+);/g),
+  ([, token, kind, name, value]) => ({ token, kind, name, value }));
+const primitivePalettes = [
+  ["暖中性色", "warm-"],
+  ["灰阶", "gray-"],
+  ["青绿", "teal-"],
+] as const;
+const primitiveScales = [
+  ["字号", "size"],
+  ["字重", "weight"],
+  ["间距", "space"],
+  ["圆角", "radius"],
+  ["时长", "duration"],
+  ["缓动", "ease"],
+] as const;
+
+const fontUsage: Record<string, string> = {
+  "Geist": "正文与界面的拉丁字母，汉字使用字体栈中的后备字体",
+  "Geist Mono": "中英文代码与等宽数据",
+  "Chill Jinshu Song Compact": "中文页面、区块标题与详情标题的汉字",
+  "Chill Jinshu Song Text": "中文正文引用与简历姓名",
+  "New Spirit Condensed": "英文页面、详情标题与简历姓名；也用于中文详情标题中的拉丁字母与数字",
+  "New Spirit Regular Condensed": "英文区块标题",
+  "New Spirit Regular": "英文正文引用",
+  "Kaiti SC": "中文手写效果",
+};
+const fontSamples = new Map<string, { weight: string; text: string }>();
+for (const [, face] of tokenStyles.matchAll(/@font-face\s*\{([^}]+)\}/g)) {
+  const family = face.match(/font-family\s*:\s*"([^"]+)"/)?.[1];
+  if (!family || fontSamples.has(family) || /unicode-range:|font-style:\s*italic/.test(face)) continue;
+  const weight = face.match(/font-weight:\s*(\d+)\s*;/)?.[1] ?? "400";
+  fontSamples.set(family, { weight, text: family.startsWith("Chill Jinshu") ? "数字花园" : "Digital garden" });
+}
+const fontPrimitives = primitives.filter(({ kind }) => kind === "font");
+const firstFont = (value: string) => value.match(/^"([^"]+)"/)?.[1] ?? value;
+for (const { value } of fontPrimitives) {
+  const family = firstFont(value);
+  if (!fontSamples.has(family)) fontSamples.set(family, { weight: "400", text: "数字花园" });
+}
+const fontSpecimens = Array.from(fontSamples, ([family, sample]) => ({
+  family,
+  ...sample,
+  usage: fontUsage[family],
+  token: fontPrimitives.find(({ value }) => firstFont(value) === family),
+}));
 
 const colorGroups = [
   {
@@ -81,12 +129,10 @@ const colorGroups = [
       ["accent-soft", "选择和提示的柔和底色"],
       ["control-idle", "控件默认文字与图标"],
       ["control-emphasis", "控件悬停与聚焦前景"],
-      ["control-selected", "控件选中背景"],
-      ["control-selected-ink", "控件选中前景"],
     ],
   },
 ] as const;
-const spaces = [1, 2, 3, 4, 5, 6, 8, 12, 16];
+const shadows = ["hairline", "card", "float"];
 const tocHeadings = [
   { depth: 2, slug: "toc-demo-context", text: "背景与约束" },
   { depth: 2, slug: "toc-demo-decisions", text: "设计判断与实现取舍：在复杂约束下保持界面清晰" },
@@ -107,24 +153,84 @@ const codeExample = `:root {
 <BaseLayout title="设计系统预览（开发环境）">
   <header class="page-intro wide-column ds-intro">
     <h1>Smileo 设计系统</h1>
-    <p>从项目调研中提取的暖纸色、克制排版与低层级表面。这个页面只在开发环境呈现，用于验证变量和组件复用。</p>
+    <p>开发环境预览。查阅基础值、语义 token 和组件示例。</p>
+    <nav class="ds-index" aria-label="设计系统目录">
+      <TextLink href="#primitives">Primitives</TextLink>
+      <TextLink href="#semantic-tokens">语义 token</TextLink>
+      <TextLink href="#components">组件示例</TextLink>
+    </nav>
   </header>
   <div class="ds-stack wide-column">
-    <section>
-      <SectionHeading title="代码块" description="GitHub 亮暗主题随网站外观切换，使用 Geist Mono、12px 圆角和自适应留白；长行在代码区内横向滚动，支持键盘和复制反馈。" />
-      <div class="article__body reading-column">
-        <p>行内代码如 <code>var(--color-brand)</code> 保持与正文一致的阅读节奏。</p>
-        <Code code={codeExample} lang="css" {...codeHighlighting} />
-        <Code code={'这是一段没有语法高亮的纯文本。\n保留空格、缩进和换行。'} {...codeHighlighting} />
+    <section id="primitives">
+      <SectionHeading title="Primitives" description="固定的基础值，通过 CSS 变量提供给语义层。切换主题时，同一基础值保持不变。" />
+      <div class="primitive-groups">
+        {primitivePalettes.map(([label, prefix]) => (
+          <div class="color-group">
+            <h3>{label}</h3>
+            <dl class="primitive-palette">
+              {primitives.filter(({ kind, name }) => kind === "color" && name.startsWith(prefix)).map(({ token, name, value }) => (
+                <div class="primitive-token">
+                  <dt>
+                    <span class="primitive-swatch" style={`background: var(${token})`} aria-hidden="true"></span>
+                    <code><span class="sr-only">--primitive-color-</span>{name}</code>
+                  </dt>
+                  <dd><code>{value}</code></dd>
+                </div>
+              ))}
+            </dl>
+          </div>
+        ))}
+        <section id="font-families" class="color-group" aria-labelledby="font-families-title">
+          <h3 id="font-families-title">字体</h3>
+          <dl class="primitive-grid primitive-grid--wide">
+            {fontSpecimens.map(({ family, weight, text, usage, token }) => (
+              <div class="primitive-token">
+                <dt>
+                  <span class="font-specimen" style={`font-family: ${token ? `var(${token.token})` : `${JSON.stringify(family)}, var(--font-sans)`}; font-weight: ${weight}`} aria-hidden="true">{text}</span>
+                  <span class="font-specimen__name" lang="en">{family}</span>
+                </dt>
+                {usage && <dd class="font-specimen__usage">{usage}</dd>}
+                {token && <dd><code>{token.token}</code></dd>}
+                {token?.value.includes(",") && (
+                  <dd>
+                    <details class="font-specimen__stack">
+                      <summary>查看字体栈</summary>
+                      <code>{token.value}</code>
+                    </details>
+                  </dd>
+                )}
+              </div>
+            ))}
+          </dl>
+        </section>
+        {primitiveScales.map(([label, kind]) => (
+          <div class="color-group">
+            <h3>{label}</h3>
+            <dl class:list={["primitive-grid", { "primitive-grid--wide": kind === "ease" }]}>
+              {primitives.filter((primitive) => primitive.kind === kind).map(({ token, value }) => (
+                <div class="primitive-token">
+                  <dt>
+                    {["size", "weight"].includes(kind) && (
+                      <span class="primitive-type" style={`--sample: var(${token})`} data-kind={kind} aria-hidden="true">Aa 字</span>
+                    )}
+                    {["space", "radius"].includes(kind) && (
+                      <span class="primitive-shape" style={`--sample: var(${token})`} data-kind={kind} aria-hidden="true"></span>
+                    )}
+                    <code>{token}</code>
+                  </dt>
+                  <dd><code>{value}</code></dd>
+                </div>
+              ))}
+            </dl>
+          </div>
+        ))}
       </div>
     </section>
-    <section>
-      <SectionHeading title="手写签名 · SignatureMark" description="保持首页签名的颜色与 64×48px 尺寸；进入页面后延迟 0.5 秒，再按自然节奏书写一次，书写时长保持 1.5 秒。笔画边缘使用固定的轻微 Melt 纹理，减少动态效果时直接显示完整签名。" />
-      <SignatureMark />
-      <code>&lt;SignatureMark class="hero__signature" /&gt;</code>
-    </section>
-    <section>
-      <SectionHeading title="颜色系统" description="按表面、内容、边界与交互分层；切换外观后，色块与实际值会同步更新。" />
+    <section id="semantic-tokens">
+      <SectionHeading title="语义 token" description="按用途命名。切换外观后，色块、阴影和实际值会同步更新。" />
+      <p class="ds-token-example">
+        <code>--color-canvas</code> 在亮色主题取 <code>--primitive-color-warm-50</code>，在暗色主题取 <code>--primitive-color-warm-925</code>。
+      </p>
       <div class="color-groups">
         {colorGroups.map((group) => (
           <section class="color-group" aria-labelledby={`color-group-${group.title}`}>
@@ -138,15 +244,61 @@ const codeExample = `:root {
                   <div class="swatch__color" style={`background:var(--color-${color})`}></div>
                   <code>--color-{color}</code>
                   <p>{rule}</p>
-                  <output data-color-token={color}>读取中</output>
+                  <output data-token={`--color-${color}`}>读取中</output>
                 </article>
               ))}
             </div>
           </section>
         ))}
       </div>
+      <div class="ds-semantic-specimens">
+        <section class="color-group">
+          <h3>正文与链接颜色</h3>
+          <div class="text-color-demo">
+            <p>普通文字用于连续阅读的段落。<TextLink href="/writing">链接文字</TextLink>用于可点击的内容。</p>
+            <code>--color-copy · <output data-token="--color-copy">读取中</output></code>
+            <code>--color-link · <output data-token="--color-link">读取中</output></code>
+          </div>
+        </section>
+        <section class="color-group">
+          <h3>字体与层级</h3>
+          <div class="type-specimens">
+            <div><p class="type-display">把复杂的事，设计得清楚一点。</p><code>--text-display</code></div>
+            <div><p class="type-title">页面标题</p><code>--font-heading · --text-page-title</code></div>
+            <div><p class="type-body">界面与文章共用正文字号。English and numbers 2026.</p><code>--text-body</code></div>
+            <div><p class="type-meta">说明标签</p><code>--text-meta</code></div>
+            <div><p class="type-script">只留一点手写痕迹。</p><code>--font-script</code></div>
+          </div>
+        </section>
+        <section class="color-group">
+          <h3>阴影</h3>
+          <dl class="primitive-grid primitive-grid--wide">
+            {shadows.map((shadow) => (
+              <div class="primitive-token">
+                <dt>
+                  <span class="primitive-shape ds-shadow" style={`box-shadow:var(--shadow-${shadow})`} aria-hidden="true"></span>
+                  <code>--shadow-{shadow}</code>
+                </dt>
+                <dd><code><output data-token={`--shadow-${shadow}`}>读取中</output></code></dd>
+              </div>
+            ))}
+          </dl>
+        </section>
+      </div>
     </section>
-    <section><SectionHeading title="正文与链接颜色" description="正文与链接都使用语义 token，并随亮暗模式同步映射。" /><div class="text-color-demo"><p>普通文字用于连续阅读的段落；<TextLink href="/writing">链接文字</TextLink>用于可点击的内容。</p><code>--color-copy · <output data-color-token="copy">读取中</output></code><code>--color-link · <output data-color-token="link">读取中</output></code></div></section>
+    <section id="components">
+      <SectionHeading title="代码块" description="标题栏可显示文件名，代码区支持亮暗主题、横向滚动和一键复制。" />
+      <div class="article__body reading-column">
+        <p>行内代码如 <code>var(--color-brand)</code> 保持与正文一致的阅读节奏。</p>
+        <Code code={codeExample} lang="css" meta='title="colors.css"' {...codeHighlighting} />
+        <Code code={'这是一段没有语法高亮的纯文本。\n保留空格、缩进和换行。'} {...codeHighlighting} />
+      </div>
+    </section>
+    <section>
+      <SectionHeading title="手写签名 · SignatureMark" description="保持首页签名的颜色与 64×48px 尺寸；进入页面后延迟 0.5 秒，再按自然节奏书写一次，书写时长保持 1.5 秒。笔画边缘使用固定的轻微 Melt 纹理，减少动态效果时直接显示完整签名。" />
+      <SignatureMark />
+      <code>&lt;SignatureMark class="hero__signature" /&gt;</code>
+    </section>
     <section><SectionHeading title="动态文字高亮" description="悬停时沿用 Figma 黑色白边箭头光标；悬停时鼠标图标依次描绘线条并显示淡色高亮；描线中途离开会平滑恢复默认图标，再次进入可继续当前过渡；键盘聚焦和减少动态效果时显示静态图标。" /><p>你好，我是Leo，一名<AnimatedHighlight>设计工程师</AnimatedHighlight>。</p></section>
     <section>
       <SectionHeading title="工具提示 · TooltipGroup" description="悬停或键盘聚焦显示名称和说明；触屏点击显示，点击外部或按 Esc 关闭。气泡可悬停，并自动避开屏幕边缘。" />
@@ -160,8 +312,6 @@ const codeExample = `:root {
     </section>
     <section><SectionHeading title="虚线下划线 · DashedUnderline" description="用于正文关键词的静态强调，文字使用链接色、继承字号并支持换行；文字与线色随主题 token 映射；启用特效时隐藏基础虚线，保留链接色与原有悬停、键盘聚焦交互；Figma 示例启用 selection 悬停选中框；动效示例启用 wave，在文字下方显示青绿色流动波浪；悬停时循环播放，离开后收起；支持中英文及亮暗主题，键盘聚焦与减少动态效果时静态显示；AI 示例启用 logos，三枚图片错开向上弹出，离开时收回；走走拍拍示例启用 photo-stack，悬停预览三张照片，离开时用 250ms 收起，文字不响应点击，悬停卡片进一步展开，点击堆叠展开六张照片，按下单张轻微缩小，松开后查看完整照片，其余照片保留在模糊遮罩后；详情仅由底部关闭按钮退出，图库也可按 Esc 关闭，图库收回时由原来的三张预览卡片归位并淡出；圆角始终为短边的 16%，照片按原始比例裁切，过渡只改变裁切窗口，避免拉伸。" /><p>我使用 <DashedUnderline effect="selection">Figma</DashedUnderline> 进行设计，使用 <DashedUnderline effect="pixel-person">Codex</DashedUnderline> 进行构建，喜欢<DashedUnderline effect="wave">有趣的动效</DashedUnderline>与<DashedUnderline effect="work-stack" photos={curatedWorks}>用心创作的事物</DashedUnderline>，借助 <DashedUnderline effect="logos" logos={aiLogos}>AI</DashedUnderline> 实现想法，也喜欢<DashedUnderline effect="photo-stack" photos={stackPhotos}>走走拍拍</DashedUnderline>。</p><code>&lt;DashedUnderline effect="wave"&gt;有趣的动效&lt;/DashedUnderline&gt;</code><code>{'<DashedUnderline effect="photo-stack" photos={stackPhotos}>走走拍拍</DashedUnderline>'}</code></section>
     <section><SectionHeading title="数字花园 · 手绘花朵" description="A 款简约潦草线稿，花瓣不规则、减少重描；悬停或键盘聚焦时沿 SVG 路径依次画出茎、叶、花瓣与花心，三朵花略微错开，离开后沿线擦去。花朵随亮暗主题映射文字色，不改变正文布局；减少动态效果时直接显隐。" /><p>这里是 Leo 的<DashedUnderline effect="flowers">数字花园</DashedUnderline>。</p><code>&lt;DashedUnderline effect="flowers"&gt;数字花园&lt;/DashedUnderline&gt;</code></section>
-    <section><SectionHeading title="字体与层级" /><div class="type-specimens"><p class="type-display">把复杂的事，设计得清楚一点。</p><p class="type-title">页面标题使用 28px、600 字重。</p><p class="type-body">界面正文与文章正文统一使用 14px；普通内容采用 1.55 行高，长文章采用 1.8 行高。English and numbers 2026.</p><p class="type-meta">说明标签 · 12PX · REGULAR</p><p class="type-script">只留一点手写痕迹。</p></div></section>
-    <section><SectionHeading title="间距与圆角" /><div class="space-row">{spaces.map((space) => <div><span style={`width:var(--space-${space})`}></span><code>{space}</code></div>)}</div><div class="radius-row"><i></i><i></i><i></i><i></i></div></section>
     <section>
       <SectionHeading title="平滑圆角" description="Lisse Squircle · 60% 平滑度，保持原有圆角尺寸。左侧为普通圆角，右侧为平滑圆角；底部偏好入口可查看实际浮层。" />
       <div class="corner-comparison">
@@ -182,6 +332,17 @@ const codeExample = `:root {
     <section><SectionHeading title="内容行" description="紧凑文章行的日期和点线对齐标题首行；640px 以下日期移至标题下方，使用 12px 字号、16px 行高，与标题间隔 4px，并隐藏点线。长标题自然换行、完整显示，首页与写作列表共用此规则。" /><ContentRow title="把模糊需求变成可维护的界面" summary="行式索引优先于重卡片。" meta="2026.08.06" tags={["设计工程", "方法"]} /><ContentRow title="紧凑文章行" meta="2026.08.06" density="compact" /><ContentRow title="A longer article title that wraps naturally while its publication date stays aligned with the first line" meta="2026.08.06" density="compact" /></section>
     <section><SectionHeading title="详情目录" description="文章与项目共用 15px 寒蝉宋体粗体目录，22px 行高、12px 条目间距，与正文至少留出 16px；当前章节亮显，长标题自然换行，并保留滚动高亮和返回行为。" /><div class="toc-demo"><DetailToc headings={tocHeadings} ariaLabel="文章目录示例" className="detail-toc--reading detail-toc--demo" /><DetailToc headings={tocHeadings} ariaLabel="项目目录示例" className="detail-toc--reading detail-toc--demo" /></div></section>
     <section><SectionHeading title="项目参数" description="桌面采用等宽四列，窄屏为两列。职责与工具逐项换行，未填写的参数自动隐藏。" /><div class="content-detail" data-detail-page="demo"><ProjectFacts role="UI 设计，设计系统" projectType="App / Web" period="2022–2025" tools="Figma，Codex，Cursor" /></div></section>
+    <section>
+      <SectionHeading title="正文引用" />
+      <div class="content-detail reading-column" data-detail-page="demo">
+        <div class="article__body">
+          <figure class="quote-with-source">
+            <blockquote><p>先支持当前任务，再按需要展开复杂操作。</p></blockquote>
+            <figcaption>— 宅畅想 App 设计案例</figcaption>
+          </figure>
+        </div>
+      </div>
+    </section>
     <section><SectionHeading title="粒子头像" description="亮色使用海边插画肖像，暗色使用像素肖像；切换主题时重新采样网点，精细指针可产生局部弹性扰动，减少动态时回退为对应的静态图像。" /><ParticlePortrait src="/assets/figma-v03/about/portrait-light.webp" alt="Leo 的海边插画肖像，黑发、黑色上衣，肩上斜挎背带，身后是蓝天和海面" darkSrc="/assets/figma-v03/about/portrait-particles.webp" darkAlt="Leo 的像素风肖像" /></section>
     <section><SectionHeading title="图片加载" description="Play Spin 点阵只用于大图产生可感知等待时；快速命中缓存时不会闪现。" /><div class="loader-demo" data-image-loading="true"><PlaySpinLoader /></div></section>
     <section><SectionHeading title="文章图片缩放" description="按下轻微缩小，松开后居中放大并模糊背景；再次点击或按 Esc 收回。" /><div data-image-zoom-demo><img class="corner-media-demo" src="/assets/figma-v03/article-detail/figma-cover.png" alt="一台手绘的老式电脑，屏幕上有放射状线条" width="2250" height="1500" /></div><ArticleImageZoom selector="[data-image-zoom-demo] img" /></section>
@@ -205,16 +366,17 @@ const codeExample = `:root {
 </BaseLayout>
 
 <script>
-  const updateColorValues = () => {
+  const updateTokenValues = () => {
     const styles = getComputedStyle(document.documentElement);
-    document.querySelectorAll<HTMLOutputElement>("[data-color-token]").forEach((element) => {
-      const token = element.dataset.colorToken;
-      if (token) element.value = styles.getPropertyValue(`--color-${token}`).trim();
+    document.querySelectorAll<HTMLOutputElement>("[data-token]").forEach((element) => {
+      const token = element.dataset.token;
+      if (token) element.value = styles.getPropertyValue(token).trim();
     });
   };
 
-  updateColorValues();
-  new MutationObserver(updateColorValues).observe(document.documentElement, {
+  updateTokenValues();
+  document.addEventListener("astro:page-load", updateTokenValues);
+  new MutationObserver(updateTokenValues).observe(document.documentElement, {
     attributes: true,
     attributeFilter: ["data-theme"],
   });
@@ -222,30 +384,65 @@ const codeExample = `:root {
 
 <style>
   .ds-intro { padding-bottom: var(--space-12); }
-  .ds-stack { display: grid; gap: var(--space-20); padding-bottom: var(--space-20); }
+  .ds-index { display: flex; flex-wrap: wrap; gap: var(--space-2) var(--space-5); margin-top: var(--space-4); }
+  .ds-stack section[id] { scroll-margin-top: var(--space-6); }
+  .ds-stack { display: grid; grid-template-columns: minmax(0, 1fr); gap: var(--space-20); padding-bottom: var(--space-20); }
+  .ds-token-example { color: var(--color-copy); margin-bottom: var(--space-6); }
+  .ds-token-example code, .primitive-token code, .swatch code, .swatch output { overflow-wrap: anywhere; }
+  .primitive-groups { display: grid; gap: var(--space-8); }
+  .primitive-groups h3, .ds-semantic-specimens h3 { font-size: var(--text-subhead); font-weight: var(--weight-medium); }
+  .ds-semantic-specimens { display: grid; gap: var(--space-12); margin-top: var(--space-12); }
+  .primitive-palette, .primitive-grid {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: var(--space-3) var(--space-4);
+    margin: 0;
+  }
+  .primitive-palette { grid-template-columns: repeat(8, minmax(0, 1fr)); }
+  .primitive-grid--wide { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+  .primitive-token dt { display: grid; gap: var(--space-1); }
+  .primitive-token dd { margin: 0; }
+  .primitive-token dd code { color: var(--color-muted); }
+  .primitive-swatch {
+    display: block;
+    height: var(--space-8);
+    border: 1px solid var(--color-line);
+    border-radius: var(--radius-xs);
+  }
+  .primitive-type { display: block; min-height: var(--space-12); font-size: var(--text-lead); line-height: var(--leading-title); }
+  .font-specimen { font-size: var(--text-page-title); line-height: var(--leading-title); }
+  .font-specimen__name { font-weight: var(--weight-medium); overflow-wrap: anywhere; }
+  .font-specimen__usage { color: var(--color-copy); font-size: var(--text-meta); }
+  .font-specimen__stack { color: var(--color-muted); font-size: var(--text-meta); }
+  .font-specimen__stack summary { cursor: pointer; }
+  .primitive-type[data-kind="size"] { font-size: var(--sample); }
+  .primitive-type[data-kind="weight"] { font-weight: var(--sample); }
+  .primitive-shape {
+    display: block;
+    width: var(--space-12);
+    height: var(--space-8);
+    background: var(--color-surface-2);
+  }
+  .primitive-shape[data-kind="space"] { width: min(100%, var(--sample)); height: var(--space-2); background: var(--color-accent); }
+  .primitive-shape[data-kind="radius"] { border-radius: var(--sample); border: 1px solid var(--color-line); }
+  .ds-shadow { margin-block: var(--space-2); background: var(--color-surface); }
   .color-groups { display: grid; gap: var(--space-12); }
   .color-group { display: grid; gap: var(--space-5); }
   .color-group__heading { display: grid; gap: var(--space-1); }
   .color-group__heading h3 { font-size: var(--text-subhead); font-weight: var(--weight-medium); }
   .color-group__heading p { color: var(--color-muted); }
   .swatch-grid { display: grid; grid-template-columns: repeat(4,minmax(0,1fr)); gap: var(--space-4); }
-  .swatch { display: grid; gap: var(--space-2); font-size: var(--text-xs); }
+  .swatch { display: grid; grid-template-columns: minmax(0, 1fr); gap: var(--space-2); font-size: var(--text-meta); }
   .swatch__color { aspect-ratio: 1.5; border: 1px solid var(--color-line); border-radius: var(--radius-md); box-shadow: var(--shadow-card); }
   .swatch p { margin: 0; color: var(--color-muted); font-size: var(--text-body); line-height: var(--leading-copy); }
   .swatch output { color: var(--color-faint); font-family: var(--font-mono); font-size: var(--text-meta); }
   code { font-family: var(--font-mono); color: var(--color-copy); }
   .type-specimens { display: grid; gap: var(--space-6); }
   .type-display { font: var(--weight-semibold) var(--text-display)/var(--leading-title) var(--font-sans); letter-spacing: var(--tracking-display); }
-  .type-title { font: var(--weight-semibold) var(--text-page-title)/var(--leading-title) var(--font-sans); letter-spacing: var(--tracking-title); }
+  .type-title { font: var(--weight-heading) var(--text-page-title)/var(--leading-title) var(--font-heading); letter-spacing: var(--tracking-title); }
   .type-body { max-width: 37rem; }
   .type-meta { color: var(--color-muted); font: var(--weight-regular) var(--text-meta)/1.5 var(--font-sans); }
   .type-script { color: var(--color-accent); font: var(--weight-regular) var(--text-page-title)/1.25 var(--font-script); }
-  .space-row { display: flex; flex-wrap: wrap; align-items: end; gap: var(--space-5); }
-  .space-row div { display: grid; gap: var(--space-2); }
-  .space-row span { display: block; height: 2.5rem; min-width: 4px; background: var(--color-accent); }
-  .radius-row { display: flex; gap: var(--space-4); margin-top: var(--space-8); }
-  .radius-row i { width: 5rem; height: 3.5rem; background: var(--color-surface-2); border: 1px solid var(--color-line); }
-  .radius-row i:nth-child(1) { border-radius: var(--radius-xs); }.radius-row i:nth-child(2) { border-radius: var(--radius-sm); }.radius-row i:nth-child(3) { border-radius: var(--radius-lg); }.radius-row i:nth-child(4) { border-radius: var(--radius-pill); }
   .component-row { display: flex; flex-wrap: wrap; align-items: center; gap: var(--space-3); }
   .corner-comparison { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--space-8) var(--space-4); }
   .corner-comparison p { margin-bottom: var(--space-4); color: var(--color-muted); }
@@ -266,5 +463,9 @@ const codeExample = `:root {
   .layout-demo div { margin-inline: auto; padding: var(--space-4); border-radius: var(--radius-sm); background: var(--color-surface-2); }
   .layout-demo div:nth-child(2) { width: 68%; margin-top: var(--space-3); background: var(--color-surface); box-shadow: var(--shadow-card); }
   .layout-demo div:nth-child(3) { width: 45%; margin-top: var(--space-3); background: var(--color-accent-soft); }
-  @media(max-width:40rem){.swatch-grid,.color-rules{grid-template-columns:repeat(2,1fr)}.radius-row{display:grid;grid-template-columns:1fr 1fr}.radius-row i{width:100%}}
+  @media(max-width:40rem){
+    .swatch-grid, .primitive-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .primitive-palette { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+    .font-specimen { font-size: var(--text-lead); }
+  }
 </style>

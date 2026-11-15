@@ -194,6 +194,12 @@ export async function localizePage(html: string, pathname: string, site: URL | u
       let whitespace: DefaultTreeAdapterMap['textNode'][] = [];
       for (const child of [...node.childNodes]) {
         wordBoundaries(child);
+        // Preserve the authored spacing around code instead of joining text across it.
+        if (isElement(child) && (child.tagName === 'code' || child.tagName === 'pre')) {
+          previous = undefined;
+          whitespace = [];
+          continue;
+        }
         const leaves: DefaultTreeAdapterMap['textNode'][]=[];
         const gather = (n: Node) => { if (isElement(n) && ['script','style','code','pre','template'].includes(n.tagName)) return; if(n.nodeName==='#text')leaves.push(n as DefaultTreeAdapterMap['textNode']); else if('childNodes' in n) n.childNodes.forEach(gather); }; gather(child);
         const first=leaves.find(n=>n.value.trim());

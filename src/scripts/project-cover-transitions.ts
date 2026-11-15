@@ -124,6 +124,26 @@ document.addEventListener("astro:before-swap", (event) => {
   }
 
   const source = context.source;
+  if (source.startsWith("featured:")) {
+    const href = source.slice("featured:".length);
+    const card = Array.from(event.newDocument.querySelectorAll<HTMLElement>(".project-card"))
+      .find((item) => item.querySelector<HTMLAnchorElement>("a[href]")?.getAttribute("href") === href);
+    if (!card?.querySelector(".project-card__media > img")) {
+      sessionStorage.removeItem(sourceKey);
+      return;
+    }
+
+    card.classList.add("is-transitioning");
+    if (context.mediaTransform) card.style.setProperty("--project-transition-media-transform", context.mediaTransform);
+    if (withoutLanguage(event.to.pathname.replace(/\/+$/, "") || "/") === "/") {
+      event.newDocument.documentElement.dataset.detailTransition = "close";
+      event.newDocument.documentElement.dataset.detailTransitionKind = "projects";
+    }
+  } else {
+    const selector = `[data-project-source="${CSS.escape(source)}"]`;
+    list?.querySelector(selector)?.classList.add("is-transitioning");
+  }
+
   // Astro restores history before after-swap; use the captured entry position
   // before the new snapshot so the shared image lands at its original place.
   const { scrollX, scrollY } = context;
@@ -136,17 +156,6 @@ document.addEventListener("astro:before-swap", (event) => {
     // Confirm after the browser applies its first history-restoration frame.
     requestAnimationFrame(restore);
   }, { once: true });
-
-  if (source.startsWith("featured:")) {
-    const href = source.slice("featured:".length);
-    const card = Array.from(event.newDocument.querySelectorAll<HTMLElement>(".project-card"))
-      .find((item) => item.querySelector<HTMLAnchorElement>("a[href]")?.getAttribute("href") === href);
-    card?.classList.add("is-transitioning");
-    if (context.mediaTransform) card?.style.setProperty("--project-transition-media-transform", context.mediaTransform);
-  } else {
-    const selector = `[data-project-source="${CSS.escape(source)}"]`;
-    list?.querySelector(selector)?.classList.add("is-transitioning");
-  }
 
   void event.viewTransition.finished.then(finishProjectTransition, finishProjectTransition);
 });

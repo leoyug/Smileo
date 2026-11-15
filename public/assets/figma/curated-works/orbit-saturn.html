@@ -497,7 +497,7 @@ const TICK_STYLES = ["eased", "smooth", "step"];
 /* Center readout: per-character masked slide transitions              */
 /* ------------------------------------------------------------------ */
 
-function createReadout(container, reducedMotion) {
+function createReadout(container, motionPreference) {
   const slots = [];
   let started = false;
 
@@ -526,6 +526,7 @@ function createReadout(container, reducedMotion) {
   }
 
   function update(text) {
+    const reducedMotion = motionPreference.matches;
     if (slots.length !== text.length || reducedMotion || !started) {
       build(text, !reducedMotion && !started);
       return;
@@ -571,7 +572,7 @@ function createReadout(container, reducedMotion) {
 
   function hide(text) {
     started = false;
-    build(text, !reducedMotion);
+    build(text, !motionPreference.matches);
   }
 
   return { build, update, reveal, hide };
@@ -581,7 +582,7 @@ function createReadout(container, reducedMotion) {
 /* Canvas readout: the same per-character roll, drawn with fillText     */
 /* ------------------------------------------------------------------ */
 
-function createCanvasReadout(reducedMotion) {
+function createCanvasReadout(motionPreference) {
   let slots = [];
   let revealed = false;
   let revealAt = 0;
@@ -593,6 +594,7 @@ function createCanvasReadout(reducedMotion) {
   }
 
   function update(text) {
+    const reducedMotion = motionPreference.matches;
     if (slots.length !== text.length || reducedMotion || !revealed) {
       build(text, !reducedMotion && !revealed);
       return;
@@ -680,7 +682,8 @@ function sanitizeOptions(input) {
 /* ------------------------------------------------------------------ */
 
 function mountOrbitClock(root, initialOptions = {}) {
-  const reducedMotion = matchMedia("(prefers-reduced-motion: reduce)").matches;
+  const motionPreference = matchMedia("(prefers-reduced-motion: reduce)");
+  let reducedMotion = motionPreference.matches;
   let options = sanitizeOptions(initialOptions);
 
   root.classList.add("orbit-clock");
@@ -722,6 +725,7 @@ function mountOrbitClock(root, initialOptions = {}) {
   let height = 0;
   let radius = 0;
   let labelSize = LABEL.maxSize;
+  let saturnLabelStep = 1;
   let stringGap = STRING.gap;
   let dpr = 1;
   let rootRect = root.getBoundingClientRect();
@@ -762,6 +766,11 @@ function mountOrbitClock(root, initialOptions = {}) {
 
     radius = Math.min(maxRadius, Math.max(minRadius, radiusToFit(maxLabel, 5 * scale)));
     labelSize = clamp((2 * radius * halfStep) / (labelDiag + LABEL.gapX), LABEL.minSize * scale, maxLabel);
+    // The ellipse compresses the closest gaps. Keep two-digit labels legible
+    // by sampling seconds when the available space cannot fit every label.
+    const saturnGap = 2 * radius * SATURN_FLATTEN * halfStep;
+    const labelFootprint = Math.hypot(LABEL.height, 2 * LABEL.width) * labelSize + LABEL.gapX;
+    saturnLabelStep = clamp(Math.ceil(labelFootprint / saturnGap), 1, SECONDS);
     stringGap = STRING.gap * scale;
     root.style.setProperty("--orbit-fs", `${labelSize}px`);
 
@@ -820,8 +829,8 @@ function mountOrbitClock(root, initialOptions = {}) {
     return `${pad2(hours)} : ${pad2(date.getMinutes())}`;
   };
 
-  const readout = createReadout(center, reducedMotion);
-  const canvasReadout = createCanvasReadout(reducedMotion);
+  const readout = createReadout(center, motionPreference);
+  const canvasReadout = createCanvasReadout(motionPreference);
   let shownTime = formatTime(new Date());
   readout.build(shownTime, !reducedMotion);
   canvasReadout.build(shownTime, !reducedMotion);
@@ -1043,6 +1052,12 @@ function mountOrbitClock(root, initialOptions = {}) {
           prev = { x, y };
 
           if (!options.labels) continue;
+          if (options.form === "saturn" && saturnLabelStep > 1) {
+            if (minute.start !== minuteStart) continue;
+            const secondsBehind = secondOfMinute - s;
+            const fits = secondsBehind >= saturnLabelStep && secondsBehind <= SECONDS - saturnLabelStep;
+            if (secondsBehind !== 0 && (s % saturnLabelStep !== 0 || !fits)) continue;
+          }
           if (post) {
             textItems.push({ text: pad2(s), x, y, opacity, blur, color, depth });
             continue;
@@ -1291,6 +1306,19 @@ function mountOrbitClock(root, initialOptions = {}) {
   let pageVisible = !document.hidden;
   let onScreen = true;
   const syncRunning = () => (pageVisible && onScreen ? resume() : pause());
+  const onMotionPreferenceChange = () => {
+    reducedMotion = motionPreference.matches;
+    pause();
+    intro = null;
+    morph = null;
+    const hideReadout = !started && !reducedMotion;
+    readout.build(shownTime, hideReadout);
+    canvasReadout.build(shownTime, hideReadout);
+    if (started) readout.reveal(false);
+    measureReadout();
+    syncRunning();
+  };
+  motionPreference.addEventListener("change", onMotionPreferenceChange);
 
   const onPointerMove = (event) => {
     if (event.pointerType !== "mouse" || !running) return;
@@ -1364,6 +1392,7 @@ function mountOrbitClock(root, initialOptions = {}) {
 
   function destroy() {
     pause();
+    motionPreference.removeEventListener("change", onMotionPreferenceChange);
     resizeObserver.disconnect();
     intersectionObserver.disconnect();
     themeObserver.disconnect();

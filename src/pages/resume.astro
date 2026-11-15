@@ -62,7 +62,16 @@ const resumeDownload = "https://drive.google.com/uc?export=download&id=19dMrGRXB
 
     {data.education && <section class="resume__section">
       <h2>教育经历</h2>
-      <Card class="resume-education"><div><h3>{data.education.school}</h3><p>{data.education.degree.replaceAll(" ", "")}</p></div><div><time>{data.education.period.replace("—", "-")}</time><p>{data.education.place}</p></div></Card>
+      <Card class="resume-education">
+        <div>
+          <h3>{data.education.school}</h3>
+          <p>{data.education.degree.replaceAll(" ", "")}</p>
+        </div>
+        <div>
+          <time>{data.education.period.replace("—", "-")}</time>
+          <p>{data.education.place}</p>
+        </div>
+      </Card>
     </section>}
   </article>
 </BaseLayout>

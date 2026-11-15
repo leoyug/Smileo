@@ -373,7 +373,7 @@
   html:lang(en) :is(h1, h2, h3) { overflow-wrap: anywhere; }
   html:lang(en) .preferences-panel {
     width: max-content;
-    min-width: min(16rem, calc(100vw - 2 * var(--gutter)));
+    min-width: min(17rem, calc(100vw - 2 * var(--gutter)));
     max-width: calc(100vw - 2 * var(--gutter));
   }
   html:lang(en) .preferences-panel__row h2,

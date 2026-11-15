@@ -11,7 +11,7 @@ interface Props {
 const { role, projectType, period, tools } = Astro.props;
 const facts = [
   { label: "职责", value: role, list: true },
-  { label: "平台", value: projectType, list: false },
+  { label: "平台", value: projectType, list: projectType?.includes("\n") },
   { label: "时间", value: period, list: false },
   { label: "工具", value: tools, list: true },
 ];

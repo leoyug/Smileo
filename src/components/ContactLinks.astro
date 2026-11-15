@@ -108,4 +108,19 @@ const profileLinks = links.filter((link) => link.href && link.label !== "RSS").m
   .contact-preview__postage { display: grid; justify-items: center; align-content: center; gap: var(--space-1); width: var(--space-16); height: var(--space-16); aspect-ratio: 1; margin-left: auto; flex: none; border: 1px dashed var(--color-line); border-radius: var(--radius-xs); color: var(--color-muted); }
   .contact-preview__postage svg { width: var(--space-6); height: var(--space-6); }
   .contact-preview__action { padding-top: var(--space-2); border-top: .5px solid var(--color-line-subtle); }
+
+  @media (hover: hover) and (pointer: fine) and (prefers-reduced-motion: no-preference) {
+    .contact-preview__heatmap {
+      /* The oversized mask puts its soft edge just outside the grid at either end. */
+      mask-image: linear-gradient(to right, black 43%, transparent 57%);
+      mask-size: 230% 100%;
+      mask-repeat: no-repeat;
+      animation: contact-heatmap-reveal var(--duration-very-slow) linear both;
+    }
+  }
+
+  @keyframes contact-heatmap-reveal {
+    from { mask-position: right; }
+    to { mask-position: left; }
+  }
 </style>
