@@ -1,0 +1,67 @@
+---
+import Button from "../../Button.astro";
+import "./Controls.css";
+
+const base = "/assets/figma/yiwo-admin";
+const segments = ["基础属性", "商品信息", "高级参数"];
+const searchLabel = "搜索方案";
+---
+
+<section class="yiwo-control-panel" aria-label="控件">
+  <div class="yiwo-control-panel__title">控件</div>
+  <div class="yiwo-control-panel__breadcrumb">
+    <span class="yiwo-control-panel__folder"><img src={`${base}/control-folder.svg`} width="20" height="20" alt="" /></span>
+    <span class="yiwo-control-panel__breadcrumb-parent">方案管理</span>
+    <img src={`${base}/control-separator.svg`} width="6" height="10" alt="" />
+    <strong aria-current="page">设计方案</strong>
+  </div>
+  <div class="yiwo-control-panel__actions">
+    <Button variant="secondary" class="yiwo-control-panel__action">
+      <img src={`${base}/control-batch.svg`} width="16" height="16" alt="" />批量操作
+    </Button>
+    <Button variant="primary" class="yiwo-control-panel__action yiwo-control-panel__action--primary">
+      <img src={`${base}/control-create.svg`} width="16" height="16" alt="" />新建方案
+    </Button>
+  </div>
+  <div class="yiwo-control-panel__segments">
+    <div class="yiwo-control-panel__segment-track" role="radiogroup" aria-label="参数分类">
+      {segments.map((segment, index) => (
+        <label>
+          <input type="radio" name="yiwo-parameter-category" checked={index === 0} />
+          <span>{segment}</span>
+        </label>
+      ))}
+    </div>
+  </div>
+  <yiwo-control-search class="yiwo-control-panel__search">
+    <label class="yiwo-control-panel__search-field">
+      <input type="search" aria-label={searchLabel} placeholder={searchLabel} autocomplete="off" />
+      <span class="yiwo-control-panel__search-icon" aria-hidden="true">
+        <img src={`${base}/control-search.svg`} width="20" height="20" alt="" />
+        <img class="yiwo-control-panel__search-icon-active" src={`${base}/control-search-active.svg`} alt="" />
+      </span>
+    </label>
+    <button class="yiwo-control-panel__search-clear" type="button" aria-label="清空搜索" hidden>
+      <img src={`${base}/control-clear.svg`} width="16" height="16" alt="" />
+      <img src={`${base}/control-clear-hover.svg`} width="16" height="16" alt="" />
+    </button>
+  </yiwo-control-search>
+</section>
+
+<script>
+  class YiwoControlSearch extends HTMLElement {
+    connectedCallback() {
+      const input = this.querySelector("input");
+      const clear = this.querySelector("button");
+      if (!input || !clear) return;
+
+      clear.onclick = () => {
+        input.value = "";
+        input.focus();
+      };
+      clear.hidden = false;
+    }
+  }
+
+  if (!customElements.get("yiwo-control-search")) customElements.define("yiwo-control-search", YiwoControlSearch);
+</script>

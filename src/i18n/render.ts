@@ -4,6 +4,7 @@ import { createMarkdownProcessor } from '@astrojs/markdown-remark';
 import english from './english.json';
 import { codeHighlighting } from '../lib/code-highlighting.mjs';
 import { formatProjectFactList } from '../lib/project-facts';
+import { renderProjectCaseBody } from '../lib/project-case-slots';
 import { remarkContentDisplayImages } from '../../scripts/media/display-images.mjs';
 import { languagePath, withoutLanguage } from './runtime';
 
@@ -100,8 +101,16 @@ export async function localizePage(html: string, pathname: string, site: URL | u
     if (!entry && !import.meta.env.DEV) throw new Error(`Missing English translation: ${key}`);
     if (entry) {
       const originalHeadings: Node[] = [];
-      walk(body, node=>{if (isElement(node) && /^h[1-6]$/.test(node.tagName)) originalHeadings.push(node);});
-      replaceChildren(body, await englishBody(key));
+      const caseSlots = new Map<string, string>();
+      walk(body, node => {
+        if (!isElement(node)) return;
+        if (/^h[1-6]$/.test(node.tagName)) originalHeadings.push(node);
+        const slot = attr(node, 'data-case-slot');
+        if (slot) caseSlots.set(slot, serialize(node));
+      });
+      // The translated Markdown places the same server-rendered exhibits in its own copy.
+      const localizedBody = await englishBody(key);
+      replaceChildren(body, caseSlots.size ? renderProjectCaseBody(localizedBody, caseSlots) : localizedBody);
       let index = 0;
       walk(body, node=>{
         if (!isElement(node) || !/^h[1-6]$/.test(node.tagName)) return;

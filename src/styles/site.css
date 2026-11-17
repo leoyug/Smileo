@@ -1845,8 +1845,10 @@
     gap: var(--space-1);
   }
 
-  html:lang(en) .detail-facts--project dt {
-    font-family: var(--font-mono);
+  html:lang(en) .content-detail[data-detail-page] :is(.detail-facts--project dt, .article__body > .project-case-label) {
+    color: var(--color-faint);
+    font: var(--weight-regular) var(--text-meta)/1.125rem var(--font-mono);
+    letter-spacing: var(--tracking-body);
     text-transform: uppercase;
   }
 
@@ -1944,18 +1946,6 @@
     margin-inline: auto;
   }
 
-  .content-detail[data-project-id="yiwo-admin"] .article__body > p:has(> .article-image-zoom-trigger > img[src$="02-plan-actions.webp"]) > .article-image-zoom-trigger {
-    width: calc(100% / 3);
-  }
-
-  .content-detail[data-project-id="yiwo-admin"] .article__body > p:has(> .article-image-zoom-trigger > img[src$="04-shared-controls.webp"]) > .article-image-zoom-trigger {
-    width: calc(100% * 2 / 3);
-  }
-
-  .content-detail[data-project-id="yiwo-admin"] .article__body img:is([src$="02-plan-actions.webp"], [src$="04-shared-controls.webp"]) {
-    width: 100%;
-  }
-
   /* Ignore the temporary highlight overlay when matching a standalone caption. */
   .content-detail--project-case .article__body > p:has(> :is(img, .article-image-zoom-trigger):only-child) + p:has(> em):not(:has(> :not(em, .text-selection-overlay), > em ~ em)) {
     margin-top: var(--space-2);
@@ -2005,81 +1995,79 @@
     font-size: var(--text-meta);
   }
 
-  /* Keep the CMS-editable Markdown table in the existing three-metric layout. */
-  .content-detail:is([data-project-id="homagine-website"], [data-project-id="zhaichangxiang-website"]) .article__body {
+  .content-detail[data-project-id="zhaichangxiang-website"] .article__body {
     container-type: inline-size;
   }
 
-  .content-detail:is([data-project-id="homagine-website"], [data-project-id="zhaichangxiang-website"]) .article__body table {
-    --project-outcome-value-size: clamp(2rem, 9cqi, 3.25rem);
+  .content-detail[data-project-id="zhaichangxiang-website"] .article__body > p:has(> :is(img, .article-image-zoom-trigger):only-child) img {
+    display: block;
+    border-radius: var(--radius-lg);
+  }
+
+  /* Present the project's editable results table as a row of metrics. */
+  .content-detail[data-project-id="zhaichangxiang-website"] .article__body table {
+    --outcome-value-size: clamp(1.625rem, 6.76cqi, 2.5rem);
+    --outcome-art-size: clamp(3.25rem, 21cqi, 7.5rem);
+    --outcome-art-inset: clamp(0rem, calc(15cqi - 2.75rem), 2.8125rem);
+    position: relative;
     display: grid;
-    grid-template-columns: repeat(3, max-content);
-    justify-content: center;
-    column-gap: clamp(var(--space-4), 14cqi, 5.5rem);
-    width: 100%;
-    margin-top: var(--space-16);
-    margin-bottom: var(--space-8);
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    column-gap: clamp(var(--space-2), 2.7cqi, var(--space-4));
+    inline-size: 100%;
+    margin-block-start: var(--space-8);
+    padding-inline-end: calc(var(--outcome-art-size) + var(--outcome-art-inset) + var(--space-4));
     border: 0;
   }
 
-  .content-detail:is([data-project-id="homagine-website"], [data-project-id="zhaichangxiang-website"]) .article__body :is(thead, tbody, tr) {
+  .content-detail[data-project-id="zhaichangxiang-website"] .article__body :is(thead, tbody, tr) {
     display: contents;
   }
 
-  .content-detail:is([data-project-id="homagine-website"], [data-project-id="zhaichangxiang-website"]) .article__body :is(th, td) {
+  .content-detail[data-project-id="zhaichangxiang-website"] .article__body :is(th, td) {
     padding: 0;
     border: 0;
-    text-align: left;
-    white-space: nowrap;
+    text-align: start;
   }
 
-  .content-detail:is([data-project-id="homagine-website"], [data-project-id="zhaichangxiang-website"]) .article__body td {
+  .content-detail[data-project-id="zhaichangxiang-website"] .article__body td {
     grid-row: 1;
     display: flex;
     align-items: baseline;
     color: var(--color-ink);
-    font-family: var(--font-heading);
-    font-weight: var(--weight-regular);
-    font-size: calc(var(--project-outcome-value-size) * 0.45);
-    line-height: 1;
-    letter-spacing: 0.016em;
+    font: var(--weight-bold) var(--text-lead)/1.2 var(--font-heading);
+    white-space: nowrap;
   }
 
-  .content-detail:is([data-project-id="homagine-website"], [data-project-id="zhaichangxiang-website"]) .article__body td strong {
-    font-size: var(--project-outcome-value-size);
-    font-weight: var(--weight-regular);
-    line-height: 1;
+  .content-detail[data-project-id="zhaichangxiang-website"] .article__body td strong {
+    font-size: var(--outcome-value-size);
   }
 
-  .content-detail:is([data-project-id="homagine-website"], [data-project-id="zhaichangxiang-website"]) .article__body td::after {
+  .content-detail[data-project-id="zhaichangxiang-website"] .article__body td::after {
     content: "";
-    width: 24px;
-    height: 14px;
-    margin-left: var(--space-2);
+    inline-size: 16px;
+    block-size: 8.0317px;
+    margin-inline-start: var(--space-1);
     flex: none;
-    background: url("/assets/figma/outcome-rise.svg") center / contain no-repeat;
+    background: url("/assets/figma/zhaichangxiang-website/results-arrow.svg") center no-repeat;
   }
 
-  .content-detail:is([data-project-id="homagine-website"], [data-project-id="zhaichangxiang-website"]) .article__body th {
+  .content-detail[data-project-id="zhaichangxiang-website"] .article__body th {
     grid-row: 2;
-    color: color-mix(in srgb, var(--color-ink) 50%, transparent);
-    font-family: var(--font-sans);
-    font-size: max(var(--text-meta), calc(var(--project-outcome-value-size) * 0.25));
-    font-weight: var(--weight-regular);
-    line-height: 1.4;
+    color: var(--color-muted);
+    font: var(--weight-regular) var(--text-meta)/var(--space-4) var(--font-sans);
+    overflow-wrap: anywhere;
   }
 
-  @container (max-width: 22rem) {
-    .content-detail:is([data-project-id="homagine-website"], [data-project-id="zhaichangxiang-website"]) .article__body table {
-      --project-outcome-value-size: 1.75rem;
-      column-gap: var(--space-3);
-    }
-
-    .content-detail:is([data-project-id="homagine-website"], [data-project-id="zhaichangxiang-website"]) .article__body td::after {
-      width: 16px;
-      height: 9px;
-      margin-left: var(--space-1);
-    }
+  .content-detail[data-project-id="zhaichangxiang-website"] .article__body table::after {
+    content: "";
+    position: absolute;
+    inset-block-start: calc((var(--space-16) - var(--outcome-art-size)) / 2);
+    inset-inline-end: var(--outcome-art-inset);
+    inline-size: var(--outcome-art-size);
+    block-size: var(--outcome-art-size);
+    background: url("/assets/figma/zhaichangxiang-website/results-art.png") bottom / cover no-repeat;
+    mask: url("/assets/figma/zhaichangxiang-website/results-mask.svg") center / contain no-repeat;
+    pointer-events: none;
   }
 
   .has-photo-lightbox {

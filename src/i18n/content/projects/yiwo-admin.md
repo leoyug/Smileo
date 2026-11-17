@@ -1,66 +1,103 @@
 ---
 title: "Yiwo Renovation Admin"
-description: "Streamlining proposals, materials and data"
-role: "Information architecture, interaction and visual design"
+description: "Modernizing a dated renovation management system into a flexible platform that is easier to use and extend."
+role: "UI design, interaction design, design systems"
 ---
-Yiwo Renovation Admin supports the day-to-day management of design proposals, materials and related business work at renovation companies. As features accumulated, older pages developed scattered entry points, unclear information hierarchy and inconsistent visual rules.
 
-I worked on proposal management, material management, marketing management and analytics, owning information architecture, interaction and visual design. The improvements centered on three tasks: **act after finding a proposal, see the effect while configuring materials, and identify what matters when reviewing data.**
+*Project overview*
 
-The screens are project design deliverables used to explain the proposed design and interactions.
+## Project background and product context
 
-![Part of the proposal workspace, with business navigation on the left and floor-plan previews and proposal information on the right](/media/projects/yiwo-admin/case-study/01-workspace.webp)
+Yiwo Renovation Admin is a management platform for renovation companies. Its core purpose is to help them efficiently manage design plans, materials, and other business operations.
 
-*Floor-plan previews support recognition; names and tags provide additional context.*
+As the business grew and renovation services diversified, users needed better integration and data management. The earlier version had been assembled from off-the-shelf components and left many issues unresolved.
 
-## Put frequent actions beside their target
+*My role*
 
-When browsing proposals, users first need to recognize the project, then edit it or view its gallery. I made the floor-plan preview the main content of each card and standardized the positions of names, tags and supporting information to make successive cards easier to compare.
+## Finding usability improvements through problem analysis
 
-Once the target is found, hovering exposes Edit and Gallery, with other actions grouped under More. Frequent actions sit directly beside their target instead of requiring a menu first.
+My responsibilities included reviewing business requirements and feedback, establishing shared design standards, improving the information architecture and workflows, and working across teams to deliver the project. I continued to monitor user feedback to guide improvements to the product experience.
 
-> The resting state supports recognition; the hover state reveals actions.
+*Problem analysis*
 
-![A proposal card on hover, showing Edit, Gallery and More](/media/projects/yiwo-admin/case-study/02-plan-actions.webp)
+## Three problems surfaced in requirements and feedback
 
-*Bring editing and the gallery forward while preserving enough space for the floor plan.*
+Reviewing business requirements and user feedback revealed three recurring problems.
 
-This limits the number of permanent buttons, but also makes discovery depend on hover. Further testing should examine whether first-time users can find the actions and whether repeated work causes accidental clicks.
+[Three recurring problems](#case-problems)
 
-## Give material settings a clear hierarchy and a visual reference
+*Design direction*
 
-Material editing combines business information with specialist parameters. I separated the form by information type and organized complex settings into three areas.
+## Design directions grounded in business needs
 
-- **Basic attributes:** category, brand, specification and style establish what the material is.
-- **Product information:** images, prices, links and descriptions supply presentation details.
-- **Advanced parameters:** UV, metallic properties and highlights control the finer visual effect.
+Conversations with product managers and marketing specialists led to the following directions, with user experience at the center. The aim was to build efficient, intuitive, and safe interfaces.
 
-Grouping reduces the amount shown at once, but adds switching. The material name and completion action therefore stay outside the groups, helping people keep track of what they are editing.
+[Four design directions](#case-directions)
 
-![Material editor with grouped forms on the left and a material preview and specification textures on the right](/media/projects/yiwo-admin/case-study/03-material-editor.webp)
+*Design decisions*
 
-*Settings and previews share one field of view, connecting parameter entry with observation.*
+## Responsive layout and grid
 
-The preview provides a visual reference, while real-time rendering is designed to connect parameters and effects more directly. Its actual speed and accuracy need verification in a working version.
+The interface uses a 1440 × 900 px reference canvas. The sidebar is fixed at 200 px wide and adapts in height. The top navigation bar is fixed at 76 px high and adapts in width.
 
-## Connect different tasks through shared rules
+The main area uses a responsive grid to keep layouts consistent across screen sizes. The grid makes layouts easier to reuse, speeds up implementation, and helps engineers reproduce the design faithfully. Its 24 columns adapt to different widths and establish a regular visual rhythm.
 
-Browsing proposals, completing forms and checking data call for different densities. I standardized navigation and common controls while preserving the distinct roles of cards, forms, tables and charts.
+[Grid diagram and workspace](#case-layout)
 
-- **Give content room:** quiet navigation backgrounds and clear selection states establish location; expanded and collapsed states accommodate the content area.
-- **Preserve what matters in tables:** rules for long text, sorting and narrow screens keep full information accessible in compact layouts.
-- **Create hierarchy in reports:** connect time, measures and charts, with overviews and detail for different depths of reading.
+## <span id="&#x8f7b;&#x91cf;&#x8584;&#x8377;&#x7eff;&#x4e0e;&#x7b80;&#x5355;&#x7684;&#x5b57;&#x4f53;"></span>Building a lightweight, easy-to-use design system
 
-![Shared controls including breadcrumbs, group switching, search, and primary and secondary buttons](/media/projects/yiwo-admin/case-study/04-shared-controls.webp)
+To reduce visual clutter, the admin uses a consistent, light visual style with green gradients, soft shadows, and fine dividers. The palette includes green (#16B395), blue (#3860F6), and white (#FFFFFF), with dark gray (#1B1E28) for text. The interface uses system fonts: PingFang on Mac and Microsoft YaHei on Windows. D-DIN-PRO is used for prominent figures. Buttons, tags, and panels have rounded corners.
 
-*Make consistency concrete: where I am, what to read, how to find it and what to do next.*
+[Admin visual language](#case-visual-language)
 
-Brand green marks selection and primary actions; neutrals carry most content and boundaries. Shared layout, typography and control rules give the modules a stable visual foundation.
+## Reduce visual noise in navigation
 
-## Reflection
+To improve the experience for business users, we reorganized navigation to shorten common workflows, softened the sidebar background to focus attention on the content, and let the sidebar collapse when more space was needed.
 
-The design organizes scattered actions, complex settings and dense data into clearer working paths. My focus expanded from individual screens to information priorities and interaction rules across modules.
+**Unify the navigation structure.** Group features across business areas to clarify their hierarchy, make the navigation predictable, and give frequent actions prominent positions.
 
-For further testing, I would prioritize finding a specified proposal and opening the editor, completing a material configuration and confirming the preview, and locating and checking a record in the leads table. Completion, time, errors and requests for help would show whether the designs actually support the work.
+**Reduce visual weight.** Quiet the navigation background so users can focus on the content they are working with.
 
-**A good admin interface makes information visible when people need to judge, and actions discoverable when they are ready to act.**
+**Make sidebar width flexible.** Many tables and material views need room for five or more columns. Collapsing the sidebar when needed keeps key information visible and easier to scan.
+
+[Navigation layouts](#case-navigation)
+
+## Streamline plan management
+
+Plan management is a core part of the admin. Shorter interaction flows make common tasks easier to learn and faster to complete.
+
+**Simplify the interaction.** Hovering over a plan reveals an overlay with the primary actions. This saves the extra step of opening the More menu before starting a task.
+
+**Refine the plan card.** Cards sit in a responsive grid that adapts to the available space. Automatically generated floor plans and clearly visible tags establish a consistent hierarchy.
+
+[Plan card example](#case-plan-card)
+
+## Make business reports easier to read
+
+Company and personal reports are among the most frequently consulted sources of business data. Visualization makes complex information easier to scan and understand.
+
+**Visualize the data.** Trend lines, donut charts, and bar charts make activity across plans, renders, and views easier to interpret.
+
+**Clarify the hierarchy.** For comparisons across dimensions, use principles such as proximity to place related information together.
+
+[Company and personal reports](#case-reports)
+
+## Empty states
+
+The previous admin focused on pages with content and offered little feedback on first use or when a search returned no results. I mapped the empty states and gave each one an explanation and an appropriate next action, so users could tell what had happened and how to proceed. I also established a shared illustration style using warm whites, mint green, and soft 3D materials to make the brand recognizable across these scenarios.
+
+[Empty-state examples](#case-empty-states)
+
+*Outcomes*
+
+## Final screens
+
+The redesign gave Yiwo Renovation Admin new screens and a more consistent UI system that could keep growing. The resulting product was easier to use and had a more cohesive appearance.
+
+[Redesigned admin screens](#case-final-screens)
+
+## Positive user feedback and improved metrics
+
+We surveyed users who had tried the redesigned interface. The feedback was positive, and key metrics showed improvements.
+
+[Reported outcomes](#case-results)

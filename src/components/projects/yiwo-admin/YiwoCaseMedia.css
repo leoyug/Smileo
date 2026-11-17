@@ -1,0 +1,335 @@
+.yiwo-case-media .yiwo-stage.yiwo-stage--tabs {
+  padding-block-start: var(--space-4);
+}
+
+/* Reserve the screenshot's space even before the lazy image loads. */
+.yiwo-stage--tabs .article-image-zoom-trigger,
+.yiwo-stage--tabs .yiwo-shot {
+  inline-size: 100%;
+}
+
+.yiwo-stage--tabs .yiwo-shot {
+  aspect-ratio: 8 / 5;
+}
+
+.yiwo-case-media {
+  --yiwo-paper: #fff;
+  --yiwo-surface: #f5f7fa;
+  --yiwo-text: #37393f;
+  --yiwo-muted: #676d79;
+  --yiwo-line: #d7d9e0;
+  --yiwo-line-soft: #eeeff2;
+  --yiwo-green: #16b395;
+  --yiwo-blue: #3860f6;
+  --yiwo-brand-gradient: linear-gradient(244deg, #2bc6a3 8%, #41dfa1 92%);
+  --yiwo-stage-dark: #13120f;
+  --yiwo-stage: light-dark(var(--color-surface-2), var(--yiwo-stage-dark));
+  --yiwo-type: "HONOR Sans CN", "PingFang SC", "Microsoft YaHei", var(--font-sans);
+}
+
+.yiwo-stage {
+  display: grid;
+  border-radius: var(--radius-lg);
+  background: var(--yiwo-stage);
+}
+
+.yiwo-stage.yiwo-stage--plan-card {
+  padding: 0;
+  min-inline-size: 0;
+}
+
+.yiwo-shot {
+  display: block;
+  width: 100%;
+  height: auto;
+  border-radius: var(--radius-sm);
+}
+
+.yiwo-shot--navigation {
+  mask: url("/assets/figma/yiwo-admin/navigation-mask.svg") 0 0 / 100% 100% no-repeat;
+}
+
+.yiwo-visual {
+  container-type: inline-size;
+  gap: var(--space-4);
+}
+
+.yiwo-panel {
+  padding: var(--space-4);
+  border-radius: var(--radius-sm);
+  background: var(--yiwo-paper);
+  color: var(--yiwo-text);
+  font-family: var(--yiwo-type);
+  line-height: var(--space-5);
+}
+
+.yiwo-panel__title {
+  margin-block-end: var(--space-4);
+  color: var(--yiwo-muted);
+  font-weight: var(--weight-semibold);
+}
+
+.yiwo-visual__brand {
+  display: flex;
+  min-height: 5.5rem;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-2);
+  font-size: 1.125rem;
+}
+
+.yiwo-visual__brand strong {
+  font-family: "Alimama FangYuanTi VF", "PingFang SC", var(--font-sans);
+  font-weight: var(--weight-semibold);
+}
+
+.yiwo-visual__mark {
+  display: grid;
+  flex: none;
+  place-items: center;
+}
+
+.yiwo-visual__mark img { grid-area: 1 / 1; }
+
+.yiwo-visual__swatches, .yiwo-results {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: var(--space-4);
+}
+
+.yiwo-visual__swatches > div {
+  display: grid;
+  align-content: end;
+  min-height: 6rem;
+  gap: var(--space-1);
+  padding: var(--space-3) clamp(var(--space-2), 3cqi, var(--space-4));
+  background: var(--yiwo-green);
+  color: var(--yiwo-paper);
+  font-family: var(--font-sans);
+  overflow-wrap: anywhere;
+}
+
+.yiwo-visual__swatches > :nth-child(2) { background: var(--yiwo-blue); }
+.yiwo-visual__swatches > :nth-child(3) {
+  /* sRGB equivalents of the swatch's Display P3 stops. */
+  background: linear-gradient(225deg, #00e39c 7.5%, #00b694 88.8%);
+}
+
+@media (color-gamut: p3) {
+  .yiwo-visual__swatches > :nth-child(3) {
+    background: linear-gradient(225deg in display-p3, color(display-p3 .254902 .874510 .631373) 7.5%, color(display-p3 .086275 .701961 .584314) 88.8%);
+  }
+}
+
+.yiwo-visual__swatches small { color: color-mix(in srgb, var(--yiwo-paper) 70%, transparent); }
+.yiwo-visual__swatches small, .yiwo-panel small {
+  font-size: var(--text-meta);
+  line-height: var(--space-4);
+}
+
+.yiwo-results dd { margin: 0; }
+
+ul.yiwo-empty-states {
+  display: flex;
+  flex: none;
+  gap: var(--space-5);
+  width: max-content;
+  margin: 0;
+  list-style: none;
+}
+
+.yiwo-empty-state {
+  display: flex;
+  flex: 0 0 12.125rem;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-1);
+  width: 12.125rem;
+  min-height: 15rem;
+  margin: 0;
+  padding: var(--space-2);
+  border-radius: var(--space-5);
+  background: var(--yiwo-paper);
+  color: var(--yiwo-text);
+  text-align: center;
+}
+
+.yiwo-empty-state__art {
+  display: block;
+  width: 11.25rem;
+  height: auto;
+  margin-block-end: calc(var(--space-3) * -1);
+}
+
+.yiwo-empty-state strong {
+  font-size: .5625rem;
+  line-height: 1.3;
+}
+
+.yiwo-empty-state small {
+  color: var(--yiwo-muted);
+  font-size: .5rem;
+  line-height: 1.4;
+}
+
+.yiwo-empty-state__action {
+  display: flex;
+  align-items: center;
+  gap: .125rem;
+  margin-block-start: var(--space-1);
+  padding: var(--space-1) var(--space-2);
+  border-radius: var(--radius-xs);
+  background: var(--yiwo-brand-gradient);
+  color: var(--yiwo-paper);
+  font-size: .5rem;
+  font-weight: var(--weight-medium);
+  line-height: 1.5;
+}
+
+.yiwo-results {
+  margin: 0;
+  font-family: var(--yiwo-type);
+}
+
+.yiwo-results__item {
+  position: relative;
+  display: grid;
+  align-content: space-between;
+  gap: var(--space-4);
+  min-height: 7.5rem;
+  padding: var(--space-4);
+  border-radius: var(--radius-md);
+  background: var(--yiwo-paper);
+  color: #383c44;
+}
+
+.yiwo-results__item--green { background: #00b890; color: var(--yiwo-paper); }
+.yiwo-results__item--blue { background: #0052f2; color: var(--yiwo-paper); }
+.yiwo-results__item dt {
+  padding-inline-end: var(--space-6);
+  font-size: var(--text-body);
+  font-weight: var(--weight-semibold);
+  line-height: var(--space-5);
+}
+.yiwo-results__item dd { display: grid; gap: var(--space-1); }
+.yiwo-results__value { display: flex; align-items: center; gap: calc(var(--space-1) / 2); }
+.yiwo-results__value img { flex: none; margin: 0; }
+.yiwo-results__value strong { font-size: 1.25rem; line-height: var(--space-6); }
+.yiwo-results__value span { font-size: var(--text-meta); line-height: 1; white-space: nowrap; }
+.yiwo-results__item small { color: color-mix(in srgb, currentColor 78%, transparent); font-size: .6875rem; line-height: var(--space-4); }
+.yiwo-results__illustration { position: absolute; inset: var(--space-4) var(--space-4) auto auto; }
+
+@media (max-width: 31rem) {
+  .yiwo-visual__swatches { gap: var(--space-2); }
+  .yiwo-results { grid-template-columns: 1fr; }
+  .yiwo-results__item { min-height: auto; }
+}
+
+.yiwo-visual__type, .yiwo-visual__icons {
+  --yiwo-spec-muted: #737882;
+  padding: var(--space-5);
+}
+
+.yiwo-visual__type .yiwo-panel__title,
+.yiwo-visual__icons .yiwo-panel__title {
+  color: var(--yiwo-spec-muted);
+}
+
+.yiwo-visual__type { padding-block-end: calc(var(--space-6) + var(--space-1)); }
+.yiwo-visual__type .yiwo-panel__title { margin-block-end: var(--space-4); }
+
+.yiwo-visual__type-body {
+  display: grid;
+  grid-template-columns: 9.25rem minmax(0, 1fr);
+  align-items: start;
+  gap: var(--space-4) var(--space-8);
+  padding-inline: var(--space-1) var(--space-3);
+}
+
+.yiwo-visual__type-info {
+  display: grid;
+  gap: var(--space-4);
+}
+
+.yiwo-visual__fonts {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: var(--space-3) var(--space-6);
+  margin: 0;
+  padding-inline-end: var(--space-4);
+}
+
+.yiwo-visual__fonts dt {
+  margin-block-end: var(--space-1);
+  color: var(--yiwo-spec-muted);
+  font-size: var(--text-meta);
+  font-weight: var(--weight-semibold);
+  line-height: var(--space-4);
+}
+
+.yiwo-visual__fonts dd {
+  margin: 0;
+  color: #393c43;
+  font: var(--weight-semibold) 1.25rem/var(--space-6) "PingFang SC", var(--font-sans);
+}
+
+.yiwo-visual__type-note {
+  margin: 0;
+  color: var(--yiwo-spec-muted);
+  font: 300 var(--text-meta)/var(--space-5) "PingFang SC", var(--font-sans);
+}
+
+.yiwo-visual__sample-art {
+  display: block;
+  margin-block-start: var(--space-1);
+  margin-inline: 0;
+  inline-size: auto;
+  max-inline-size: 100%;
+}
+
+.yiwo-visual__icons .yiwo-panel__title { margin-block-end: var(--space-5); }
+
+.yiwo-visual__icons {
+  padding-block-end: var(--space-6);
+}
+
+.yiwo-visual__icons-grid {
+  --yiwo-icon-columns: 9;
+  --yiwo-icon-gap: clamp(var(--space-3), 5.4cqi, 1.75rem);
+  display: grid;
+  grid-template-columns: repeat(auto-fill, var(--space-6));
+  gap: var(--space-6) var(--yiwo-icon-gap);
+  inline-size: min(calc(100% - var(--space-1)), calc(var(--yiwo-icon-columns) * var(--space-6) + (var(--yiwo-icon-columns) - 1) * var(--yiwo-icon-gap)));
+  margin-inline-start: var(--space-1);
+}
+
+.yiwo-visual__icons-grid--navigation { --yiwo-icon-columns: 6; }
+.yiwo-visual__icons-grid + .yiwo-visual__icons-grid { margin-block-start: var(--space-6); }
+
+@container (max-width: 31rem) {
+  .yiwo-visual__type-body {
+    grid-template-columns: auto minmax(0, 1fr);
+    column-gap: var(--space-4);
+    padding-inline: 0;
+  }
+
+  .yiwo-visual__fonts { padding-inline-end: 0; }
+  .yiwo-visual__sample-art {
+    margin-block-start: 0;
+    inline-size: clamp(5.25rem, 24cqi, 7rem);
+    block-size: auto;
+  }
+}
+
+@container (max-width: 20rem) {
+  .yiwo-visual__type-body { grid-template-columns: minmax(0, 1fr); }
+}
+
+.yiwo-stage { padding: var(--space-6); }
+
+.yiwo-shot--final {
+  aspect-ratio: 8 / 5;
+  object-fit: cover;
+}

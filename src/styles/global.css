@@ -25,6 +25,14 @@
 }
 
 @font-face {
+  font-family: "Geist Mono";
+  src: url("/fonts/geist/GeistMono-Medium.woff2") format("woff2");
+  font-weight: 500;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
   font-family: "Chill Jinshu Song Compact";
   src: url("/fonts/chill-jinshu-song/compact-regular-v3.woff2") format("woff2");
   font-weight: 400;
@@ -453,7 +461,10 @@
   a { color: inherit; text-decoration-color: var(--color-line); }
   code { font-family: var(--font-code); font-size: var(--code-font-size); font-variant-ligatures: none; }
   button, a { -webkit-tap-highlight-color: transparent; }
-  :focus-visible { outline: 2px solid var(--color-accent); outline-offset: 3px; box-shadow: 0 0 0 4px var(--color-ink); }
+  :focus-visible {
+    outline: 2px solid var(--color-accent-ink);
+    outline-offset: calc(var(--space-1) / 2);
+  }
   ::selection { background: var(--color-selection-background); color: var(--color-selection-text); }
   [data-selection-host] { isolation: isolate; }
   [data-selection-host="static"] { position: relative; }

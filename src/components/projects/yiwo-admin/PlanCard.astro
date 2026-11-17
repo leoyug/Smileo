@@ -1,0 +1,163 @@
+---
+import Button from "../../Button.astro";
+import Card from "../../Card.astro";
+import "./PlanCard.css";
+
+type Scenario = "plan" | "selection" | "collection" | "archive" | "trash";
+
+interface Props {
+  scenario: Scenario;
+}
+
+interface Action {
+  label: string;
+  icon?: "open" | "restore";
+}
+
+const examples: Record<Scenario, { actions: Action[]; menu?: string[] }> = {
+  plan: {
+    actions: [{ label: "编辑", icon: "open" }, { label: "图册 (99+)" }],
+    menu: ["查看信息", "设计讲解", "下载户型图", "导出CAD", "添加协作者", "复制方案", "移至文件夹", "删除"],
+  },
+  selection: { actions: [] },
+  collection: {
+    actions: [{ label: "打开文件夹", icon: "open" }],
+    menu: ["重命名", "删除"],
+  },
+  archive: {
+    actions: [{ label: "查看详情", icon: "open" }],
+    menu: ["业主信息", "下载户型图", "删除"],
+  },
+  trash: { actions: [{ label: "恢复方案", icon: "restore" }, { label: "彻底删除" }] },
+};
+
+const { scenario } = Astro.props;
+const { actions, menu } = examples[scenario];
+const base = "/assets/figma/yiwo-admin";
+const collection = scenario === "collection";
+const selection = scenario === "selection";
+---
+
+<yiwo-plan-card class="yiwo-plan-card-demo">
+  <Card class="yiwo-plan-card" variant="media">
+    <div class="yiwo-plan-card__preview">
+      {collection ? (
+        <span class="yiwo-plan-card__folder" aria-hidden="true">
+          <img src={`${base}/plan-folder-back.svg`} alt="" />
+          <img src={`${base}/plan-folder-front.svg`} alt="" />
+        </span>
+      ) : (
+        <>
+          <img class="yiwo-plan-card__floor" src={`${base}/floor-plan.webp`} alt="三室两厅户型图" width="512" height="512" loading="lazy" decoding="async" />
+          <span class="yiwo-plan-card__badge">3室2厅</span>
+          {scenario === "archive" && <span class="yiwo-plan-card__badge yiwo-plan-card__badge--archive">刮腻子</span>}
+        </>
+      )}
+    </div>
+    <div class="yiwo-plan-card__details">
+      <div class="yiwo-plan-card__title">{collection ? "祝福红城合集" : "方案｜祝福红城13栋3楼303"}</div>
+      <div class="yiwo-plan-card__meta">
+        {collection ? <span>2个文件</span> : <time datetime="2022-07-19T14:33:26">2022-07-19 14:33:26</time>}
+        <span>2分钟前</span>
+      </div>
+    </div>
+
+    {selection ? (
+      <label class="yiwo-plan-card__select">
+        <input class="sr-only" type="checkbox" aria-label="选择方案" />
+        <span class="yiwo-plan-card__checkbox" aria-hidden="true">
+          <img src={`${base}/plan-check.svg`} width="18" height="18" alt="" />
+        </span>
+      </label>
+    ) : (
+      <>
+        <button class="yiwo-plan-card__reveal" type="button" aria-label="显示卡片操作" aria-pressed="false" data-plan-reveal></button>
+        <div class="yiwo-plan-card__mask" aria-hidden="true"></div>
+        <div class="yiwo-plan-card__actions" role="group" aria-label="卡片操作">
+          <div class:list={["yiwo-plan-card__shortcuts", { "yiwo-plan-card__shortcuts--split": scenario === "trash" }]}>
+            {actions.map(({ label, icon }) => (
+              <Button variant="ghost" class="yiwo-plan-card__action">
+                {icon && <img src={`${base}/plan-${icon}.svg`} width="16" height="16" alt="" />}
+                {label}
+              </Button>
+            ))}
+          </div>
+          {menu && (
+            <details class="yiwo-plan-card__more">
+              <summary class="yiwo-plan-card__action">更多</summary>
+              <div class="yiwo-plan-card__menu" data-plan-menu>
+                {menu.map((label) => <Button variant="ghost" class="yiwo-plan-card__menu-item">{label}</Button>)}
+              </div>
+            </details>
+          )}
+        </div>
+      </>
+    )}
+  </Card>
+</yiwo-plan-card>
+
+<script>
+  class YiwoPlanCard extends HTMLElement {
+    #controller?: AbortController;
+
+    connectedCallback() {
+      const reveal = this.querySelector<HTMLButtonElement>("[data-plan-reveal]");
+      if (!reveal || this.#controller) return;
+
+      const details = this.querySelector("details");
+      const summary = details?.querySelector("summary");
+      const menu = details?.querySelector<HTMLElement>("[data-plan-menu]");
+      const controller = new AbortController();
+      this.#controller = controller;
+      const { signal } = controller;
+
+      const dismiss = () => {
+        reveal.setAttribute("aria-pressed", "false");
+        if (details) details.open = false;
+      };
+
+      reveal.addEventListener("click", () => {
+        if (reveal.getAttribute("aria-pressed") === "true") dismiss();
+        else reveal.setAttribute("aria-pressed", "true");
+      }, { signal });
+
+      document.addEventListener("pointerdown", (event) => {
+        if (!event.composedPath().includes(this)) dismiss();
+      }, { signal });
+
+      this.addEventListener("focusout", (event) => {
+        if (event.relatedTarget instanceof Node && !this.contains(event.relatedTarget)) dismiss();
+      }, { signal });
+
+      this.addEventListener("keydown", (event) => {
+        if (event.key !== "Escape") return;
+        if (details?.open) {
+          details.open = false;
+          summary?.focus({ preventScroll: true });
+        } else if (reveal.getAttribute("aria-pressed") === "true") {
+          dismiss();
+          reveal.focus({ preventScroll: true });
+        }
+      }, { signal });
+
+      details?.addEventListener("toggle", () => {
+        if (!details.open || !menu) return;
+        const { top, bottom } = menu.getBoundingClientRect();
+        if (top < 0 || bottom > window.innerHeight) menu.scrollIntoView({ block: "nearest" });
+      }, { signal });
+
+      menu?.addEventListener("click", (event) => {
+        if (!(event.target instanceof Element) || !event.target.closest("button") || !details) return;
+        details.open = false;
+        summary?.focus({ preventScroll: true });
+      }, { signal });
+    }
+
+    disconnectedCallback() {
+      this.#controller?.abort();
+      this.#controller = undefined;
+    }
+  }
+
+  if (!customElements.get("yiwo-plan-card")) customElements.define("yiwo-plan-card", YiwoPlanCard);
+</script>

@@ -1,0 +1,54 @@
+---
+import { projectCaseSlotLink, renderProjectCaseBody } from "../../lib/project-case-slots";
+
+const source = await Astro.slots.render("default") ?? "";
+const slots = new Map<string, string>();
+for (const [, name] of source.matchAll(projectCaseSlotLink)) {
+  const media = await Astro.slots.render(name);
+  if (media == null) throw new Error(`Missing project case slot: ${name}`);
+  slots.set(name, media);
+}
+---
+
+<div class="article__body" id="content" data-route-enter-body set:html={renderProjectCaseBody(source, slots)} />
+
+<style>
+  .article__body > :global(p + [data-case-slot]) {
+    margin-block-start: var(--space-8);
+  }
+
+  .article__body > :global(p + [data-case-slot="website-structure"]) {
+    margin-block-start: var(--space-4);
+  }
+
+  .article__body > :global(h2 + [data-case-slot="reflection-notes"]) {
+    margin-block-start: var(--space-8);
+  }
+
+  .article__body > :global(.project-case-label) {
+    margin-block: var(--space-12) var(--space-2);
+  }
+
+  :global(html:not(:lang(en))) .article__body > :global(.project-case-label) {
+    color: var(--color-faint);
+    font-family: var(--font-sans);
+    font-size: .6875rem;
+    font-weight: var(--weight-medium);
+    line-height: var(--space-4);
+    letter-spacing: .05em;
+  }
+
+  :global([data-project-id="zhaichangxiang-website"]) .article__body > :global(.project-case-label) {
+    margin-block-end: var(--space-3);
+  }
+
+  .article__body > :global(.project-case-label:first-child),
+  .article__body > :global(.project-case-label + h2) {
+    margin-block-start: 0;
+  }
+
+  .article__body > :global(p > strong:first-child) {
+    color: var(--color-ink);
+    font-weight: var(--weight-semibold);
+  }
+</style>

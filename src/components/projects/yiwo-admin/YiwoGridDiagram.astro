@@ -1,0 +1,26 @@
+---
+import "./YiwoGridDiagram.css";
+
+const base = "/assets/figma/yiwo-admin";
+const dimensions = [
+  { name: "width", label: "页面尺寸 1440px", line: "width", end: "end" },
+  { name: "height", label: "首屏高度 900px", line: "height", end: "height-end" },
+  { name: "grid", label: "栅格系统", line: "divider", end: "end" },
+  { name: "content", label: "内容区域 1240px", line: "divider", end: "end" },
+];
+---
+
+<div class="yiwo-grid" role="img" aria-label="1440 × 900 的后台布局示意，包含固定侧栏与 24 列内容栅格">
+  <div class="yiwo-grid__frame" aria-hidden="true">
+    <div class="yiwo-grid__sidebar"></div>
+    <div class="yiwo-grid__columns"></div>
+  </div>
+  {dimensions.map(({ name, label, line, end }) => (
+    <div class:list={["yiwo-grid__dimension", `yiwo-grid__dimension--${name}`]} aria-hidden="true">
+      <img class="yiwo-grid__line" src={`${base}/grid-${line}.svg`} alt="" />
+      <img class="yiwo-grid__end yiwo-grid__end--start" src={`${base}/grid-${end}.svg`} alt="" />
+      <img class="yiwo-grid__end yiwo-grid__end--finish" src={`${base}/grid-${end}.svg`} alt="" />
+      <div class="yiwo-grid__label" data-selection-native={name === "height" ? "" : undefined}>{label}</div>
+    </div>
+  ))}
+</div>

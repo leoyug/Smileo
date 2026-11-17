@@ -1,0 +1,188 @@
+---
+import Card from "../../Card.astro";
+
+interface Props {
+  variant: "problems" | "directions";
+}
+
+const { variant } = Astro.props;
+const directions = variant === "directions";
+const outlinePath = "/assets/figma/yiwo-admin/directions";
+const cards = {
+  problems: [
+    { title: "功能操作复杂", copy: "部分页面的操作流程繁琐，增加了用户的使用成本，阻碍用户高效完成任务。" },
+    { title: "布局不合理屏效低", copy: "页面布局存在缺陷，未能根据行业风格多样以及功能整合需求进行合理规划。" },
+    { title: "视觉规范不统一", copy: "缺乏统一的视觉规范和品牌设计，导致界面整体视觉效果杂乱无章。" },
+  ],
+  directions: [
+    { title: "简化操作步骤，及时反馈", copy: "通过简化交互流程，缩短用户操作路径，降低学习门槛，提升使用效率。" },
+    { title: "重构框架，提升层级设计", copy: "优化页面布局，调整字体与色彩层级，减少视觉干扰，提升表单填写效率。" },
+    { title: "设计语言统一，降本增效", copy: "建立统一的设计规范，采用组件化思维提升设计一致性，优化设计流程，增强品牌感知。" },
+    { title: "提升品牌感，增强识别度", copy: "加强品牌融入，适度加入情感化设计。以安全稳定为基础，精细化提升用户体验。" },
+  ],
+};
+---
+
+<ol class:list={["yiwo-decision-cards", `yiwo-decision-cards--${variant}`]} role="list">
+  {cards[variant].map(({ title, copy }, index) => {
+    const number = String(index + 1).padStart(2, "0");
+    // These Figma outlines depict the fixed Chinese copy without shipping font files.
+    const outlines = directions && {
+      "--yiwo-number-outline": `url(${outlinePath}/${number}-number.svg)`,
+      "--yiwo-title-outline": `url(${outlinePath}/${number}-title.svg)`,
+      "--yiwo-copy-outline": `url(${outlinePath}/${number}-copy.svg)`,
+    };
+
+    return (
+      <li style={outlines || undefined}>
+        <Card class="yiwo-decision-card">
+          <div class="yiwo-decision-card__heading">
+            <span class="yiwo-decision-card__number" aria-hidden="true">{number}</span>
+            <strong>{title}</strong>
+          </div>
+          <p class="yiwo-decision-card__copy">{copy}</p>
+        </Card>
+      </li>
+    );
+  })}
+</ol>
+
+<style>
+  .yiwo-decision-cards {
+    display: grid;
+    grid-template-columns: repeat(var(--yiwo-card-columns), minmax(0, 1fr));
+    gap: var(--space-4);
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .yiwo-decision-cards--problems {
+    --yiwo-card-columns: 3;
+  }
+
+  .yiwo-decision-cards--directions {
+    --yiwo-card-columns: 2;
+  }
+
+  .yiwo-decision-cards > li { margin: 0; }
+
+  .yiwo-decision-cards :global(.yiwo-decision-card) {
+    display: grid;
+    height: 100%;
+    align-content: start;
+    gap: var(--space-3);
+    padding: var(--space-4);
+    border: 0;
+    background: var(--yiwo-stage);
+    color: var(--color-ink);
+    font-family: "PingFang SC", "Microsoft YaHei", var(--font-sans);
+  }
+
+  .yiwo-decision-card__heading {
+    display: grid;
+    gap: var(--space-1);
+    line-height: var(--space-5);
+  }
+
+  .yiwo-decision-card__heading strong {
+    position: relative;
+    font-size: var(--text-body);
+    font-weight: var(--weight-semibold);
+  }
+
+  .yiwo-decision-card__number {
+    color: var(--color-faint);
+    font: .8125rem/var(--space-5) var(--font-mono);
+  }
+
+  .yiwo-decision-card__copy {
+    margin: 0;
+    color: var(--color-copy);
+    font-size: var(--text-meta);
+    line-height: 1.375rem;
+  }
+
+  .yiwo-decision-cards--directions :global(.yiwo-decision-card) {
+    min-height: 10.5rem;
+    align-content: space-between;
+    padding: var(--space-3);
+    border-radius: var(--radius-lg);
+  }
+
+  .yiwo-decision-cards--directions .yiwo-decision-card__heading {
+    gap: 0;
+    padding-inline: var(--space-1);
+  }
+
+  .yiwo-decision-cards--directions .yiwo-decision-card__number {
+    margin-block-end: calc(-1 * var(--space-4));
+    color: transparent;
+    font: var(--weight-bold) 1.5rem/var(--space-8) var(--font-sans);
+    -webkit-text-stroke: 1px color-mix(in srgb, var(--color-copy) 38%, transparent);
+  }
+
+  .yiwo-decision-cards--directions .yiwo-decision-card__copy {
+    min-height: var(--yiwo-direction-copy-height, 5.5rem);
+    padding: var(--space-2);
+    border-radius: var(--radius-sm);
+    background: var(--color-canvas);
+  }
+
+  @supports (mask-image: url("")) {
+    .yiwo-decision-cards--directions .yiwo-decision-card__number {
+      background-color: light-dark(var(--color-ink), white);
+      mask: var(--yiwo-number-outline) left .375rem no-repeat;
+      -webkit-text-stroke: 0;
+    }
+
+    .yiwo-decision-cards--directions:lang(zh) :is(.yiwo-decision-card__heading strong, .yiwo-decision-card__copy) {
+      color: transparent;
+    }
+
+    .yiwo-decision-cards--directions:lang(zh) :where(.yiwo-decision-card__heading strong, .yiwo-decision-card__copy)::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+    }
+
+    .yiwo-decision-cards--directions:lang(zh) .yiwo-decision-card__heading strong::before {
+      background-color: light-dark(var(--color-ink), white);
+      mask: var(--yiwo-title-outline) left .1875rem no-repeat;
+    }
+
+    .yiwo-decision-cards--directions:lang(zh) .yiwo-decision-card__copy {
+      position: relative;
+      /* Keep both lines visible at the Figma line height even when the live text wraps differently. */
+      min-height: max(var(--yiwo-direction-copy-height, 5.5rem), calc(2.75rem + 2 * var(--space-2)));
+    }
+
+    .yiwo-decision-cards--directions:lang(zh) .yiwo-decision-card__copy::before {
+      inset: var(--space-2);
+      background-color: var(--color-copy);
+      mask: var(--yiwo-copy-outline) left .3125rem / min(100%, 15rem) auto no-repeat;
+    }
+
+    .yiwo-decision-cards--directions:lang(zh) :is(.yiwo-decision-card__heading strong, .yiwo-decision-card__copy)::selection {
+      color: var(--color-ink);
+    }
+  }
+
+  @media (forced-colors: active) {
+    .yiwo-decision-cards--directions:lang(zh) :is(.yiwo-decision-card__heading strong, .yiwo-decision-card__copy) { color: CanvasText; }
+    .yiwo-decision-cards--directions:lang(zh) :is(.yiwo-decision-card__heading strong, .yiwo-decision-card__copy)::before { display: none; }
+  }
+
+  @media (max-width: 40rem) {
+    .yiwo-decision-cards--directions { --yiwo-card-columns: 1; }
+  }
+
+  @media (max-width: 31rem) {
+    .yiwo-decision-cards {
+      --yiwo-card-columns: 1;
+    }
+    .yiwo-decision-cards--directions { --yiwo-direction-copy-height: 0px; }
+    .yiwo-decision-cards--directions :global(.yiwo-decision-card) { min-height: 0; }
+  }
+</style>

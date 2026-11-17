@@ -1,0 +1,170 @@
+---
+import "./ProjectMediaTabs.css";
+
+interface Props {
+  id: string;
+  label: string;
+  tabs: string[];
+  variant?: "media" | "scenarios";
+}
+
+const { id, label, tabs, variant = "media" } = Astro.props;
+---
+
+<project-media-tabs class:list={["project-media-tabs", { "project-media-tabs--scenarios": variant === "scenarios" }]}>
+  <div class="project-media-tabs__list" role="tablist" aria-label={label} data-media-tablist style={{ "--media-tab-count": tabs.length }} hidden>
+    <span class="project-media-tabs__pill" aria-hidden="true"></span>
+    {tabs.map((tab, index) => (
+      <button
+        class="project-media-tabs__button"
+        type="button"
+        role="tab"
+        id={`${id}-tab-${index + 1}`}
+        aria-selected={index === 0 ? "true" : "false"}
+        aria-controls={`${id}-panel-${index + 1}`}
+        tabindex={index === 0 ? 0 : -1}
+      >{tab}</button>
+    ))}
+  </div>
+  <div class="project-media-tabs__panels" data-media-tab-panels>
+    <slot />
+  </div>
+</project-media-tabs>
+
+<script>
+  import { cssTimeToMilliseconds } from "../../lib/css-time";
+
+  function trackScenarioPill(list: HTMLElement, tabs: HTMLButtonElement[], signal: AbortSignal) {
+    const pill = list.querySelector<HTMLElement>(".project-media-tabs__pill");
+    if (!pill || typeof pill.animate !== "function") return;
+
+    const reducedMotion = matchMedia("(prefers-reduced-motion: reduce)");
+    const styles = getComputedStyle(list);
+    const duration = cssTimeToMilliseconds(styles.getPropertyValue("--duration-fast"));
+    const easing = styles.getPropertyValue("--ease-smooth-out").trim();
+    let activeTab = tabs[0];
+    let left = NaN;
+    let width = 0;
+    let motion: Animation | undefined;
+
+    const move = (tab = activeTab, animate = false) => {
+      activeTab = tab;
+      const next = tab.getBoundingClientRect();
+      const nextLeft = next.left - list.getBoundingClientRect().left + list.scrollLeft - list.clientLeft;
+      if (next.width === 0 || (nextLeft === left && next.width === width)) return;
+
+      // Retarget from the visible pill before cancelling an interrupted transition.
+      const from = animate && !reducedMotion.matches && width > 0 ? pill.getBoundingClientRect() : undefined;
+      motion?.cancel();
+      left = nextLeft;
+      width = next.width;
+      pill.style.left = `${left}px`;
+      pill.style.width = `${width}px`;
+      if (from) {
+        motion = pill.animate([
+          { transform: `translateX(${from.left - next.left}px) scaleX(${from.width / width})` },
+          { transform: "none" },
+        ], { duration, easing });
+      }
+    };
+
+    move();
+    list.dataset.slidingPill = "";
+    const resize = new ResizeObserver(() => move());
+    resize.observe(list);
+    tabs.forEach((tab) => resize.observe(tab));
+    reducedMotion.addEventListener("change", () => motion?.cancel(), { signal });
+    signal.addEventListener("abort", () => {
+      motion?.cancel();
+      resize.disconnect();
+      delete list.dataset.slidingPill;
+    }, { once: true });
+    return move;
+  }
+
+  class ProjectMediaTabs extends HTMLElement {
+    #controller?: AbortController;
+
+    connectedCallback() {
+      if (this.#controller) return;
+      const list = this.querySelector<HTMLElement>("[data-media-tablist]");
+      const tabs = [...(list?.querySelectorAll<HTMLButtonElement>('[role="tab"]') ?? [])];
+      const panels = [...(this.querySelector("[data-media-tab-panels]")?.children ?? [])]
+        .filter((panel): panel is HTMLElement => panel instanceof HTMLElement);
+      if (!list || tabs.length < 2 || panels.length !== tabs.length) return;
+
+      const controller = new AbortController();
+      this.#controller = controller;
+      const { signal } = controller;
+      const scenarios = this.classList.contains("project-media-tabs--scenarios");
+      let selected = 0;
+      let requested = 0;
+      let moveScenarioPill: ReturnType<typeof trackScenarioPill>;
+      const select = (index: number, animate = false) => {
+        selected = index;
+        this.style.setProperty("--media-tab-index", String(index));
+        tabs.forEach((tab, position) => {
+          const active = index === position;
+          const panel = panels[position];
+          tab.setAttribute("aria-selected", String(active));
+          tab.tabIndex = active ? 0 : -1;
+          panel.setAttribute("aria-hidden", String(!active));
+          panel.tabIndex = active && !scenarios ? 0 : -1;
+          panel.inert = !active;
+        });
+        moveScenarioPill?.(tabs[index], animate);
+      };
+
+      const requestSelection = async (index: number, animate = false) => {
+        requested = index;
+        if (index === selected) return;
+
+        if (scenarios) {
+          select(index, animate);
+          return;
+        }
+
+        await Promise.all(Array.from(panels[index].querySelectorAll("img"), (image) => {
+          if (image.loading === "lazy") image.loading = "eager";
+          return image.decode().catch(() => undefined);
+        }));
+
+        if (!signal.aborted && requested === index && selected !== index) select(index);
+      };
+
+      panels.forEach((panel, index) => {
+        panel.id = tabs[index].getAttribute("aria-controls") ?? "";
+        panel.setAttribute("role", "tabpanel");
+        panel.setAttribute("aria-labelledby", tabs[index].id);
+      });
+      select(0);
+      this.dataset.ready = "";
+      list.hidden = false;
+      if (scenarios) moveScenarioPill = trackScenarioPill(list, tabs, signal);
+
+      tabs.forEach((tab, index) => tab.addEventListener("click", (event) => {
+        void requestSelection(index, event.detail > 0);
+      }, { signal }));
+      list.addEventListener("keydown", (event) => {
+        if (event.altKey || event.ctrlKey || event.metaKey || event.shiftKey) return;
+        const destination = {
+          ArrowLeft: (requested + tabs.length - 1) % tabs.length,
+          ArrowRight: (requested + 1) % tabs.length,
+          Home: 0,
+          End: tabs.length - 1,
+        }[event.key];
+        if (destination === undefined) return;
+        event.preventDefault();
+        void requestSelection(destination);
+        tabs[destination].focus({ preventScroll: !scenarios });
+      }, { signal });
+    }
+
+    disconnectedCallback() {
+      this.#controller?.abort();
+      this.#controller = undefined;
+    }
+  }
+
+  if (!customElements.get("project-media-tabs")) customElements.define("project-media-tabs", ProjectMediaTabs);
+</script>

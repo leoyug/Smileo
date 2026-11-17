@@ -1,0 +1,163 @@
+---
+import ProjectMediaRail from "../ProjectMediaRail.astro";
+import ProjectMediaTabs from "../ProjectMediaTabs.astro";
+import Controls from "./Controls.astro";
+import DecisionCards from "./DecisionCards.astro";
+import PlanCard from "./PlanCard.astro";
+import YiwoGridDiagram from "./YiwoGridDiagram.astro";
+import "./YiwoCaseMedia.css";
+
+interface Props {
+  section: "problems" | "directions" | "layout" | "visual-language" | "navigation" | "plan-card" | "reports" | "empty-states" | "final-screens" | "results";
+}
+
+const { section } = Astro.props;
+const base = "/assets/figma/yiwo-admin";
+const actionIcons = ["copy", "select-multiple", "share", "delete", "create", "create-multiple", "folder-add", "folder-transfer", "download", "export", "upload", "star", "calendar", "expand", "edit", "add-circle", "preview", "menu"];
+const navigationIcons = ["solutions", "assets", "styles", "accounts", "quotations", "marketing", "microsite", "analytics", "enterprise-solutions", "roles", "enterprises", "organization"];
+const planScenarios = [
+  { key: "plan", label: "设计方案" },
+  { key: "selection", label: "多选状态" },
+  { key: "collection", label: "设计合集" },
+  { key: "archive", label: "水电存档" },
+  { key: "trash", label: "回收站" },
+] as const;
+const states = [
+  { image: "plans", title: "还没有设计方案", description: "创建第一个方案，开始你的设计工作", action: "新建方案", icon: "create" },
+  { image: "search", title: "没有找到符合条件的内容", description: "试试其他关键词，或调整筛选条件", action: "清除筛选", icon: "clear" },
+  { image: "trash", title: "回收站是空的", description: "删除的内容会显示在这里" },
+  { image: "materials", title: "还没有素材", description: "添加材质或模型，建立你的素材库", action: "添加素材", icon: "add" },
+  { image: "report", title: "这段时间暂无数据", description: "可以调整时间范围，查看其他时段", action: "调整时间", icon: "calendar" },
+];
+const results = [
+  { theme: "paper", title: "任务时长", value: "30 ~ 88", unit: "%", description: "核心任务流程时长减少", direction: "down" },
+  { theme: "green", title: "用户反馈", value: "86", unit: " 分以上", description: "访问-易用性打分", direction: "up" },
+  { theme: "blue", title: "实际工效", value: "32", unit: "%", description: "产出效率提升", direction: "up" },
+];
+---
+
+<div class="yiwo-case-media">
+  {(section === "problems" || section === "directions") && <DecisionCards variant={section} />}
+
+  {section === "layout" && (
+    <div class="yiwo-stage yiwo-stage--tabs">
+      <ProjectMediaTabs id="yiwo-layout" label="栅格系统与实际页面" tabs={["栅格系统", "实际页面"]}>
+        <figure><YiwoGridDiagram /></figure>
+        <figure>
+          <img class="yiwo-shot" src={`${base}/workspace-grid.webp`} width="1440" height="900" alt="方案管理首页叠加 24 列栅格" loading="lazy" decoding="async" />
+        </figure>
+      </ProjectMediaTabs>
+    </div>
+  )}
+
+  {section === "visual-language" && (
+    <div class="yiwo-stage yiwo-visual">
+      <div class="yiwo-visual__brand yiwo-panel">
+        <span class="yiwo-visual__mark" aria-hidden="true">
+          <img src={`${base}/brand-mark.svg`} width="32" height="33" alt="" />
+          <img src={`${base}/brand-symbol.svg`} width="18" height="18" alt="" />
+        </span>
+        <strong>亦我家装后台</strong>
+      </div>
+      <div class="yiwo-visual__swatches">
+        <div class="yiwo-panel"><span>Brand Primary</span><small>#16B395</small></div>
+        <div class="yiwo-panel"><span>Info Blue</span><small>#3860F6</small></div>
+        <div class="yiwo-panel"><span>Gradient</span><small>#16B395–#41DFA1</small></div>
+      </div>
+      <div class="yiwo-panel yiwo-visual__type">
+        <div class="yiwo-panel__title">字体</div>
+        <div class="yiwo-visual__type-body">
+          <img class="yiwo-visual__sample-art" src={`${base}/type-sample.svg`} width="144" height="87" alt="" />
+          <div class="yiwo-visual__type-info">
+            <dl class="yiwo-visual__fonts">
+              <div><dt>正文</dt><dd>PingFang SC</dd></div>
+              <div><dt>特殊数字</dt><dd>D-DIN-PRO</dd></div>
+            </dl>
+            <p class="yiwo-visual__type-note">仅使用常规和中等字重。Windows 系统中正文使用 微软雅黑 作为相近的替代字体。</p>
+          </div>
+        </div>
+      </div>
+      <div class="yiwo-panel yiwo-visual__icons">
+        <div class="yiwo-panel__title">图标</div>
+        {[navigationIcons, actionIcons].map((icons, group) => (
+          <div class:list={["yiwo-visual__icons-grid", { "yiwo-visual__icons-grid--navigation": group === 0 }]} aria-hidden="true">
+            {icons.map((icon) => <img src={`${base}/${group === 0 ? "nav" : "action"}-${icon}.svg`} width="24" height="24" alt="" loading="lazy" />)}
+          </div>
+        ))}
+      </div>
+      <Controls />
+    </div>
+  )}
+
+  {section === "navigation" && (
+    <figure class="yiwo-stage">
+      <img class="yiwo-shot yiwo-shot--navigation" src={`${base}/navigation.webp`} width="1800" height="1092" alt="后台导航展开、收起与仅显示图标的布局对照" loading="lazy" decoding="async" />
+    </figure>
+  )}
+
+  {section === "plan-card" && (
+    <div class="yiwo-stage yiwo-stage--plan-card" data-no-image-zoom>
+      <ProjectMediaTabs id="yiwo-plan-scenarios" label="方案卡片场景" tabs={planScenarios.map(({ label }) => label)} variant="scenarios">
+        {planScenarios.map(({ key }) => <div><PlanCard scenario={key} /></div>)}
+      </ProjectMediaTabs>
+    </div>
+  )}
+
+  {section === "reports" && (
+    <div class="yiwo-stage yiwo-stage--tabs">
+      <ProjectMediaTabs id="yiwo-reports" label="企业数据与个人简报" tabs={["企业数据", "个人简报"]}>
+        <figure>
+          <img class="yiwo-shot" src={`${base}/company-report.webp`} width="1440" height="900" alt="企业数据，顶部为关键指标，下方为成员业务明细" loading="lazy" decoding="async" />
+        </figure>
+        <figure>
+          <img class="yiwo-shot" src={`${base}/personal-report.webp`} width="1440" height="900" alt="个人简报，使用柱状图、趋势图与环形图呈现业务数据" loading="lazy" decoding="async" />
+        </figure>
+      </ProjectMediaTabs>
+    </div>
+  )}
+
+  {section === "empty-states" && (
+    <div class="yiwo-stage" data-media-rail-container>
+      <ProjectMediaRail label="五种空状态，可横向滚动">
+        <ul class="yiwo-empty-states" role="list">
+          {states.map(({ image, title, description, action, icon }) => (
+            <li class="yiwo-empty-state">
+              <img class="yiwo-empty-state__art" src={`${base}/empty-${image}.webp`} width="480" height="320" alt="" loading="lazy" decoding="async" />
+              <strong>{title}</strong>
+              <small>{description}</small>
+              {action && (
+                <span class="yiwo-empty-state__action">
+                  <img src={`${base}/empty-action-${icon}.svg`} width="8" height="8" alt="" />{action}
+                </span>
+              )}
+            </li>
+          ))}
+        </ul>
+      </ProjectMediaRail>
+    </div>
+  )}
+
+  {section === "final-screens" && (
+    <figure class="yiwo-stage">
+      <img class="yiwo-shot yiwo-shot--final" src={`${base}/final-screens.webp`} width="1600" height="900" alt="后台最终设计，展示方案管理、素材编辑、数据简报与列表等界面" loading="lazy" decoding="async" />
+    </figure>
+  )}
+
+  {section === "results" && (
+    <dl class="yiwo-results">
+      {results.map(({ theme, title, value, unit, description, direction }) => (
+        <div class:list={["yiwo-results__item", `yiwo-results__item--${theme}`]}>
+          <dt>{title}</dt>
+          <dd>
+            <div class="yiwo-results__value">
+              <strong>{value}<span>{unit}</span></strong>
+              <img src={`${base}/metric-${direction}.svg`} width="18" height="18" alt="" />
+            </div>
+            <small>{description}</small>
+          </dd>
+          <img class="yiwo-results__illustration" src={`${base}/metric-line-${theme === "paper" ? "dark" : "light"}.svg`} width="24" height="24" alt="" />
+        </div>
+      ))}
+    </dl>
+  )}
+</div>

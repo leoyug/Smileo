@@ -1,0 +1,283 @@
+.yiwo-plan-card-demo {
+  --yiwo-plan-meta: #989da9;
+  --yiwo-plan-action: #f4f5f6;
+  --yiwo-plan-mask: rgb(20 20 21 / 60%);
+  --yiwo-plan-selected: #00c689;
+  display: block;
+}
+
+.card.yiwo-plan-card {
+  position: relative;
+  isolation: isolate;
+  overflow: visible;
+  width: min(100%, 17.5rem);
+  margin-inline: auto;
+  padding: calc(var(--space-3) - 1px);
+  border-color: var(--yiwo-line-soft);
+  background: var(--yiwo-paper);
+  color: var(--yiwo-text);
+  box-shadow: 0 1px 2px rgb(20 20 21 / 5%);
+}
+
+.yiwo-plan-card img { display: block; margin: 0; }
+
+.yiwo-plan-card__preview {
+  position: relative;
+  display: grid;
+  place-items: center;
+  overflow: clip;
+  aspect-ratio: 256 / 224;
+  border-radius: var(--radius-sm);
+  background: var(--yiwo-surface);
+}
+
+.yiwo-plan-card__floor {
+  inline-size: 81.25%;
+  block-size: 82.14%;
+  object-fit: cover;
+}
+
+.yiwo-plan-card__folder {
+  position: relative;
+  display: block;
+  overflow: clip;
+  inline-size: 86px;
+  block-size: 72px;
+}
+
+.yiwo-plan-card__folder img {
+  position: absolute;
+  max-inline-size: none;
+}
+
+.yiwo-plan-card__folder img:first-child {
+  inset-block-start: -15.75px;
+  inset-inline-start: -15.75px;
+}
+
+.yiwo-plan-card__folder img:last-child {
+  inset-block-start: -.15px;
+  inset-inline-start: -13.5px;
+}
+
+.yiwo-plan-card__badge {
+  position: absolute;
+  inset-block-end: var(--space-2);
+  inset-inline-start: var(--space-2);
+  padding: calc(var(--space-1) * 1.5) calc(var(--space-2) + var(--space-1) / 2);
+  border-radius: calc(var(--radius-xs) + var(--space-1) / 2);
+  background: linear-gradient(90deg, #808080, #5f5f5f);
+  color: var(--yiwo-paper);
+  font-size: .625rem;
+  font-weight: var(--weight-medium);
+  line-height: .875rem;
+}
+
+.yiwo-plan-card__badge--archive {
+  inset-block: var(--space-2) auto;
+  min-inline-size: 3.25rem;
+  background: linear-gradient(90deg, #6999ff, #3860ff);
+  text-align: center;
+}
+
+.yiwo-plan-card__details {
+  display: grid;
+  gap: calc(var(--space-1) * 1.5);
+  padding: var(--space-3) var(--space-1) 0;
+}
+
+.yiwo-plan-card__title {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-size: var(--text-body);
+  font-weight: var(--weight-medium);
+  line-height: var(--space-5);
+}
+
+.yiwo-plan-card__meta {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: var(--space-1) var(--space-2);
+  color: var(--yiwo-plan-meta);
+  font-size: var(--text-meta);
+  line-height: var(--space-4);
+}
+
+.yiwo-plan-card__select,
+.yiwo-plan-card__reveal,
+.yiwo-plan-card__mask {
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+}
+
+.yiwo-plan-card__select,
+.yiwo-plan-card__reveal {
+  z-index: 1;
+  cursor: pointer;
+}
+
+.yiwo-plan-card__select { inset: -1px; }
+
+.yiwo-plan-card__reveal {
+  border: 0;
+  background: transparent;
+}
+
+.yiwo-plan-card__checkbox {
+  position: absolute;
+  inset-block-start: calc(var(--space-3) + 2px);
+  inset-inline-end: calc(var(--space-3) + 2px);
+  display: grid;
+  place-items: center;
+  inline-size: var(--space-6);
+  block-size: var(--space-6);
+  border: 2px solid var(--yiwo-line);
+  border-radius: calc(var(--radius-xs) + var(--space-1) / 2);
+  background: var(--yiwo-paper);
+}
+
+.yiwo-plan-card__checkbox img { visibility: hidden; }
+
+.yiwo-plan-card__select:has(input:checked) {
+  box-shadow: inset 0 0 0 3px var(--yiwo-plan-selected);
+}
+
+.yiwo-plan-card__select input:checked + span {
+  border-color: transparent;
+  background: var(--yiwo-plan-selected);
+}
+
+.yiwo-plan-card__select input:checked + span img { visibility: visible; }
+
+.yiwo-plan-card__select:has(input:focus-visible) {
+  outline: 2px solid var(--color-accent-ink);
+  outline-offset: var(--space-1);
+}
+
+.yiwo-plan-card__mask {
+  inset: -1px;
+  background: var(--yiwo-plan-mask);
+  pointer-events: none;
+}
+
+.yiwo-plan-card__actions {
+  position: absolute;
+  z-index: 2;
+  inset-inline: calc(var(--space-4) - 1px);
+  inset-block-end: calc(var(--space-4) - 1px);
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-2);
+  pointer-events: none;
+}
+
+.yiwo-plan-card__shortcuts {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+}
+
+.yiwo-plan-card__shortcuts--split { inline-size: 100%; }
+.yiwo-plan-card__shortcuts--split > :last-child { margin-inline-start: auto; }
+
+.yiwo-plan-card__mask,
+.yiwo-plan-card__actions {
+  opacity: 0;
+  visibility: hidden;
+}
+
+.yiwo-plan-card:has(:focus-visible, [aria-pressed="true"], details[open]) :is(.yiwo-plan-card__mask, .yiwo-plan-card__actions) {
+  opacity: 1;
+  visibility: visible;
+}
+
+.yiwo-plan-card__actions :is(button, summary) { pointer-events: auto; }
+
+@media (hover: hover) {
+  .yiwo-plan-card:hover :is(.yiwo-plan-card__mask, .yiwo-plan-card__actions) {
+    opacity: 1;
+    visibility: visible;
+  }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .yiwo-plan-card__mask,
+  .yiwo-plan-card__actions {
+    transition: opacity var(--duration-quick) var(--ease-smooth-out),
+      visibility var(--duration-quick);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .yiwo-plan-card__mask,
+  .yiwo-plan-card__actions { transition-property: none; }
+
+  .yiwo-plan-card__action:active,
+  .yiwo-plan-card__menu-item:active { transform: none; }
+}
+
+/* The 36px action pills reproduce the compact controls in the admin preview. */
+.yiwo-plan-card .yiwo-plan-card__action {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-1);
+  min-block-size: 2.25rem;
+  padding: 0 var(--space-3);
+  border: 0;
+  border-radius: var(--radius-pill);
+  background: var(--yiwo-plan-action);
+  color: var(--yiwo-text);
+  font-size: var(--text-body);
+  font-weight: var(--weight-medium);
+  line-height: var(--space-5);
+  white-space: nowrap;
+  cursor: pointer;
+}
+
+.yiwo-plan-card__action:is(:hover, :focus-visible),
+.yiwo-plan-card__more[open] > summary { background: var(--yiwo-paper); }
+
+.yiwo-plan-card__more { position: relative; margin-inline-start: auto; }
+.yiwo-plan-card__more > summary { min-inline-size: 3.75rem; list-style: none; }
+.yiwo-plan-card__more > summary::-webkit-details-marker { display: none; }
+
+.yiwo-plan-card__menu {
+  position: absolute;
+  inset-block-end: calc(100% + var(--space-1));
+  inset-inline-end: 0;
+  display: grid;
+  inline-size: 10rem;
+  max-block-size: calc(100svh - var(--space-12));
+  overflow-y: auto;
+  padding: var(--space-2);
+  border-radius: var(--radius-md);
+  background: var(--yiwo-paper);
+  box-shadow: 0 2px 6px rgb(20 20 21 / 12%), 0 0 0 1px rgb(20 20 21 / 4%);
+  pointer-events: auto;
+}
+
+/* Closely spaced menu entries remain full-width click targets. */
+.yiwo-plan-card .yiwo-plan-card__menu-item {
+  justify-content: flex-start;
+  inline-size: 100%;
+  min-block-size: 2.5rem;
+  padding: 0 var(--space-3);
+  border: 0;
+  border-radius: var(--radius-sm);
+  color: var(--yiwo-text);
+  text-align: start;
+  font-size: var(--text-body);
+  font-weight: var(--weight-medium);
+}
+
+.yiwo-plan-card__menu-item:is(:hover, :focus-visible) { background: var(--yiwo-plan-action); }
+
+@media (min-width: 48rem) {
+  .yiwo-plan-card__menu { inset-inline: 0 auto; }
+}

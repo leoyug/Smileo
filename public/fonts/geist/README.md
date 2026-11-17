@@ -4,4 +4,4 @@ Geist Sans normal and italic variable WOFF2 files are copied unchanged from the 
 
 Upstream: https://github.com/vercel/geist-font
 
-The existing Geist Mono Regular file and its `OFL.txt` are retained separately. Fonts are served locally; no third-party font requests are required at runtime.
+Geist Mono Medium is copied unchanged from the official `geist@1.7.0` npm package (`dist/fonts/geist-mono/`). The existing Geist Mono Regular and `OFL.txt` files remain in this directory. Fonts are served locally.

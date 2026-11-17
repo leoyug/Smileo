@@ -1,82 +1,96 @@
 ---
 title: "Zhaichangxiang Website"
 description: "Clarifying product value for renovation companies"
-projectType: "Desktop / Mobile"
-role: "UI and visual design"
-tools: "Figma, ChatGPT"
+projectType: "Landing Page"
+role: "Visual design, Interaction design"
+tools: "Figma, Adobe Creative Suite, Midjourney"
 ---
-Zhaichangxiang provides sales-conversation, design and marketing tools for renovation companies. As the product expanded, its website needed to explain the offering clearly, demonstrate expertise and support trials and inquiries.
+*Project overview*
 
-I owned UI and visual design, while the team developed the information architecture together. The images are design deliverables showing the page proposals and the decisions behind them.
+## Building a website for an existing product
+
+Zhaichangxiang gives renovation companies one platform for sales conversations, design and marketing. As the product evolved, the team needed a website to introduce the brand and explain the product while giving visitors a consistent experience across the two.
+
+*My role*
+
+## Bring the website and product under one visual identity
+
+I designed the Zhaichangxiang landing page, its visual language and its first set of components. Starting from the product’s existing colors and simple design, I revisited how the green gradients were used and carried the brand into the website through typography, spacing and visual hierarchy.
+
+*Design goals*
+
+## Help visitors understand and trust the product in the first few seconds
+
+The site needed to communicate the product’s value clearly and maintain a consistent visual style across its pages.
+
+[Design goals](#case-design-goals)
+
+*Challenge*
+
+## Show what the product does through visuals
+
+Before designing, I studied how studio and product sites use their work to show what they do. For Zhaichangxiang, the challenge was to help renovation companies recognize their own workflows and see how real interfaces support sales conversations, design and marketing.
+
+*Website structure*
 
 ## Place product capabilities in the renovation business
 
-The team organized the story around positioning, business problems, solutions, trust and action. I used page hierarchy, imagery and pacing between modules to make that path clear.
+The team organized the story from product positioning through to trials and inquiries. Solutions follow the stages of the business, customer cases and partners establish trust, and the hero, solutions and footer give visitors ways to try the product or get in touch. I used page hierarchy, imagery and pacing to make that path easy to follow.
 
-- **Build understanding:** explain the product's position and supported platforms.
-- **Explain value:** show business scenarios and product capabilities.
-- **Support action:** use cases to build trust and provide trial and inquiry entry points.
+Whitespace, visual guides and changes in typography lead readers between modules. Supporting graphics and brand green tie the sections together while giving each one its own focal point.
 
-The first screen positions the product as visual sales software for home renovation, followed by the business journey from acquisition and measurement to store visits, deposits and orders. I used a narrowing funnel to make the conversion relationship visually approachable.
+The [opening section](/media/projects/zhaichangxiang-website/case-study/01-opening.webp) introduces the product as visual sales software for home renovation. A funnel then connects acquisition, on-site measurements, store visits, deposits and orders.
 
-![A dark green hero, platform-scale information and a renovation lead-conversion funnel](/media/projects/zhaichangxiang-website/case-study/01-opening.webp)
+[Homepage structure](#case-website-structure)
 
-*Establish the product first, then relate it to a familiar business journey. The funnel is conceptual and does not represent actual drop-off rates.*
+*Visual system*
 
-## Explain scenarios with imagery and capabilities with interfaces
+## Balance visual impact with clear information
 
-Solutions start from business stages. For early-stage acquisition, I combined a handheld device, interior renderings, a mini-program code and lead cards to connect visual presentation with lead communication.
+The dark green hero, grid and diffuse light establish the software’s identity. Lighter sections carry explanations and interfaces, while renderings from the inspiration library show the spaces and materials. Brand green highlights key terms and primary actions. Type size and spacing establish the hierarchy.
 
-![Early-stage acquisition solution, with business stages and scenario descriptions on the left and a device, mini-program code and lead cards on the right](/media/projects/zhaichangxiang-website/case-study/02-scenarios.webp)
+![An inspiration library using varied image sizes to show interior styles, light and materials](/media/projects/zhaichangxiang-website/case-study/04-styles.webp)
 
-*Stage labels help visitors locate their needs; scenario imagery explains the product's role.*
+*Website presentation*
 
-> Scenario imagery explains where it is used; product interfaces explain what it can do.
+## How the pages present the product
 
-The later AI layout and detailed-design sections provide concrete interfaces as evidence of capability. AI layout pairs recommended proposals with a three-dimensional floor plan. The PC editor shows details such as walls, ceilings, floors, tiling and custom cabinets, making feature descriptions observable.
+Solutions follow the stages of the business. The acquisition section combines a handheld device, interior renderings, a mini-program code and lead cards to show how companies move from presenting a renovation concept to following up with a lead. [AI layout](/media/projects/zhaichangxiang-website/case-study/03-technology.webp) pairs recommendations with a 3D floor plan, while the desktop editor shows details such as walls, ceilings, floors, tiling and custom cabinets.
 
-![AI layout module pairing a recommendation list with a three-dimensional floor plan](/media/projects/zhaichangxiang-website/case-study/03-technology.webp)
+![Early-stage acquisition solution, with business stages and descriptions on the left and a handheld device, mini-program code and lead cards on the right](/media/projects/zhaichangxiang-website/case-study/02-scenarios.webp)
 
-*The recommendation list and floor plan explain what AI layout produces.*
+## Adapting to mobile
 
-## Keep domestic warmth within a technical identity
+The mobile layout turns parallel desktop content into a vertical reading order. I rearranged headings, product imagery, descriptions and buttons so that positioning stays clear, images sit beside their explanations and trial and inquiry actions remain easy to find.
 
-I defined the visual direction as intelligent without feeling cold: a dark green opening, grids and diffuse light establish a software identity; light content areas carry explanations and interfaces; interior renderings bring a sense of space.
+![The website’s hero, conversion funnel, solutions and inspiration library on tablet and phone](/media/projects/zhaichangxiang-website/case-study/05-responsive.webp)
 
-Brand green emphasizes keywords and primary actions, while type size and whitespace establish hierarchy. Light, materials and soft shadows in the interior images keep the professional software presentation connected to its industry.
-
-The style inspiration library shows a selection. Large images preserve atmosphere, smaller images add contrasting styles, and varied sizes create rhythm before an exploration link leads to the full library.
-
-![An inspiration library using varied image sizes to show differences in space, light and materials](/media/projects/zhaichangxiang-website/case-study/04-styles.webp)
-
-*Images need enough room for light, materials and spatial relationships to remain legible.*
-
-**Trade-off:** show fewer styles on the home page so images remain recognizable, leaving the full collection for further browsing.
-
-## Carry the hierarchy into actions and smaller screens
-
-Customer cases provide concrete context, and partners add grounds for trust. Trial and inquiry links appear in the opening, solutions and footer. Button contrast and whitespace distinguish primary actions from supporting inquiries without interrupting reading.
-
-On mobile, parallel content becomes a vertical sequence. Titles, product images, explanations and buttons are reordered while preserving the brand language. I checked that positioning stayed clear, scenarios remained beside their explanations and actions were easy to find.
-
-![The website's hero, funnel, solutions and style library on tablet and phone](/media/projects/zhaichangxiang-website/case-study/05-responsive.webp)
-
-*The same brand language continues across devices, with organization adjusted to available space.*
+*Results*
 
 ## Outcomes and value
 
-As the company's products and target customers changed, the website needed to explain the brand and product, convert leads and establish trust more clearly. The redesign centered on quickly communicating product value, building confidence and supporting conversion.
+As the company’s products and target customers changed, the site needed to explain the brand and product, convert leads and establish trust more clearly. The redesign focused on communicating product value quickly, building confidence and supporting conversion.
 
-In the month after launch, there were 347 additional inquiries, a 27% increase over the previous month. The customer order rate rose by 18%, and package purchases by 15%.
+In the month after launch, inquiries grew 27% over the previous month, the customer order rate rose 18%, and package purchases increased 15%.
 
 | Monthly inquiries | Customer order rate | Package purchases |
 | --- | --- | --- |
 | **27**% | **18**% | **15**% |
 
-## Delivery and next steps
+*Reflection*
 
-- **Visualize the business:** turn conversion paths and use cases into readable images.
-- **Maintain visual consistency:** connect modules with shared color, typography and image rules.
-- **Adapt across devices:** reorganize content for the screen while preserving key information and actions.
+## Problems and decisions during design
 
-This project clarified for me that website visuals need to support the process of understanding a product. Next, I would add real operation demonstrations showing the path from proposal generation to client communication, then use reading and entry-point performance to identify what needs more refinement.
+[Problems and decisions](#case-reflection-notes)
+
+## What I learned
+
+This was my first time leading a website design. For software and tool sites, visitors first need to **judge quickly whether the product fits their business**.
+
+I prioritized the information architecture over individual visual modules. The page establishes positioning, explains the value, builds trust through scenarios and cases, and gives visitors a clear way to act.
+
+## What I would improve
+
+The launch timeline and available resources limited how far I could push the visuals. Some sections could also flow into each other more naturally.
+
+I would **add real workflow demonstrations so visitors can see how the product fits into their day-to-day work**. I would also revisit the conversion funnel illustration and use motion to clarify the relationships between sections.

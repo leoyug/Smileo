@@ -1,0 +1,57 @@
+.project-media-rail {
+  --rail-scroll-thumb: color-mix(in srgb, var(--color-ink) 32%, transparent);
+  --rail-scrollbar-size: calc(var(--space-1) * 1.5);
+  --rail-scrollbar-used-size: var(--rail-scrollbar-size);
+  --rail-scrollbar-gap: max(0px, calc((var(--space-6) - var(--rail-scrollbar-used-size)) / 2));
+  display: flex;
+  min-inline-size: 0;
+  /* Let the scrollbar occupy the stage's bottom inset. */
+  margin-block-end: calc(-1 * (var(--rail-scrollbar-gap) + var(--rail-scrollbar-used-size)));
+  padding-block-end: var(--rail-scrollbar-gap);
+  overflow-x: auto;
+  overscroll-behavior-inline: contain;
+}
+
+.project-media-rail > :is(ul, ol) { padding: 0; }
+
+.project-media-rail:focus-visible {
+  outline: none;
+  box-shadow: none;
+}
+
+@media (hover: hover) {
+  .project-media-rail:hover,
+  [data-media-rail-container]:hover > .project-media-rail {
+    --rail-visible-thumb: var(--rail-scroll-thumb);
+  }
+}
+
+@media (hover: none) {
+  .project-media-rail:active { --rail-visible-thumb: var(--rail-scroll-thumb); }
+}
+
+.project-media-rail:is(:focus-visible:not([data-rail-pointer-focus]), :has(:focus-visible)) {
+  --rail-visible-thumb: var(--color-accent-ink);
+}
+
+@media (forced-colors: active) {
+  .project-media-rail:focus-visible:not([data-rail-pointer-focus]) { outline: 2px solid Highlight; }
+}
+
+@supports selector(::-webkit-scrollbar) {
+  .project-media-rail { scrollbar-color: auto; }
+  .project-media-rail::-webkit-scrollbar { height: var(--rail-scrollbar-size); }
+  .project-media-rail::-webkit-scrollbar-track { background: transparent; }
+  .project-media-rail::-webkit-scrollbar-thumb {
+    border: 0;
+    border-radius: var(--radius-pill);
+    background: var(--rail-visible-thumb, transparent);
+  }
+}
+
+@supports not selector(::-webkit-scrollbar) {
+  .project-media-rail {
+    scrollbar-width: thin;
+    scrollbar-color: var(--rail-visible-thumb, transparent) transparent;
+  }
+}

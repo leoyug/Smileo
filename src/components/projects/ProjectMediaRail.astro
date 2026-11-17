@@ -1,0 +1,40 @@
+---
+import "./ProjectMediaRail.css";
+
+interface Props {
+  label: string;
+}
+
+const { label } = Astro.props;
+---
+
+<project-media-rail class="project-media-rail" data-media-track tabindex="0" role="region" aria-label={label}>
+  <slot />
+</project-media-rail>
+
+<script>
+  class ProjectMediaRail extends HTMLElement {
+    #resizeObserver = new ResizeObserver(() => {
+      const scrollbarSize = this.offsetHeight - this.clientHeight;
+      this.style.setProperty("--rail-scrollbar-used-size", `${scrollbarSize}px`);
+    });
+
+    constructor() {
+      super();
+      const clearPointerFocus = () => { delete this.dataset.railPointerFocus; };
+      this.addEventListener("pointerdown", () => { this.dataset.railPointerFocus = ""; });
+      this.addEventListener("keydown", clearPointerFocus);
+      this.addEventListener("blur", clearPointerFocus);
+    }
+
+    connectedCallback() {
+      this.#resizeObserver.observe(this, { box: "border-box" });
+    }
+
+    disconnectedCallback() {
+      this.#resizeObserver.disconnect();
+    }
+  }
+
+  if (!customElements.get("project-media-rail")) customElements.define("project-media-rail", ProjectMediaRail);
+</script>

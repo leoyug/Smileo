@@ -1,0 +1,6 @@
+<svg preserveAspectRatio="none" overflow="visible" style="display: block;" width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+<g id="general/sidebar-expand">
+<path id="Vector" d="M19.75 7.25C19.75 6.55964 19.1904 6 18.5 6H5.5C4.80964 6 4.25 6.55964 4.25 7.25V16.75C4.25 17.4404 4.80964 18 5.5 18H18.5C19.1904 18 19.75 17.4404 19.75 16.75V7.25ZM21.25 16.75C21.25 18.2688 20.0188 19.5 18.5 19.5H5.5C3.98122 19.5 2.75 18.2688 2.75 16.75L2.75 7.25C2.75 5.73122 3.98122 4.5 5.5 4.5H18.5C20.0188 4.5 21.25 5.73122 21.25 7.25V16.75Z" fill="#393C43" style="fill:#393C43;fill:color(display-p3 0.2235 0.2353 0.2627);fill-opacity:1;"/>
+<path id="Vector 33" d="M8.5 6V18.5" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" stroke="#393C43" style="stroke:#393C43;stroke:color(display-p3 0.2235 0.2353 0.2627);stroke-opacity:1;"/>
+</g>
+</svg>

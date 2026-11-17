@@ -1,0 +1,324 @@
+.yiwo-control-panel {
+  --yiwo-control-breadcrumb-muted: #737882;
+  --yiwo-control-subtle: #989da9;
+  --yiwo-control-ink: #1b1e28;
+  --yiwo-control-hover-ink: #555b68;
+  --yiwo-control-batch-hover: #f4f5f6;
+  --yiwo-control-create-fill: linear-gradient(243.78deg, #00caa1 7.91%, #00e39c 92.4%);
+  --yiwo-control-create-hover: #00ab70;
+  --yiwo-control-search-hover: #f7f8fa;
+  --yiwo-control-search-hover-line: #d5d8e2;
+  --yiwo-control-search-focus: #2bc689;
+  --yiwo-control-search-end: var(--space-3);
+  --yiwo-control-search-icon-size: var(--space-5);
+  --yiwo-control-clear-width: var(--space-8);
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  justify-items: start;
+  min-inline-size: 0;
+  gap: var(--space-4);
+  padding: var(--space-5) clamp(var(--space-4), 4vw, var(--space-6)) var(--space-6);
+  border-radius: var(--radius-sm);
+  background: var(--yiwo-paper);
+  color: var(--yiwo-text);
+  line-height: var(--space-5);
+}
+
+.yiwo-control-panel__title {
+  margin-block-end: var(--space-1);
+  color: var(--yiwo-muted);
+  font-weight: var(--weight-semibold);
+}
+
+.yiwo-control-panel img {
+  display: block;
+  flex: none;
+  margin: 0;
+}
+
+.yiwo-control-panel__breadcrumb, .yiwo-control-panel__actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-2);
+}
+
+.yiwo-control-panel__breadcrumb {
+  color: var(--yiwo-control-breadcrumb-muted);
+  font-size: 1rem;
+  font-weight: var(--weight-semibold);
+}
+
+.yiwo-control-panel__breadcrumb-parent { cursor: pointer; }
+
+.yiwo-control-panel__breadcrumb strong {
+  color: var(--yiwo-text);
+  font-weight: inherit;
+}
+
+.yiwo-control-panel__folder {
+  display: grid;
+  place-items: center;
+  padding: var(--space-2);
+  border: 1px solid var(--yiwo-line-soft);
+  border-radius: var(--radius-md);
+  background: var(--yiwo-surface);
+}
+
+.yiwo-control-panel__actions { gap: var(--space-3); }
+
+/* The case study previews the original compact 40px admin buttons. */
+.yiwo-control-panel__action {
+  --yiwo-control-action-hover: var(--yiwo-control-batch-hover);
+  min-block-size: 2.5rem;
+  gap: calc(var(--space-1) * 1.5);
+  padding-inline: calc(var(--space-4) - 1px);
+  border-color: var(--yiwo-line);
+  border-radius: var(--radius-sm);
+  background: transparent;
+  color: var(--yiwo-control-ink);
+  font-size: var(--text-body);
+  letter-spacing: normal;
+  transition-property: transform;
+}
+
+.yiwo-control-panel__action--primary {
+  --yiwo-control-action-hover: var(--yiwo-control-create-hover);
+  border-color: transparent;
+  background: var(--yiwo-control-create-fill) border-box;
+  color: var(--yiwo-paper);
+  box-shadow: none;
+}
+
+.yiwo-control-panel__action:is(:active, :focus-visible) {
+  background: var(--yiwo-control-action-hover) border-box;
+}
+
+@media (color-gamut: p3) {
+  .yiwo-control-panel {
+    --yiwo-control-create-fill: linear-gradient(243.78deg in display-p3, color(display-p3 .168627 .776471 .639216) 7.91%, color(display-p3 .254902 .874510 .631373) 92.4%);
+    --yiwo-control-create-hover: color(display-p3 .105882 .658824 .454902);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .yiwo-control-panel__action:active { transform: none; }
+}
+
+.yiwo-control-panel__segments {
+  inline-size: max-content;
+  min-inline-size: min(100%, 20rem);
+  max-inline-size: 100%;
+  border-radius: calc(var(--radius-sm) + var(--space-1) / 2);
+  background: var(--yiwo-surface);
+  overflow-x: auto;
+  scrollbar-width: thin;
+}
+
+.yiwo-control-panel__segment-track {
+  --yiwo-segment-gap: var(--space-1);
+  --yiwo-segment-inset: var(--space-1);
+  --yiwo-segment-padding: var(--space-1);
+  position: relative;
+  isolation: isolate;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: var(--yiwo-segment-gap);
+  inline-size: max-content;
+  min-inline-size: 100%;
+  padding: var(--yiwo-segment-inset);
+  color: var(--yiwo-control-subtle);
+  text-align: center;
+  font-weight: var(--weight-medium);
+}
+
+.yiwo-control-panel__segment-track:lang(en) {
+  --yiwo-segment-gap: var(--space-2);
+  --yiwo-segment-padding: var(--space-3);
+}
+
+.yiwo-control-panel__segment-track::before {
+  content: "";
+  position: absolute;
+  z-index: -1;
+  inset-block: var(--yiwo-segment-inset);
+  inset-inline-start: var(--yiwo-segment-inset);
+  inline-size: calc((100% - 2 * (var(--yiwo-segment-inset) + var(--yiwo-segment-gap))) / 3);
+  border-radius: calc(var(--radius-xs) + var(--space-1) / 2);
+  background: var(--yiwo-paper);
+  box-shadow: 0 2px 4px rgb(14 18 27 / 3%), 0 6px 10px rgb(14 18 27 / 6%);
+  transform: translateX(0);
+  transition-property: none;
+  pointer-events: none;
+}
+
+.yiwo-control-panel__segment-track:has(label:nth-child(2) > input:checked)::before {
+  transform: translateX(calc(100% + var(--yiwo-segment-gap)));
+}
+
+.yiwo-control-panel__segment-track:has(label:nth-child(3) > input:checked)::before {
+  transform: translateX(calc(200% + 2 * var(--yiwo-segment-gap)));
+}
+
+.yiwo-control-panel__segments label {
+  position: relative;
+  cursor: pointer;
+}
+
+.yiwo-control-panel__segments input {
+  position: absolute;
+  inset: 0;
+  inline-size: 100%;
+  block-size: 100%;
+  margin: 0;
+  opacity: 0;
+  cursor: inherit;
+}
+
+.yiwo-control-panel__segments label > span {
+  display: grid;
+  align-items: center;
+  padding: var(--space-2) var(--yiwo-segment-padding);
+  border-radius: calc(var(--radius-xs) + var(--space-1) / 2);
+  white-space: nowrap;
+}
+
+.yiwo-control-panel__segments input:checked + span { color: var(--yiwo-control-ink); }
+
+@media (prefers-reduced-motion: no-preference) {
+  .yiwo-control-panel__segment-track:not(:has(input:focus-visible))::before {
+    transition: transform var(--duration-fast) var(--ease-smooth-out);
+  }
+
+  .yiwo-control-panel__segment-track:not(:has(input:focus-visible)) label > span {
+    transition: color var(--duration-quick) var(--ease-smooth-out);
+  }
+}
+
+.yiwo-control-panel__segments input:focus-visible + span,
+.yiwo-control-panel__search-clear:focus-visible {
+  outline: 2px solid var(--yiwo-green);
+  outline-offset: -2px;
+}
+
+.yiwo-control-panel__search {
+  position: relative;
+  display: block;
+  width: min(100%, 22.75rem);
+  min-block-size: 2.5rem;
+  border: 1px solid var(--yiwo-line);
+  border-radius: var(--radius-sm);
+  background: var(--yiwo-paper);
+}
+
+.yiwo-control-panel__search-field {
+  position: relative;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) var(--yiwo-control-search-icon-size);
+  align-items: center;
+  min-block-size: calc(2.5rem - 2px);
+  padding-inline: clamp(var(--space-2), 2vw, var(--space-4)) var(--yiwo-control-search-end);
+  cursor: text;
+  font-size: var(--text-body);
+}
+
+.yiwo-control-panel__search-field input {
+  appearance: none;
+  grid-area: 1 / 1;
+  inline-size: 100%;
+  min-inline-size: 0;
+  align-self: stretch;
+  border: 0;
+  padding: 0;
+  background: transparent;
+  color: var(--yiwo-text);
+  caret-color: var(--yiwo-control-search-focus);
+  font: inherit;
+}
+
+.yiwo-control-panel__search-field input:focus { outline: none; }
+
+.yiwo-control-panel__search-field input::-webkit-search-cancel-button { display: none; }
+
+.yiwo-control-panel__search-field input::placeholder {
+  color: var(--yiwo-control-subtle);
+  opacity: 1;
+}
+
+.yiwo-control-panel__search-icon {
+  position: relative;
+  grid-area: 1 / 2;
+  inline-size: var(--yiwo-control-search-icon-size);
+  block-size: var(--yiwo-control-search-icon-size);
+}
+
+.yiwo-control-panel__search-icon-active {
+  position: absolute;
+  inset-block-start: 0;
+  inset-inline-start: 50%;
+  max-inline-size: none;
+  transform: translateX(-50%);
+  opacity: 0;
+}
+
+.yiwo-control-panel__search-clear {
+  position: absolute;
+  inset-block: 0;
+  inset-inline-end: calc(var(--yiwo-control-search-end) + var(--yiwo-control-search-icon-size));
+  display: grid;
+  place-items: center;
+  inline-size: var(--yiwo-control-clear-width);
+  padding: 0;
+  border: 0;
+  border-radius: var(--radius-xs);
+  background: transparent;
+  cursor: pointer;
+}
+
+.yiwo-control-panel__search-clear img { grid-area: 1 / 1; }
+.yiwo-control-panel__search-clear img + img { opacity: 0; }
+.yiwo-control-panel__search-clear:focus-visible img + img { opacity: 1; }
+
+.yiwo-control-panel__search-clear[hidden],
+.yiwo-control-panel__search:has(input:placeholder-shown) .yiwo-control-panel__search-clear {
+  display: none;
+}
+
+.yiwo-control-panel__search:has(.yiwo-control-panel__search-clear:not([hidden])) input:not(:placeholder-shown) {
+  padding-inline-end: var(--yiwo-control-clear-width);
+}
+
+.yiwo-control-panel__search:focus-within { border-color: var(--yiwo-control-search-focus); }
+.yiwo-control-panel__search:focus-within .yiwo-control-panel__search-icon img:first-child { opacity: 0; }
+.yiwo-control-panel__search:focus-within .yiwo-control-panel__search-icon-active { opacity: 1; }
+
+@media (prefers-reduced-motion: no-preference) {
+  .yiwo-control-panel__search {
+    transition: background-color var(--duration-quick) var(--ease-smooth-out),
+      border-color var(--duration-quick) var(--ease-smooth-out);
+  }
+
+  .yiwo-control-panel__search-icon img,
+  .yiwo-control-panel__search-clear img {
+    transition: opacity var(--duration-quick) var(--ease-smooth-out);
+  }
+}
+
+@media (hover: hover) {
+  .yiwo-control-panel__action:hover { background: var(--yiwo-control-action-hover) border-box; }
+  .yiwo-control-panel__breadcrumb-parent:hover { color: var(--yiwo-text); }
+  .yiwo-control-panel__segments label:hover input:not(:checked) + span { color: var(--yiwo-control-hover-ink); }
+
+  .yiwo-control-panel__search:hover:not(:focus-within) {
+    border-color: var(--yiwo-control-search-hover-line);
+    background: var(--yiwo-control-search-hover);
+  }
+
+  .yiwo-control-panel__search:hover .yiwo-control-panel__search-icon img:first-child { opacity: 0; }
+  .yiwo-control-panel__search:hover .yiwo-control-panel__search-icon-active,
+  .yiwo-control-panel__search-clear:hover img + img { opacity: 1; }
+}
+
+@media (hover: none) and (pointer: coarse) {
+  .yiwo-control-panel__search-field { font-size: var(--text-lead); }
+}

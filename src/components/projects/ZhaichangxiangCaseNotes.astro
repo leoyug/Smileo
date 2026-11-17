@@ -1,0 +1,390 @@
+---
+import Card from "../Card.astro";
+
+interface Props {
+  section: "goals" | "reflection";
+}
+
+const { section } = Astro.props;
+const assetPath = "/assets/figma/zhaichangxiang-website";
+const goalThemes = ["light", "dark"] as const;
+const goals = [
+  {
+    title: "准确传达信息",
+    description: "以清晰的信息层级呈现产品定位、核心功能与业务价值，帮助用户快速理解产品如何解决家装谈单中的沟通与转化问题。",
+  },
+  {
+    title: "统一视觉风格",
+    description: "通过统一的色彩、组件、图像和版式规范，建立专业可信的品牌体验，并保证 PC 与移动端页面在视觉上的一致性。",
+  },
+];
+const reflections = [
+  {
+    title: "转化痛点的配图该如何设计",
+    description: "仅用文字列出获客、量房、报价、签约和下单，需要读者自行理解各环节的关系。我用漏斗图呈现家装公司的转化路径，让读者看清从获客到成交的过程，以及产品能在哪些环节提供帮助。",
+  },
+  {
+    title: "风格灵感库应该如何呈现",
+    description: "我选择用 Bento 布局展示部分装修风格。大图保留空间、光线和材质细节，小图呈现风格差异，让读者能看到有代表性的画面，也为后续探索留下入口。",
+  },
+  {
+    title: "转化入口的设计",
+    description: "我将体验和咨询入口放在首屏、解决方案和底部行动区。右侧悬浮咨询采用更轻量的样式，作为随时可见的辅助入口，避免遮挡主要内容。",
+  },
+];
+---
+
+{section === "goals" ? (
+  <Card class="website-goals">
+    <div class="website-goals__art" aria-hidden="true">
+      <div class="website-goals__art-top">
+        <div class="website-goals__art-top-paint"></div>
+      </div>
+      <div class="website-goals__art-overlap"></div>
+      <div class="website-goals__art-bottom">
+        {goalThemes.map((theme) => (
+          <img data-goal-theme={theme} src={`${assetPath}/goal-bottom-${theme}.svg`} width="320" height="320" alt="" loading="lazy" />
+        ))}
+      </div>
+      <span class="website-goals__art-accuracy">准确</span>
+      <span class="website-goals__art-consistency">统一</span>
+    </div>
+    <div class="website-goals__content">
+      <div class="website-goals__title">
+        {goalThemes.map((theme) => (
+          <img data-goal-theme={theme} src={`${assetPath}/goal-icon-${theme}.svg`} width="18" height="18" alt="" loading="lazy" />
+        ))}
+        <strong>设计目标</strong>
+      </div>
+      <ol role="list">
+        {goals.map(({ title, description }, index) => (
+          <li>
+            <span class="website-goals__number" aria-hidden="true">{String(index + 1).padStart(2, "0")}</span>
+            <div>
+              <strong>{title}</strong>
+              <p>{description}</p>
+            </div>
+          </li>
+        ))}
+      </ol>
+    </div>
+  </Card>
+) : (
+  <div class="website-reflections">
+    {reflections.map(({ title, description }) => (
+      <Card class="website-reflections__card">
+        <strong class="website-reflections__title">{title}</strong>
+        <p>{description}</p>
+      </Card>
+    ))}
+  </div>
+)}
+
+<style>
+  :global(.website-goals) {
+    --goal-card-fill: color-mix(in srgb, var(--color-surface) 40%, transparent);
+    --goal-card-border:
+      linear-gradient(to top, rgb(185 202 194 / 40%) 6%, rgb(239 255 242 / 20%)),
+      linear-gradient(to top, rgb(239 255 242 / 20%) 6%, rgb(185 249 218 / 40%));
+    --goal-art-offset: -51px;
+    --goal-top-faint: rgb(43 198 137 / 10%);
+    --goal-top-mid: rgb(43 198 137 / 30%);
+    --goal-top-stroke: rgb(97 133 121 / 20%);
+    position: relative;
+    isolation: isolate;
+    overflow: clip;
+    container-type: inline-size;
+    padding: var(--space-6);
+    border: 0;
+    border-radius: var(--radius-lg);
+    background: var(--goal-card-fill);
+    -webkit-backdrop-filter: blur(var(--space-1));
+    backdrop-filter: blur(var(--space-1));
+  }
+
+  :global(html[data-theme="dark"] .website-goals) {
+    --goal-card-fill: rgb(0 0 0 / 40%);
+    --goal-card-border: linear-gradient(to bottom, rgb(239 255 242 / 20%) 6%, rgb(54 62 58 / 40%));
+    --goal-art-offset: -36px;
+    --goal-top-faint: rgb(43 198 137 / 2%);
+    --goal-top-mid: rgb(43 198 137 / 20%);
+    --goal-top-stroke: rgb(186 225 214 / 20%);
+  }
+
+  :global(.website-goals::before),
+  :global(.website-goals::after) {
+    content: "";
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    pointer-events: none;
+  }
+
+  :global(.website-goals::before) {
+    z-index: 1;
+    background: url("/assets/figma/zhaichangxiang-website/goal-grain.png") repeat;
+    background-size: 128px 128px;
+    opacity: .5;
+  }
+
+  :global(html[data-theme="dark"] .website-goals::before) {
+    opacity: .22;
+    filter: invert(1);
+  }
+
+  :global(.website-goals::after) {
+    z-index: 3;
+    padding: 1px;
+    background: var(--goal-card-border);
+    mask: linear-gradient(black 0 0) content-box, linear-gradient(black 0 0);
+    mask-composite: exclude;
+  }
+
+  [data-goal-theme="dark"],
+  :global(html[data-theme="dark"]) [data-goal-theme="light"] {
+    display: none;
+  }
+
+  :global(html[data-theme="dark"]) [data-goal-theme="dark"] {
+    display: block;
+  }
+
+  .website-goals__art {
+    --goal-upper-size: 319.43px;
+    --goal-lower-size: 320px;
+    --goal-lower-top: 292.62px;
+    --goal-lower-radius: calc(var(--goal-lower-size) / 2);
+    --goal-overlap-circle: circle var(--goal-lower-radius) at var(--goal-lower-radius) calc(var(--goal-lower-top) + var(--goal-lower-radius));
+    position: absolute;
+    z-index: 0;
+    inset-block-start: calc(50% + 20.31px);
+    inset-inline-end: var(--goal-art-offset);
+    inline-size: var(--goal-lower-size);
+    block-size: calc(var(--goal-lower-top) + var(--goal-lower-size));
+    transform: translateY(-50%);
+    opacity: .7;
+    pointer-events: none;
+  }
+
+  .website-goals__art-top,
+  .website-goals__art-bottom {
+    position: absolute;
+    inset-inline-start: 0;
+    aspect-ratio: 1;
+    border-radius: var(--radius-pill);
+  }
+
+  .website-goals__art-top::before,
+  :global(html[data-theme="dark"]) .website-goals__art-bottom {
+    -webkit-backdrop-filter: blur(6.84px);
+    backdrop-filter: blur(6.84px);
+  }
+
+  .website-goals__art-top {
+    isolation: isolate;
+    inset-block-start: 0;
+    inline-size: var(--goal-upper-size);
+  }
+
+  .website-goals__art-top::before,
+  .website-goals__art-top::after {
+    content: "";
+  }
+
+  .website-goals__art-top::before,
+  .website-goals__art-top-paint,
+  .website-goals__art-top::after {
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+  }
+
+  .website-goals__art-top-paint,
+  .website-goals__art-overlap::before {
+    /* Figma's raster export flattens the angular paint onto black. */
+    background: conic-gradient(
+      from 180deg,
+      var(--goal-top-faint) 8%,
+      var(--goal-top-mid) 25%,
+      rgb(43 198 137 / 50%) 50%,
+      var(--goal-top-mid) 75%,
+      var(--goal-top-faint) 92%
+    );
+  }
+
+  .website-goals__art-top::after {
+    padding: 1.14px;
+    background: linear-gradient(to bottom, var(--goal-top-stroke) 57%, transparent 91%);
+    mask: linear-gradient(black 0 0) content-box, linear-gradient(black 0 0);
+    mask-composite: exclude;
+  }
+
+  .website-goals__art-bottom {
+    inset-block-start: var(--goal-lower-top);
+    inline-size: 100%;
+  }
+
+  .website-goals__art-overlap {
+    display: none;
+  }
+
+  :global(html:not([data-theme="dark"])) .website-goals__art-top > .website-goals__art-top-paint {
+    /* Replace the sharp arc inside the lighter circle with the blurred paint below. */
+    mask-image: radial-gradient(
+      var(--goal-overlap-circle),
+      transparent calc(100% - .5px),
+      black calc(100% + .5px)
+    );
+  }
+
+  :global(html:not([data-theme="dark"])) .website-goals__art-overlap {
+    position: absolute;
+    inset: 0;
+    display: block;
+    mask-image: radial-gradient(
+      var(--goal-overlap-circle),
+      black calc(100% - .5px),
+      transparent calc(100% + .5px)
+    );
+  }
+
+  .website-goals__art-overlap::before {
+    content: "";
+    position: absolute;
+    inset-block-start: 0;
+    inset-inline-start: 0;
+    inline-size: var(--goal-upper-size);
+    block-size: var(--goal-upper-size);
+    border-radius: var(--radius-pill);
+    filter: blur(20px);
+  }
+
+  .website-goals__art span {
+    position: absolute;
+    inset-inline: 0;
+    color: var(--color-ink);
+    font: var(--weight-bold) var(--text-lead)/1 var(--font-heading);
+    text-align: center;
+  }
+
+  .website-goals__art-accuracy {
+    inset-block-start: 255.54px;
+  }
+
+  .website-goals__art-consistency {
+    inset-block-start: 310.3px;
+  }
+
+  :global(html:not([data-theme="dark"])) .website-goals__art span {
+    color: color-mix(in srgb, var(--color-accent-ink) 64%, var(--color-ink));
+  }
+
+  .website-goals__content {
+    position: relative;
+    z-index: 2;
+    display: grid;
+    gap: var(--space-5);
+    max-inline-size: 22.5rem;
+  }
+
+  .website-goals__title {
+    display: flex;
+    align-items: center;
+    gap: var(--space-2);
+    color: var(--color-ink);
+    font-size: var(--text-body);
+    line-height: var(--space-5);
+  }
+
+  .website-goals__title img {
+    flex: none;
+    margin-inline: 0;
+  }
+
+  .website-goals__title strong {
+    font-weight: var(--weight-medium);
+  }
+
+  .website-goals__content ol {
+    display: grid;
+    gap: var(--space-4);
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .website-goals__content li {
+    display: grid;
+    grid-template-columns: calc(var(--space-8) - var(--space-1)) minmax(0, 1fr);
+    align-items: start;
+    gap: var(--space-5);
+    margin: 0;
+  }
+
+  .website-goals__number {
+    border-radius: var(--radius-pill);
+    box-shadow: inset 0 0 0 .5px var(--color-copy);
+    color: var(--color-copy);
+    font: var(--weight-medium) .625rem/var(--space-4) var(--font-mono);
+    text-align: center;
+  }
+
+  .website-goals__content li strong {
+    display: block;
+    color: var(--color-ink);
+    font-size: var(--text-meta);
+    font-weight: var(--weight-medium);
+    line-height: var(--space-4);
+  }
+
+  .website-goals__content p,
+  .website-reflections p {
+    color: var(--color-copy);
+    font-size: .6875rem;
+    line-height: 1.125rem;
+  }
+
+  .website-goals__content p {
+    margin-block-start: calc(var(--space-1) * 1.5);
+  }
+
+  .website-reflections {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 11.5rem), 1fr));
+    gap: var(--space-4);
+    max-inline-size: var(--content-reading);
+  }
+
+  .website-reflections :global(.website-reflections__card) {
+    display: grid;
+    align-content: start;
+    gap: var(--space-3);
+    padding: var(--space-4);
+    border-radius: var(--radius-lg);
+    background: color-mix(in srgb, var(--color-canvas) 99%, var(--color-ink));
+  }
+
+  .website-reflections__title {
+    color: var(--color-ink);
+    font: var(--weight-bold) var(--text-body)/var(--space-5) var(--font-heading);
+  }
+
+  @container (max-width: 28rem) {
+    .website-goals__art {
+      mask-image: linear-gradient(to left, black, transparent 85%);
+      opacity: .35;
+    }
+
+    :global(html:not([data-theme="dark"])) .website-goals__art {
+      opacity: .5;
+    }
+
+    .website-goals__art span {
+      display: none;
+    }
+
+    .website-goals__content li {
+      column-gap: var(--space-3);
+    }
+  }
+</style>

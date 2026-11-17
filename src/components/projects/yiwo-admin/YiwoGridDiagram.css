@@ -1,0 +1,153 @@
+.yiwo-grid {
+  aspect-ratio: 544 / 368;
+  container-type: inline-size;
+  position: relative;
+  width: 100%;
+  color: #efefec;
+}
+
+.yiwo-grid__frame {
+  position: absolute;
+  inset: 11.6% 0 0 8.1%;
+  overflow: hidden;
+  border: 1px solid rgb(255 255 255 / 30%);
+  border-radius: calc(var(--radius-xs) + var(--space-1) / 2);
+  background: #252524;
+}
+
+.yiwo-grid__sidebar {
+  position: absolute;
+  inset: 0 auto 0 0;
+  display: grid;
+  grid-template-rows: 4.8% 1fr;
+  gap: 1.7cqi;
+  width: 15.56%;
+  padding: 1.7cqi;
+  border-inline-end: 1px solid rgb(255 255 255 / 14%);
+  background: rgb(255 255 255 / 6%);
+}
+
+.yiwo-grid__sidebar::before, .yiwo-grid__sidebar::after {
+  content: "";
+  border-radius: calc(var(--radius-xs) * .75);
+  background: linear-gradient(rgb(255 255 255 / 37%), rgb(255 255 255 / 19%));
+}
+
+.yiwo-grid__columns {
+  position: absolute;
+  inset: 8.7% 0 0 15.56%;
+  border-block-start: 1px solid rgb(255 255 255 / 14%);
+  background: repeating-linear-gradient(90deg, #242423 0 1.55%, #353534 1.55% 4.16667%);
+}
+
+.yiwo-grid__dimension {
+  position: absolute;
+  display: grid;
+  place-items: center;
+}
+
+.yiwo-grid__label {
+  position: relative;
+  border-radius: var(--radius-xs);
+  padding: .85cqi 1.5cqi;
+  background: #aaa9a6;
+  color: #252524;
+  white-space: nowrap;
+  font-size: clamp(.5rem, 2.3cqi, .75rem);
+  line-height: 1.25;
+}
+
+.yiwo-grid__dimension--width { inset: 0 0 auto 8.1%; }
+.yiwo-grid__dimension--height { inset: 11.6% auto 0 0; }
+.yiwo-grid__dimension--grid { inset: 41.1% 0 auto 22.4%; }
+.yiwo-grid__dimension--content { inset: 67.8% 0 auto 22.4%; }
+
+.yiwo-grid__dimension--height .yiwo-grid__label { writing-mode: vertical-rl; padding: 1.5cqi .85cqi; }
+
+.yiwo-grid__line, .yiwo-grid__end {
+  position: absolute;
+  opacity: .6;
+}
+
+.yiwo-grid__line { width: 100%; height: auto; }
+.yiwo-grid__end { width: auto; height: 4.6cqi; }
+.yiwo-grid__end--start { inset-inline-start: 0; }
+.yiwo-grid__end--finish { inset-inline-end: 0; }
+.yiwo-grid__dimension--height .yiwo-grid__line { width: auto; height: 100%; }
+.yiwo-grid__dimension--height .yiwo-grid__end { width: 4.6cqi; height: auto; inset-inline: auto; }
+.yiwo-grid__dimension--height .yiwo-grid__end--start { inset-block-start: 0; }
+.yiwo-grid__dimension--height .yiwo-grid__end--finish { inset-block-end: 0; }
+
+:root:not([data-theme="dark"]) .yiwo-grid {
+  --yiwo-grid-frame-start: 7.85%;
+  --yiwo-grid-sidebar-size: 15.21%;
+  --yiwo-grid-nav-size: 8.68%;
+
+  .yiwo-grid__frame {
+    inset-inline-start: var(--yiwo-grid-frame-start);
+    border-color: var(--color-surface);
+    background: linear-gradient(to bottom, rgb(22 31 46 / 30%), rgb(56 65 80 / 23%) 50%, rgb(89 98 113 / 8%));
+    box-shadow: 0 .095rem .954rem rgb(0 0 0 / 4%);
+  }
+
+  .yiwo-grid__frame::before {
+    content: "";
+    position: absolute;
+    inset: 0 0 auto var(--yiwo-grid-sidebar-size);
+    block-size: var(--yiwo-grid-nav-size);
+    background: rgb(255 255 255 / 10%);
+  }
+
+  .yiwo-grid__sidebar {
+    inline-size: var(--yiwo-grid-sidebar-size);
+    grid-template-rows: 4.48% 1fr;
+    border-inline-end-color: rgb(255 255 255 / 65%);
+    background: rgb(255 255 255 / 10%);
+  }
+
+  .yiwo-grid__sidebar::before { background: rgb(255 255 255 / 80%); }
+  .yiwo-grid__sidebar::after { background: linear-gradient(rgb(255 255 255 / 80%), rgb(255 255 255 / 40%)); }
+
+  .yiwo-grid__columns {
+    inset-block-start: var(--yiwo-grid-nav-size);
+    inset-inline-start: var(--yiwo-grid-sidebar-size);
+    border-block-start-color: rgb(255 255 255 / 65%);
+    background: rgb(255 255 255 / 10%);
+  }
+
+  .yiwo-grid__columns::before {
+    content: "";
+    position: absolute;
+    inset: 0 2.15%;
+    background: repeating-linear-gradient(to right, rgb(255 255 255 / 20%) 0 2.73%, transparent 2.73% 4.23%);
+  }
+
+  .yiwo-grid__label {
+    border-radius: calc(var(--radius-xs) + var(--space-1) / 2);
+    padding: 1.1cqi 1.47cqi;
+    background: var(--color-surface);
+    color: #393c43;
+    font-family: "PingFang SC", var(--font-sans);
+    font-weight: var(--weight-medium);
+    line-height: 1;
+  }
+
+  .yiwo-grid__dimension--width { inset-inline-start: var(--yiwo-grid-frame-start); }
+  .yiwo-grid__dimension--height { inline-size: 4.49cqi; }
+  :is(.yiwo-grid__dimension--grid, .yiwo-grid__dimension--content) { inset-inline-start: 21.86%; }
+  .yiwo-grid__dimension--grid { inset-block-start: 41.35%; }
+  .yiwo-grid__dimension--content { inset-block-start: 68.1%; }
+
+  .yiwo-grid__dimension--height .yiwo-grid__label {
+    position: absolute;
+    inset: 50% auto auto 50%;
+    transform: translate(-50%, -50%) rotate(90deg);
+    writing-mode: horizontal-tb;
+  }
+
+  .yiwo-grid__dimension > img { opacity: 1; }
+  .yiwo-grid__dimension--width > .yiwo-grid__line { content: url("/assets/figma/yiwo-admin/grid-light-width.svg"); }
+  .yiwo-grid__dimension--width > .yiwo-grid__end { content: url("/assets/figma/yiwo-admin/grid-light-end.svg"); }
+  .yiwo-grid__dimension--height > .yiwo-grid__line { content: url("/assets/figma/yiwo-admin/grid-light-height.svg"); }
+  .yiwo-grid__dimension--height > .yiwo-grid__end { content: url("/assets/figma/yiwo-admin/grid-light-height-end.svg"); }
+}

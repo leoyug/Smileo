@@ -49,11 +49,14 @@ const items = headings.filter(({ depth }) => depth === 2 || depth === 3);
   import { uiText, languageFromPath, languagePath, withoutLanguage } from "../i18n/runtime";
   type TocRoot = HTMLElement & { detailTocCleanup?: () => void };
 
+  const backToTopThresholdPx = 600;
+
   const initializeDetailTocs = () => document.querySelectorAll<TocRoot>("[data-detail-toc]").forEach((toc) => {
     if (toc.dataset.initialized === "true") return;
     toc.dataset.initialized = "true";
     const controller = new AbortController();
     const signal = controller.signal;
+    const nav = toc.querySelector("nav");
     const topLink = toc.querySelector<HTMLAnchorElement>(".detail-toc__top");
     const isDemo = toc.classList.contains("detail-toc--demo");
 
@@ -140,14 +143,25 @@ const items = headings.filter(({ depth }) => depth === 2 || depth === 3);
         if (active) link.setAttribute("aria-current", "location");
         else link.removeAttribute("aria-current");
       });
+
+      if (!nav || nav.clientHeight === 0 || nav.scrollHeight <= nav.clientHeight) return;
+      const { link } = entries[nextIndex];
+      const focusedLink = nav.querySelector("a:focus-visible");
+      if (focusedLink && focusedLink !== link) return;
+
+      const viewport = nav.getBoundingClientRect();
+      const item = link.getBoundingClientRect();
+      if (item.top < viewport.top || item.height > nav.clientHeight) {
+        nav.scrollTop += item.top - viewport.top;
+      } else if (item.bottom > viewport.bottom) {
+        nav.scrollTop += item.bottom - viewport.bottom;
+      }
     };
 
     const update = () => {
       frame = 0;
-      const scrollingElement = document.scrollingElement ?? document.documentElement;
-      const scrollRange = scrollingElement.scrollHeight - scrollingElement.clientHeight;
       if (topLink) {
-        const visible = isDemo || (scrollRange > 0 && window.scrollY >= scrollRange * 0.3);
+        const visible = isDemo || window.scrollY >= backToTopThresholdPx;
         if (topLink.dataset.visible !== String(visible)) {
           topLink.dataset.visible = String(visible);
           topLink.setAttribute("aria-hidden", String(!visible));
@@ -184,6 +198,11 @@ const items = headings.filter(({ depth }) => depth === 2 || depth === 3);
       requestUpdate();
     };
 
+    const releaseLockOutsideDirectory = (event: Event) => {
+      if (nav?.hasAttribute("data-overflowing") && event.target instanceof Node && nav.contains(event.target)) return;
+      releaseLock();
+    };
+
     entries.forEach(({ link }, index) => {
       link.addEventListener("click", () => {
         lockedIndex = index;
@@ -191,10 +210,11 @@ const items = headings.filter(({ depth }) => depth === 2 || depth === 3);
       }, { signal });
     });
 
+    topLink?.addEventListener("click", releaseLock, { signal });
     window.addEventListener("scroll", requestUpdate, { passive: true, signal });
     window.addEventListener("resize", requestUpdate, { passive: true, signal });
-    window.addEventListener("wheel", releaseLock, { passive: true, signal });
-    window.addEventListener("touchstart", releaseLock, { passive: true, signal });
+    window.addEventListener("wheel", releaseLockOutsideDirectory, { passive: true, signal });
+    window.addEventListener("touchstart", releaseLockOutsideDirectory, { passive: true, signal });
     window.addEventListener("pointerdown", (event) => {
       if (!toc.contains(event.target as Node)) releaseLock();
     }, { passive: true, signal });
@@ -203,8 +223,13 @@ const items = headings.filter(({ depth }) => depth === 2 || depth === 3);
         releaseLock();
       }
     }, { signal });
-    const resizeObserver = new ResizeObserver(requestUpdate);
+    const resizeObserver = new ResizeObserver(() => {
+      if (nav) nav.toggleAttribute("data-overflowing", nav.clientHeight > 0 && nav.scrollHeight > nav.clientHeight);
+      requestUpdate();
+    });
     resizeObserver.observe(document.body);
+    if (nav) resizeObserver.observe(nav);
+    if (nav?.firstElementChild) resizeObserver.observe(nav.firstElementChild);
     update();
     toc.detailTocCleanup = () => {
       controller.abort();

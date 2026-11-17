@@ -295,7 +295,7 @@
 .button--primary { background: var(--color-ink); color: var(--color-accent-contrast); }
 .button--secondary { background: var(--color-surface); color: var(--color-ink); border-color: var(--color-line); box-shadow: var(--shadow-hairline); }
 .button:active { transform: scale(.97); }
-.button:focus-visible { outline: 2px solid var(--color-accent); outline-offset: 3px; }
+.button:focus-visible { outline: 2px solid var(--color-accent-ink); outline-offset: calc(var(--space-1) / 2); }
 ```
 
 ### Input 与订阅组合
@@ -493,7 +493,7 @@
 - 不要通过整体缩放适配移动端；保留 14–16px 正文，改变的是列数、间距和信息排列。
 - 只有沉浸式作品展示需要 `100dvh`；普通文章应允许自然文档流。
 - 独立滚动容器仅在桌面启用，移动端统一回到 body 滚动。
-- 支持 `prefers-color-scheme`、`prefers-reduced-motion` 和 `:focus-visible`。
+- 支持 `prefers-color-scheme`、`prefers-reduced-motion` 和 `:focus-visible`。默认键盘焦点使用随主题调整的 2px 青绿单线，与控件相距 2px。
 
 ## 7. 最值得复用的组合
 
@@ -543,7 +543,7 @@ Wispora 按 Figma `16473:8686` 展示原始品牌封面、标题、14px 简介�
 
 ### 2026-10-24：共用详情目录
 
-项目与文章详情的 `DetailToc` 文字目录按 Figma `16473:8721` 统一为 200px 宽、15px 寒蝉宋体 Bold、22px 行高和 12px 条目间距；目录距正文至少 16px，宽度根据阅读栏左侧的实际可用空间收窄，上限为 200px。960px 起显示文字目录，低于 960px 隐藏目录内容并保留返回入口；窄屏返回入口沿用顶部布局。当前章节、悬停和键盘聚焦使用 `--color-copy`，其他章节使用比 `--color-faint` 更弱一级的 `--color-subtle`（80% faint 与 20% canvas 混合），亮暗主题共用语义 token。按作者要求，长标题自然换行并完整显示；每项保留至少 44px 的点击高度，视觉节奏由点击区上下扩展维持。返回与回到顶部统一使用 Figma 节点 `21442:4033`、`21442:4029` 的 24×24 SVG，原文件保存在 `public/assets/figma/detail-toc/`；以 mask 跟随现有控件文字颜色，在亮暗主题、悬停和键盘聚焦时保持一致。“回到顶部”进入详情时隐藏，达到页面可滚动距离的 30% 后显示，复用现有滚入动效的 840ms 时长与 16px 位移，从下方向上归位并淡入，回到阈值以内向下移动并淡出；隐藏时不可点击或键盘聚焦，减少动态效果时沿用全站规则直接显隐；无滚动空间时保持隐藏，页面高度变化时重新计算，设计系统示例保持可见。滚动高亮、返回入口与移动端布局保持现有行为。
+项目与文章详情的 `DetailToc` 文字目录按 Figma `16473:8721` 统一为 200px 宽、15px 寒蝉宋体 Bold、22px 行高和 12px 条目间距；目录距正文至少 16px，宽度根据阅读栏左侧的实际可用空间收窄，上限为 200px。960px 起显示文字目录，低于 960px 隐藏目录内容并保留返回入口；窄屏返回入口沿用顶部布局。当前章节、悬停和键盘聚焦使用 `--color-copy`，其他章节使用比 `--color-faint` 更弱一级的 `--color-subtle`（80% faint 与 20% canvas 混合），亮暗主题共用语义 token。按作者要求，长标题自然换行并完整显示；每项保留至少 44px 的点击高度，视觉节奏由点击区上下扩展维持。返回与回到顶部统一使用 Figma 节点 `21442:4033`、`21442:4029` 的 24×24 SVG，原文件保存在 `public/assets/figma/detail-toc/`；以 mask 跟随现有控件文字颜色，在亮暗主题、悬停和键盘聚焦时保持一致。“回到顶部”在页面向下滚动满 600px 时显示，复用现有滚入动效的 840ms 时长与 16px 位移，从下方向上归位并淡入，回到 600px 以下时向下移动并淡出；隐藏时不可点击或键盘聚焦，减少动态效果时沿用全站规则直接显隐；设计系统示例保持可见。滚动高亮、返回入口与移动端布局保持现有行为。
 
 ### 2026-10-24：统一项目详情版式
 

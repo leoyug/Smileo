@@ -6,7 +6,7 @@ const latin = /\p{Script=Latin}/u;
 const otherLetter = /(?=\p{Letter})\P{Script=Latin}/u;
 const trailingPunctuation = /^(?:(?![\p{Ps}\p{Pi}])\p{P})+/u;
 const segmenter = typeof Intl.Segmenter === "function" ? new Intl.Segmenter("en", { granularity: "word" }) : null;
-const nativeOnly = "input, textarea, select, button, [contenteditable], pre, svg";
+const nativeOnly = "input, textarea, select, button, [contenteditable], pre, svg, [data-selection-native]";
 const textHost = "p, h1, h2, h3, h4, h5, h6, li, dt, dd, figcaption, td, th, blockquote, div";
 const forcedColors = matchMedia("(forced-colors: active)");
 const overlays = new Map<HTMLElement, HTMLSpanElement>();

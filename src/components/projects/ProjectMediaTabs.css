@@ -1,0 +1,173 @@
+.project-media-tabs {
+  display: grid;
+  min-inline-size: 0;
+  gap: var(--space-4);
+}
+
+.project-media-tabs__list:not([hidden]) {
+  --media-tab-inset: .1875rem;
+  --media-tab-gap: var(--space-1);
+  position: relative;
+  isolation: isolate;
+  display: grid;
+  grid-template-columns: repeat(var(--media-tab-count), minmax(0, 1fr));
+  gap: var(--media-tab-gap);
+  inline-size: min(100%, 15.875rem);
+  margin-inline: auto;
+  padding: var(--media-tab-inset);
+  border-radius: var(--radius-pill);
+  background: light-dark(color-mix(in srgb, var(--color-segmented-track), var(--color-ink) 12%), #303030);
+}
+
+.project-media-tabs__button {
+  position: relative;
+  z-index: 1;
+  min-block-size: 1.875rem;
+  padding: calc(var(--space-3) / 2) var(--space-2);
+  border: 0;
+  border-radius: var(--radius-pill);
+  background: transparent;
+  color: var(--color-copy);
+  font: inherit;
+  font-size: var(--text-meta);
+  line-height: 1.125rem;
+  cursor: pointer;
+  transition: color var(--duration-quick) var(--ease-smooth-out);
+}
+
+/* The 30px visible segment expands to a 44px pointer target. */
+.project-media-tabs__button::after {
+  content: "";
+  position: absolute;
+  inset: -.4375rem 0;
+}
+
+.project-media-tabs__button:is([aria-selected="true"], :hover) { color: var(--color-ink); }
+.project-media-tabs__button[aria-selected="true"] { font-weight: var(--weight-medium); }
+.project-media-tabs__button:focus-visible { outline-offset: 0; }
+
+.project-media-tabs__pill {
+  position: absolute;
+  inset-block: var(--media-tab-inset);
+  inset-inline-start: var(--media-tab-inset);
+  inline-size: calc((100% - 2 * var(--media-tab-inset) - (var(--media-tab-count) - 1) * var(--media-tab-gap)) / var(--media-tab-count));
+  border-radius: var(--radius-pill);
+  background: light-dark(var(--color-segmented-selected), var(--color-surface));
+  box-shadow: var(--shadow-card);
+  transform: translateX(calc(var(--media-tab-index, 0) * (100% + var(--media-tab-gap))));
+  transition: transform var(--duration-fast) var(--ease-smooth-out);
+  pointer-events: none;
+}
+
+.project-media-tabs__panels { display: grid; gap: var(--space-4); }
+
+.project-media-tabs[data-ready] .project-media-tabs__panels {
+  grid-template-columns: minmax(0, 1fr);
+  align-items: end;
+  gap: 0;
+}
+
+.project-media-tabs[data-ready] .project-media-tabs__panels > [role="tabpanel"] {
+  grid-area: 1 / 1;
+  min-inline-size: 0;
+  opacity: 1;
+}
+
+.project-media-tabs[data-ready] .project-media-tabs__panels > [aria-hidden="true"] {
+  opacity: 0;
+  pointer-events: none;
+}
+
+.project-media-tabs--scenarios { gap: 0; }
+
+.project-media-tabs--scenarios .project-media-tabs__list:not([hidden]) {
+  display: flex;
+  gap: var(--space-2);
+  inline-size: 100%;
+  padding: var(--space-4) var(--space-6);
+  border-radius: 0;
+  background: transparent;
+  overflow-x: auto;
+  scrollbar-width: thin;
+}
+
+/* The compact tabs are confined to the case-study preview. */
+.project-media-tabs--scenarios .project-media-tabs__button {
+  flex: none;
+  padding-inline: var(--space-3);
+  color: var(--color-muted);
+  white-space: nowrap;
+}
+
+.project-media-tabs--scenarios .project-media-tabs__button:hover { color: var(--color-ink); }
+
+.project-media-tabs--scenarios .project-media-tabs__button[aria-selected="true"] {
+  background: var(--color-ink);
+  color: light-dark(var(--color-canvas), var(--color-surface-2));
+}
+
+.project-media-tabs--scenarios [data-sliding-pill] .project-media-tabs__button[aria-selected="true"] {
+  background: transparent;
+}
+
+.project-media-tabs--scenarios .project-media-tabs__pill,
+.project-media-tabs--scenarios .project-media-tabs__panels > [aria-hidden="true"],
+.project-media-tabs--scenarios:not([data-ready]) .project-media-tabs__panels > :not(:first-child) {
+  display: none;
+}
+
+.project-media-tabs--scenarios [data-sliding-pill] .project-media-tabs__pill {
+  display: block;
+  inset: var(--space-4) auto auto 0;
+  block-size: 1.875rem;
+  background: var(--color-ink);
+  box-shadow: none;
+  transform: none;
+  transform-origin: left center;
+  transition: none;
+}
+
+.project-media-tabs--scenarios .project-media-tabs__panels > * { padding: var(--space-6); }
+
+.project-media-tabs--scenarios[data-ready] .project-media-tabs__panels { position: relative; }
+
+.project-media-tabs--scenarios[data-ready] .project-media-tabs__panels::before {
+  content: "";
+  position: absolute;
+  inset: 0 0 auto;
+  block-size: 1px;
+  background: light-dark(var(--color-leader), var(--color-line-subtle));
+  pointer-events: none;
+}
+
+@property --project-media-tab-progress {
+  syntax: "<number>";
+  inherits: true;
+  initial-value: 0;
+}
+
+@supports (mix-blend-mode: plus-lighter) {
+  @media (prefers-reduced-motion: no-preference) {
+    .project-media-tabs[data-ready] .project-media-tabs__panels:has(> :nth-child(2):last-child) {
+      --project-media-tab-progress: var(--media-tab-index, 0);
+      isolation: isolate;
+      transition: --project-media-tab-progress var(--duration-fast) var(--ease-smooth-out);
+
+      /* Both layers use the same progress, including when the fade reverses. */
+      & > [role="tabpanel"] {
+        mix-blend-mode: plus-lighter;
+        opacity: calc(1 - var(--project-media-tab-progress));
+      }
+
+      & > [role="tabpanel"]:last-child {
+        opacity: var(--project-media-tab-progress);
+      }
+    }
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .project-media-tabs__button,
+  .project-media-tabs__pill,
+  .project-media-tabs[data-ready] .project-media-tabs__panels > [role="tabpanel"] { transition: none; }
+}

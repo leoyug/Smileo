@@ -1,0 +1,260 @@
+---
+interface Props {
+  id: string;
+}
+
+const { id } = Astro.props;
+const stages = [
+  { title: "首屏定位", description: "用核心卖点、设备效果图和平台数据建立产品认知。", shapes: ["hero"] },
+  { title: "获客链路", description: "用漏斗呈现家装业务的成交链路，说明产品从哪里介入。", shapes: ["heading", "funnel"] },
+  { title: "解决方案与功能", description: "按业务阶段展示解决方案，再用核心技术和产品界面说明能力。", shapes: ["heading", "feature"] },
+  { title: "信任依据", description: "用客户案例、合作伙伴和数据回应使用顾虑。", shapes: ["heading", "cases"] },
+  { title: "体验与咨询", description: "在底部集中提供免费试用和咨询入口。", shapes: ["action"] },
+];
+---
+
+<figure class="site-structure">
+  <figcaption id={`${id}-caption`}>官网首页结构</figcaption>
+  <div role="radiogroup" aria-labelledby={`${id}-caption`}>
+    <div class="site-structure__row site-structure__header" aria-hidden="true">
+      <div class="site-structure__toolbar">
+        <img src="/assets/figma/zhaichangxiang-website/browser-controls.svg" alt="" width="64" height="16" />
+        <span>https://zhaichangxiang.com</span>
+      </div>
+    </div>
+    <ol class="site-structure__stages" role="list">
+      {stages.map(({ title, description, shapes }, index) => {
+        const stageId = `${id}-${index + 1}`;
+
+        return (
+          <li class="site-structure__row">
+            <label class="site-structure__choice">
+              <input
+                class="sr-only"
+                type="radio"
+                name={id}
+                checked={index === 0}
+                aria-labelledby={`${stageId}-title`}
+                aria-describedby={`${stageId}-description`}
+              />
+              <span class="site-structure__number" aria-hidden="true">{String(index + 1).padStart(2, "0")}</span>
+              <span class="site-structure__copy">
+                <strong id={`${stageId}-title`}>{title}</strong>
+                <span id={`${stageId}-description`}>{description}</span>
+              </span>
+            </label>
+            <div class="site-structure__wireframe" aria-hidden="true">
+              {shapes.map(shape => shape === "cases" ? (
+                <div class="site-structure__cases">
+                  <span class="site-structure__shape"></span>
+                  <span class="site-structure__shape"></span>
+                  <span class="site-structure__shape"></span>
+                </div>
+              ) : (
+                <span class="site-structure__shape" data-shape={shape}></span>
+              ))}
+            </div>
+          </li>
+        );
+      })}
+    </ol>
+  </div>
+</figure>
+
+<style>
+  .site-structure {
+    --diagram-columns: minmax(0, 5fr) minmax(0, 6fr);
+    --diagram-mark: color-mix(in srgb, var(--color-ink) 10%, var(--color-surface-2));
+    --diagram-guide: color-mix(in srgb, var(--color-ink) 5%, transparent);
+    --diagram-active: color-mix(in srgb, var(--color-accent) 14%, var(--color-accent-soft));
+    container-type: inline-size;
+    max-inline-size: var(--content-reading);
+  }
+
+  figcaption {
+    margin-block-end: var(--space-3);
+    color: var(--color-ink);
+    font-size: var(--text-body);
+    font-weight: var(--weight-medium);
+  }
+
+  .site-structure__stages {
+    list-style: none;
+    padding: 0;
+  }
+
+  .site-structure__row {
+    display: grid;
+    grid-template-columns: var(--diagram-columns);
+    column-gap: var(--space-4);
+  }
+
+  .site-structure__stages > .site-structure__row + .site-structure__row {
+    margin-block-start: 0;
+  }
+
+  .site-structure__toolbar {
+    grid-column: 2;
+    position: relative;
+    display: grid;
+    place-items: center;
+    padding: var(--space-1) var(--space-4);
+    border: 1px solid var(--color-line);
+    border-start-start-radius: var(--radius-md);
+    border-start-end-radius: var(--radius-md);
+    background: var(--color-surface-2);
+    color: var(--color-muted);
+    font-size: var(--text-meta);
+    line-height: var(--space-4);
+  }
+
+  .site-structure__toolbar img {
+    position: absolute;
+    inset-inline-start: var(--space-3);
+    inline-size: var(--space-8);
+    block-size: auto;
+    filter: invert(1);
+  }
+
+  :global(:root[data-theme="dark"]) .site-structure__toolbar img {
+    filter: none;
+  }
+
+  .site-structure__toolbar span {
+    padding-inline: var(--space-2);
+    border-radius: var(--radius-xs);
+    background: var(--color-surface);
+  }
+
+  .site-structure__choice {
+    position: relative;
+    display: grid;
+    grid-template-columns: auto minmax(0, 1fr);
+    align-items: start;
+    align-content: center;
+    gap: var(--space-2);
+    min-block-size: calc(var(--space-12) - var(--space-1));
+    margin-block: var(--space-1);
+    padding: var(--space-2) var(--space-3);
+    border-inline-start: 1px solid var(--color-line);
+    border-radius: var(--radius-xs);
+    color: var(--color-copy);
+    font-size: var(--text-body);
+    line-height: var(--space-5);
+    cursor: pointer;
+  }
+
+  @media (hover: hover) {
+    .site-structure__choice:hover {
+      background: var(--color-surface-2);
+    }
+  }
+
+  .site-structure__choice:has(:checked) {
+    border-inline-start-color: var(--color-accent-ink);
+    background: color-mix(in srgb, var(--color-accent-soft) 50%, var(--color-canvas));
+  }
+
+  .site-structure__choice:has(:focus-visible) {
+    outline: 2px solid var(--color-accent-ink);
+    outline-offset: 2px;
+  }
+
+  .site-structure__number {
+    color: var(--color-muted);
+    font: var(--weight-regular) var(--text-meta)/var(--space-5) var(--font-mono);
+  }
+
+  .site-structure__copy {
+    display: grid;
+    gap: calc(var(--space-1) / 2);
+  }
+
+  .site-structure__copy strong {
+    color: var(--color-ink);
+    font-weight: var(--weight-semibold);
+  }
+
+  .site-structure__wireframe {
+    display: grid;
+    align-content: center;
+    gap: var(--space-2);
+    padding: var(--space-2) var(--space-3);
+    border-inline: 1px solid var(--color-line);
+    background: repeating-linear-gradient(
+      to right,
+      transparent 0 calc(100% / 12 - 1px),
+      var(--diagram-guide) calc(100% / 12 - 1px) calc(100% / 12)
+    ) var(--color-surface-2);
+  }
+
+  .site-structure__row:last-child .site-structure__wireframe {
+    border-block-end: 1px solid var(--color-line);
+    border-end-start-radius: var(--radius-md);
+    border-end-end-radius: var(--radius-md);
+  }
+
+  .site-structure__shape {
+    display: block;
+    min-block-size: var(--space-8);
+    border: 1px solid transparent;
+    border-radius: var(--radius-xs);
+    background: var(--diagram-mark);
+  }
+
+  .site-structure__shape[data-shape="heading"] {
+    justify-self: center;
+    inline-size: 36%;
+    min-block-size: var(--space-3);
+  }
+
+  .site-structure__shape:is([data-shape="hero"], [data-shape="feature"]) {
+    min-block-size: var(--space-16);
+  }
+
+  .site-structure__shape[data-shape="action"] {
+    min-block-size: var(--space-12);
+  }
+
+  .site-structure__cases {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: var(--space-2);
+  }
+
+  .site-structure__row:has(:checked) .site-structure__shape {
+    border-color: var(--color-accent-ink);
+    background: var(--diagram-active);
+  }
+
+  @container (max-width: 31rem) {
+    .site-structure__header {
+      display: none;
+    }
+
+    .site-structure__row {
+      grid-template-columns: minmax(0, 1fr);
+    }
+
+    .site-structure__stages {
+      display: grid;
+      gap: var(--space-3);
+    }
+
+    .site-structure__choice {
+      margin-block: 0;
+    }
+
+    .site-structure__wireframe,
+    .site-structure__row:last-child .site-structure__wireframe {
+      margin-inline-start: var(--space-8);
+      padding: var(--space-1) 0 0;
+      border: 0;
+      background: none;
+    }
+
+    .site-structure__shape:is([data-shape="hero"], [data-shape="feature"]) {
+      min-block-size: var(--space-12);
+    }
+  }
+</style>
