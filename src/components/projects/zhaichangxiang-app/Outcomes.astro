@@ -1,0 +1,347 @@
+---
+import Card from "../../Card.astro";
+import ProgressiveBlur from "../../ProgressiveBlur.astro";
+
+interface Props {
+  section: "results" | "reflection";
+}
+const { section } = Astro.props;
+const metrics = [
+  ["+15%", "7日留存率"],
+  ["+23%", "活跃用户数量"],
+  ["+37%", "缩短操作路径"],
+  ["+18%", "用户成交率"],
+  ["+22%", "用户渲染量"],
+];
+const reflections = [
+  {
+    title: "设计系统的搭建",
+    copy: "将常用的视觉与组件规则统一进设计系统，让首页、创建流程和装修编辑有共同的设计依据，也能在后续迭代中复用。",
+  },
+  {
+    title: "多端协同的系统化思维",
+    copy: "手机聚焦快速创建和选择，Pad 支持横屏演示与调整，Web 容纳深度设计和参数编辑。共同的规则维持跨端一致性，各端保留适合自身场景的布局。",
+  },
+  {
+    title: "跨职能团队的沟通与推动力",
+    copy: "重构编辑器工具栏时，我通过界面对照说明功能分组和视觉层级，和产品、研发讨论改动的价值，再跟进实现与上线验收。",
+  },
+];
+---
+
+{section === "results" ? (
+  <div class="app-results" role="group" aria-label="项目成果指标">
+    <div class="app-results__stage">
+      <div class="app-results__heading">
+        <strong class="app-results__title-zh" lang="zh-CN">用<em>设计方案</em>推动业务目标的达成</strong>
+        <strong class="app-results__title-en">Use <em>design solutions</em> to drive business goals</strong>
+        <span class="app-results__subtitle" lang="en">Drive business goals with design solutions</span>
+      </div>
+      <dl class="app-results__metrics">
+        {metrics.map(([value, name]) => (
+          <div>
+            <dt>{name}</dt>
+            <dd>
+              <ProgressiveBlur class="app-results__metric-blur" />
+              <svg class="app-results__metric-stroke" aria-hidden="true">
+                <rect fill="none" stroke-width=".5" />
+              </svg>
+              <span>{value}</span>
+            </dd>
+          </div>
+        ))}
+      </dl>
+      <div class="app-results__note">
+        <p>产品与运营共同调整后，成交率和七日留存率达到预期。</p>
+        <p>简化流程减少了用户跳出，增加了渲染量。多端支持和智能功能帮助提升了成交率。</p>
+        <p>客服回访和现场沟通显示，用户满意度提升 60%。</p>
+      </div>
+    </div>
+  </div>
+) : (
+  <div class="app-reflection" role="group" aria-label="经验沉淀">
+    {reflections.map(({ title, copy }) => (
+      <Card class="app-reflection__card">
+        <strong>{title}</strong>
+        <p>{copy}</p>
+      </Card>
+    ))}
+  </div>
+)}
+
+<style>
+  @font-face {
+    font-family: "App Outcomes Honor Sans";
+    src: local("HONOR Sans CN Heavy"), local("HONORSansCN-Heavy");
+    font-weight: 900;
+  }
+
+  @font-face {
+    font-family: "App Outcomes MiSans";
+    src: local("MiSans-Semibold");
+    font-weight: 600;
+  }
+
+  .app-results {
+    --results-stage: var(--primitive-color-gray-0);
+    --results-texture: url("/assets/figma/zhaichangxiang-app/results-background-light.webp") center / 100% 100% no-repeat;
+    /* The light export already includes its 10% image opacity. */
+    --results-texture-opacity: 1;
+    --results-title: var(--primitive-color-gray-875);
+    --results-accent: color(display-p3 .11946 .70412 .5721);
+    --results-subtitle: color-mix(in srgb, var(--results-title) 40%, transparent);
+    --results-label: var(--primitive-color-gray-500);
+    --results-note: color-mix(in srgb, var(--results-label) 70%, transparent);
+    --results-note-mobile: var(--primitive-color-gray-625);
+    --results-mark: url("/assets/figma/zhaichangxiang-app/results-mark-light.svg");
+    --results-metric-fill: linear-gradient(in display-p3,
+      color(display-p3 .39475 .80925 .76029 / 50%) -10%,
+      color(display-p3 .65164 .83252 .78683 / 0%) var(--results-fill-end));
+    --results-fill-end: 100%;
+    --results-stroke-color: color(display-p3 .11373 .67451 .54902 / 30%);
+    --results-stroke-start: -3.49%;
+    --results-stroke-end: 90.63%;
+    --results-grain: url("/assets/figma/zhaichangxiang-website/goal-grain.png");
+    --results-extra-grain: var(--results-grain);
+    --results-grain-filter: invert(1);
+    max-inline-size: var(--content-reading);
+    container-type: inline-size;
+  }
+
+  :global([data-theme="dark"]) .app-results {
+    --results-stage: var(--primitive-color-warm-975);
+    --results-texture: url("/assets/figma/zhaichangxiang-app/results-background.webp") 68.02% 52.33% / 129.05% 133.88% no-repeat;
+    --results-texture-opacity: .2;
+    --results-title: var(--primitive-color-gray-0);
+    --results-subtitle: color-mix(in srgb, var(--results-title) 50%, transparent);
+    --results-label: color-mix(in srgb, var(--results-title) 60%, transparent);
+    --results-note: color-mix(in srgb, var(--results-title) 30%, transparent);
+    --results-note-mobile: var(--results-label);
+    --results-mark: url("/assets/figma/zhaichangxiang-app/results-mark.svg");
+    --results-metric-fill: linear-gradient(in display-p3,
+      color(display-p3 .02337 .28696 .24303 / 50%) -10%,
+      color(display-p3 .05387 .27825 .22776 / 0%) var(--results-fill-end));
+    --results-fill-end: 92.917%;
+    --results-stroke-color: color(display-p3 .93628 1 .94902 / 40%);
+    --results-stroke-end: 100%;
+    --results-extra-grain: none;
+    --results-grain-filter: none;
+  }
+
+  .app-results__stage {
+    position: relative;
+    isolation: isolate;
+    display: grid;
+    align-content: start;
+    overflow: clip;
+    padding: var(--space-16) var(--space-6) var(--space-6);
+    border-radius: var(--radius-lg);
+    background: var(--results-stage);
+    color: var(--results-title);
+    text-align: center;
+  }
+
+  .app-results__stage::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: -2;
+    background: var(--results-texture);
+    opacity: var(--results-texture-opacity);
+  }
+
+  .app-results__stage::after {
+    content: "";
+    position: absolute;
+    inset-block-start: 1.529375rem;
+    inset-inline-start: 50%;
+    inline-size: 180px;
+    block-size: 143.25px;
+    z-index: -1;
+    transform: translateX(-50%);
+    background: var(--results-mark) center no-repeat;
+    /* The SVG supplies the artwork. Clip the page backdrop to the same silhouette. */
+    clip-path: polygon(157.5px 71.3125px, 111.908px 71.3125px, 180px 143.25px,
+      0 143.25px, 68.0918px 71.3125px, 22.5px 71.3125px, 90px 0);
+    -webkit-backdrop-filter: blur(3.75px);
+    backdrop-filter: blur(3.75px);
+  }
+
+  .app-results__heading {
+    display: grid;
+    justify-items: center;
+    gap: var(--space-1);
+  }
+  .app-results__heading strong {
+    font: 900 var(--text-page-title)/var(--space-8) "App Outcomes Honor Sans", var(--font-sans);
+    letter-spacing: 0;
+    text-wrap: balance;
+  }
+  .app-results__heading em { color: var(--results-accent); font-style: normal; }
+  .app-results__subtitle {
+    color: var(--results-subtitle);
+    font: var(--weight-regular) var(--text-meta)/var(--space-4) "Trash", var(--font-sans);
+    letter-spacing: .01em;
+  }
+  .app-results__title-en,
+  :global(html:lang(en)) .app-results__title-zh,
+  :global(html:lang(en)) .app-results__subtitle { display: none; }
+  :global(html:lang(en)) .app-results__title-en { display: block; }
+
+  .app-results__metrics {
+    display: grid;
+    grid-template-columns: repeat(5, minmax(0, 1fr));
+    gap: var(--space-2);
+    margin: var(--space-8) 0 0;
+  }
+
+  .app-results__metrics > div {
+    position: relative;
+    display: grid;
+    align-content: center;
+    gap: calc(var(--space-1) / 2);
+    min-block-size: var(--space-16);
+    padding: var(--space-2) var(--space-1);
+    border-radius: var(--radius-sm);
+    overflow: clip;
+  }
+
+  .app-results__metrics > div::before,
+  .app-results__metrics > div::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+  }
+
+  .app-results__metrics :global(.app-results__metric-blur) {
+    --progressive-blur-direction: to top;
+    --progressive-blur-height: 86.667%;
+    /* The 8.88px Figma radius maps to a 4.44px Gaussian standard deviation. */
+    --progressive-blur-radius: 4.44px;
+    --progressive-blur-color: transparent;
+    inset: 0 0 auto;
+  }
+
+  .app-results__metrics > div::before {
+    z-index: 1;
+    background: var(--results-metric-fill);
+    opacity: .6;
+  }
+
+  .app-results__metrics > div::after {
+    z-index: 1;
+    background-image: var(--results-grain), var(--results-extra-grain);
+    background-size: 94.72px 94.72px;
+    filter: var(--results-grain-filter);
+    mask-image: linear-gradient(black, transparent var(--results-fill-end));
+  }
+
+  .app-results__metric-stroke {
+    position: absolute;
+    inset: 0;
+    z-index: 2;
+    inline-size: 100%;
+    block-size: 100%;
+    pointer-events: none;
+    mask-image: linear-gradient(black var(--results-stroke-start), transparent var(--results-stroke-end));
+  }
+
+  /* Inset the vector path by half its stroke to keep a true 0.5px inside edge. */
+  .app-results__metric-stroke rect {
+    x: .25px;
+    y: .25px;
+    width: calc(100% - .5px);
+    height: calc(100% - .5px);
+    rx: calc(var(--radius-sm) - .25px);
+    stroke: var(--results-stroke-color);
+  }
+
+  .app-results__metrics :is(dt, dd > span) {
+    position: relative;
+    z-index: 2;
+  }
+
+  .app-results__metrics:lang(zh) :is(dt, dd > span) {
+    inset-inline-start: -.89px;
+    inset-block-start: -.55px;
+  }
+
+  .app-results__metrics:lang(zh) > div:nth-child(2) :is(dt, dd > span) {
+    inset-inline-start: -.5px;
+    inset-block-start: -1px;
+  }
+
+  .app-results__metrics dt {
+    color: var(--results-label);
+    font: var(--weight-regular) .625rem/var(--space-3) var(--font-heading);
+    letter-spacing: 0;
+    text-wrap: balance;
+  }
+  .app-results__metrics dd {
+    order: -1;
+    margin: 0;
+    color: var(--results-accent);
+    font: var(--weight-semibold) var(--text-lead)/var(--space-5) "App Outcomes MiSans", var(--font-sans);
+    letter-spacing: 0;
+  }
+
+  .app-results__note {
+    margin-block-start: var(--space-12);
+    color: var(--results-note);
+    font: 300 .5rem/var(--space-3) "PingFang SC", var(--font-sans);
+    letter-spacing: .01em;
+  }
+
+  .app-results__note p {
+    margin: 0;
+    color: inherit;
+    line-height: inherit;
+  }
+
+  .app-results:lang(en) :is(.app-results__metrics, .app-results__note) {
+    margin-block-start: var(--space-8);
+  }
+
+  .app-reflection {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 11rem), 1fr));
+    gap: var(--space-4);
+  }
+  .app-reflection :global(.app-reflection__card) {
+    display: grid;
+    align-content: start;
+    gap: var(--space-3);
+    padding: var(--space-4);
+    border: 1px solid var(--color-line);
+    border-radius: var(--radius-lg);
+    background: color-mix(in srgb, var(--color-canvas) 99%, var(--color-ink));
+  }
+  .app-reflection strong {
+    color: var(--color-ink);
+    font: var(--weight-bold) var(--text-body)/var(--space-5) var(--font-heading);
+  }
+  .app-reflection p {
+    margin: 0;
+    color: var(--color-copy);
+    font-size: var(--text-meta);
+    line-height: 1.125rem;
+  }
+
+  @container (max-width: 27rem) {
+    .app-results__stage { padding: var(--space-8) var(--space-4) var(--space-6); }
+    .app-results__heading strong { font-size: 1.25rem; line-height: 1.75rem; }
+    .app-results__metrics { grid-template-columns: repeat(6, minmax(0, 1fr)); }
+    .app-results__metrics > div { grid-column: span 2; }
+    .app-results__metrics > div:nth-last-child(-n + 2) { grid-column: span 3; }
+    .app-results__metrics dt { color: var(--results-note-mobile); }
+    .app-results__note {
+      display: grid;
+      gap: var(--space-2);
+      margin-block-start: var(--space-6);
+      color: var(--results-note-mobile);
+      font-size: var(--text-meta);
+      line-height: 1.125rem;
+    }
+  }
+</style>

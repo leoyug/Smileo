@@ -1,0 +1,381 @@
+---
+import Card from "../Card.astro";
+
+const assets = "/assets/figma/zhaichangxiang-website/visual-language";
+const swatches = [
+  { name: "Mint Teal", start: "#2BC6A3", style: "mint" },
+  { name: "Mint Gradient", start: "#59E0AB", end: "#16B395", style: "mint-gradient" },
+  { name: "Gray Gradient", start: "#F2F3F4", end: "#FFFFFF", style: "gray-gradient" },
+  { name: "Background", start: "#FFFFFF", style: "background" },
+];
+---
+
+<Card variant="quiet" class="website-visual">
+  <div class="visual-palette">
+    <p class="palette-intro">采用薄荷色（#2BC6A3）为品牌主色调，代表生命力、智能化。首屏使用深绿色作为主背景，强化专业和科技感；品牌绿用于重点信息，形成清晰的视觉记忆点。后续内容区以白色和浅灰为主，提升信息阅读效率，也让产品界面展示更加清爽；衍生出的渐变色——青绿渐变、灰色渐变，增强质感，中性色辅助信息的展示。</p>
+    <dl class="palette-swatches">
+      {swatches.map(({ name, start, end, style }) => (
+        <div class="swatch">
+          <dt>{name}</dt>
+          <dd class="swatch-values">
+            <span>{start}</span>
+            {end && <img src={`${assets}/gradient-mark.svg`} width="26" height="8" alt="" />}
+            {end && <span>{end}</span>}
+          </dd>
+          <dd class="swatch-chip" data-chip={style} aria-hidden="true"></dd>
+        </div>
+      ))}
+    </dl>
+    <dl class="swatch neutral-swatches">
+      <dt>Neutral Colors</dt>
+      <dd class="swatch-values">
+        <span>#59E0AB</span>
+        <img src={`${assets}/neutral-gradient-mark.svg`} width="38" height="8" alt="" />
+        <span>#16B395</span>
+      </dd>
+      <dd class="neutral-chips" aria-hidden="true"></dd>
+    </dl>
+  </div>
+
+  <div class="visual-examples">
+    <div class="visual-example">
+      <div class="example-copy">
+        <strong>科技质感</strong>
+        <p>首屏使用深绿色暗色背景，叠加低透明度网格和柔和弥散光，营造数字化工具的科技感和视觉聚焦。</p>
+      </div>
+      <div class="example-art" role="img" aria-label="深绿色首屏背景上的弥散光和网格">
+        <div class="art-canvas">
+          <img class="technology-glow" src={`${assets}/technology-glow.png`} width="1200" height="675" alt="" loading="lazy" decoding="async" />
+          <img class="technology-grid" src={`${assets}/technology-grid.svg`} width="282" height="181" alt="" loading="lazy" />
+        </div>
+      </div>
+    </div>
+    <div class="visual-example">
+      <div class="example-copy">
+        <strong>图像质感</strong>
+        <p>家居图片选择明亮、真实、有品质感的空间画面；展示页面使用真实移动端和 PC 端界面，增强产品可信度。</p>
+      </div>
+      <div class="example-art" role="img" aria-label="明亮的客厅照片，旁边并排展示移动端和桌面端的产品界面">
+        <div class="art-canvas">
+          <div class="interior-crop">
+            <img src={`${assets}/interior.jpg`} width="1600" height="900" alt="" loading="lazy" decoding="async" />
+          </div>
+          <img class="mobile-interface" src={`${assets}/mobile-interface.png`} width="840" height="1818" alt="" loading="lazy" decoding="async" />
+          <img class="desktop-interface" src={`${assets}/desktop-interface.png`} width="3240" height="2025" alt="" loading="lazy" decoding="async" />
+        </div>
+      </div>
+    </div>
+    <div class="visual-example">
+      <div class="example-copy">
+        <strong>图标质感</strong>
+        <p>icon 及部分模型等视觉元素用轻量 3D 表达，材质偏磨砂玻璃、半透明，体现出未来感与信赖感。</p>
+      </div>
+      <div class="example-art example-art--icons" role="img" aria-label="半透明的漏斗和青绿色磨砂玻璃环形图标">
+        <div class="art-canvas">
+          <img class="glass-funnel" src={`${assets}/glass-funnel.png`} width="1024" height="1024" alt="" loading="lazy" decoding="async" />
+          <img class="glass-ring" src={`${assets}/glass-ring.png`} width="1024" height="1024" alt="" loading="lazy" decoding="async" />
+          <img class="glass-ring glass-ring--small" src={`${assets}/glass-ring.png`} width="1024" height="1024" alt="" loading="lazy" decoding="async" />
+        </div>
+      </div>
+    </div>
+  </div>
+</Card>
+
+<style>
+  :global(.website-visual) {
+    --visual-columns: minmax(0, 292fr) minmax(0, 240fr);
+    --visual-line: var(--color-line);
+    --visual-label-size: .6875rem;
+    --visual-copy-leading: 1.125rem;
+    --visual-chip-radius: calc(var(--radius-md) / 2);
+    /* The Figma swatches use Display P3. */
+    --visual-mint: color(display-p3 .118 .706 .573);
+    --visual-mint-gradient: linear-gradient(in display-p3,
+      color(display-p3 .349 .878 .671), color(display-p3 .086 .702 .584));
+    --visual-gray-gradient: linear-gradient(#f2f3f4, var(--primitive-color-gray-0));
+    container-type: inline-size;
+    display: grid;
+    gap: calc(var(--space-8) + var(--space-2));
+    max-inline-size: var(--content-reading);
+    padding: clamp(var(--space-4), 4.5vw, var(--space-6));
+    border-radius: var(--radius-lg);
+    background: var(--color-surface);
+    color: var(--color-faint);
+    font: var(--weight-regular) var(--visual-label-size)/var(--visual-copy-leading) var(--font-sans);
+  }
+
+  :global(html[data-theme="dark"] .website-visual) {
+    --visual-line: rgb(239 255 242 / 20%);
+  }
+
+  .visual-palette,
+  .visual-example {
+    display: grid;
+    grid-template-columns: var(--visual-columns);
+    column-gap: var(--space-3);
+  }
+
+  .visual-palette {
+    grid-template-areas:
+      "intro palette"
+      "neutral palette";
+    grid-template-rows: 1fr auto;
+    row-gap: calc(var(--space-8) + var(--space-1));
+  }
+
+  .palette-intro {
+    grid-area: intro;
+    align-self: end;
+    padding-inline: var(--space-2);
+  }
+
+  .palette-intro,
+  .example-copy p {
+    line-height: var(--visual-copy-leading);
+  }
+
+  :global(html:not(:lang(en))) :is(.palette-intro, .example-copy p) {
+    font-family: "PingFang SC", var(--font-sans);
+    font-weight: 300;
+    text-align: justify;
+  }
+
+  .palette-swatches {
+    grid-area: palette;
+    display: grid;
+    gap: var(--space-3);
+    margin: 0;
+  }
+
+  .swatch {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) min(32%, 4.5rem);
+    align-items: center;
+    min-block-size: var(--space-16);
+    padding: calc(var(--space-2) - 1px);
+    border: 1px solid var(--visual-line);
+    border-radius: var(--radius-md);
+    background: color-mix(in srgb, var(--color-ink) 1%, transparent);
+  }
+
+  .swatch dt,
+  .example-copy strong {
+    color: var(--color-ink);
+    font-size: var(--text-meta);
+    line-height: var(--space-4);
+  }
+
+  .swatch dt,
+  .swatch-values {
+    grid-column: 1;
+    margin-inline: var(--space-1) 0;
+  }
+
+  .swatch-values {
+    display: flex;
+    align-items: center;
+    gap: var(--space-1);
+    font-weight: 300;
+    line-height: var(--space-4);
+  }
+
+  .swatch-values img {
+    flex: none;
+    margin: 0;
+  }
+
+  :global(html:not([data-theme="dark"])) .swatch-values img {
+    filter: invert(.45);
+  }
+
+  .swatch-chip {
+    grid-area: 1 / 2 / span 2;
+    align-self: stretch;
+    margin: 0;
+    border-radius: var(--visual-chip-radius);
+    background: var(--primitive-color-gray-0);
+  }
+
+  .swatch-chip[data-chip="mint"] {
+    background: var(--visual-mint);
+  }
+
+  .swatch-chip[data-chip="mint-gradient"] {
+    background: var(--visual-mint-gradient);
+  }
+
+  .swatch-chip[data-chip="gray-gradient"] {
+    background: var(--visual-gray-gradient);
+  }
+
+  :global(html:not([data-theme="dark"])) .swatch-chip[data-chip="background"] {
+    box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--color-ink) 8%, transparent);
+  }
+
+  .neutral-swatches {
+    grid-area: neutral;
+    grid-template-columns: minmax(0, 1fr);
+    grid-template-rows: 1fr auto var(--space-12);
+    align-items: start;
+    row-gap: var(--space-2);
+    min-block-size: calc(var(--space-32) + var(--space-3));
+    margin: 0;
+  }
+
+  .neutral-swatches dt {
+    margin-block-start: var(--space-1);
+  }
+
+  .neutral-chips {
+    height: 100%;
+    margin: 0;
+    border-radius: var(--visual-chip-radius);
+    background:
+      linear-gradient(to right, #393c43 20%, rgb(57 60 67 / 80%) 20% 40%,
+        rgb(57 60 67 / 50%) 40% 60%, #ccc 60% 80%, #f2f2f2 80%)
+      var(--primitive-color-gray-0);
+  }
+
+  .visual-examples {
+    display: grid;
+    gap: var(--space-3);
+  }
+
+  .visual-example {
+    align-items: center;
+  }
+
+  .example-copy {
+    display: grid;
+    gap: var(--space-1);
+    padding-inline: var(--space-2);
+  }
+
+  .example-copy strong {
+    font-weight: var(--weight-medium);
+  }
+
+  .example-art {
+    position: relative;
+    overflow: hidden;
+    inline-size: 100%;
+    max-inline-size: 15rem;
+    block-size: var(--space-16);
+    border-radius: var(--radius-md);
+  }
+
+  .example-art::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    border: .5px solid rgb(255 255 255 / 20%);
+    border-radius: inherit;
+    pointer-events: none;
+  }
+
+  /* Keep the layer crops aligned to the 240 × 64 design frame. */
+  .art-canvas {
+    position: absolute;
+    inset-block: 0;
+    inset-inline-start: 50%;
+    inline-size: 15rem;
+    transform: translateX(-50%);
+  }
+
+  .art-canvas img {
+    position: absolute;
+    max-inline-size: none;
+    margin: 0;
+    object-fit: cover;
+  }
+
+  .art-canvas .technology-glow {
+    inset: 0;
+    inline-size: 100%;
+    block-size: 100%;
+  }
+
+  .technology-grid {
+    inset: -29px auto auto -17px;
+  }
+
+  .interior-crop {
+    position: absolute;
+    inset: 0 auto 0 -24px;
+    overflow: hidden;
+    inline-size: 143px;
+    background: var(--primitive-color-gray-0);
+  }
+
+  .interior-crop::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: rgb(0 0 0 / 20%);
+  }
+
+  .interior-crop img {
+    inset: -44.4px auto auto -79.2px;
+    inline-size: 265.12px;
+    block-size: 113.64px;
+    object-fit: fill;
+  }
+
+  .art-canvas .mobile-interface {
+    inset: -3px auto auto 120px;
+    inline-size: 31px;
+    block-size: 68px;
+  }
+
+  .art-canvas .desktop-interface {
+    inset: 0 auto auto 152px;
+    inline-size: 103px;
+    block-size: 100%;
+  }
+
+  .example-art--icons {
+    background: linear-gradient(73deg, var(--primitive-color-gray-0) 1.3%, #d4dae2 81.3%);
+  }
+
+  .art-canvas .glass-funnel {
+    inset: 16px auto auto 16px;
+    inline-size: 64.57px;
+    block-size: auto;
+    rotate: 7.61deg;
+  }
+
+  .art-canvas .glass-ring {
+    inset: -18px auto auto 95px;
+    inline-size: 81.49px;
+    block-size: auto;
+    scale: -1 1;
+  }
+
+  .art-canvas .glass-ring--small {
+    inset: 29.6px auto auto 182.6px;
+    inline-size: 62.35px;
+    rotate: 14.04deg;
+    scale: 1;
+  }
+
+  @container (max-width: 31rem) {
+    .visual-palette,
+    .visual-example {
+      grid-template-columns: minmax(0, 1fr);
+    }
+
+    .visual-palette {
+      grid-template-areas: "intro" "palette" "neutral";
+      grid-template-rows: auto;
+      row-gap: var(--space-3);
+    }
+
+    .visual-examples {
+      gap: var(--space-6);
+    }
+
+    .visual-example {
+      row-gap: var(--space-2);
+    }
+  }
+</style>

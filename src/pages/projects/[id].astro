@@ -12,7 +12,14 @@ import TextLink from "../../components/TextLink.astro";
 import ProjectCaseContent from "../../components/projects/ProjectCaseContent.astro";
 import YiwoCaseMedia from "../../components/projects/yiwo-admin/YiwoCaseMedia.astro";
 import ZhaichangxiangCaseNotes from "../../components/projects/ZhaichangxiangCaseNotes.astro";
+import ZhaichangxiangHomepage from "../../components/projects/ZhaichangxiangHomepage.astro";
 import ZhaichangxiangSiteStructure from "../../components/projects/ZhaichangxiangSiteStructure.astro";
+import ZhaichangxiangVisualLanguage from "../../components/projects/ZhaichangxiangVisualLanguage.astro";
+import AppResearch from "../../components/projects/zhaichangxiang-app/Research.astro";
+import AppComparison from "../../components/projects/zhaichangxiang-app/Comparison.astro";
+import AppVisualLanguage from "../../components/projects/zhaichangxiang-app/VisualLanguage.astro";
+import AppDirection from "../../components/projects/zhaichangxiang-app/Direction.astro";
+import AppOutcomes from "../../components/projects/zhaichangxiang-app/Outcomes.astro";
 
 export async function getStaticPaths() {
   const projects = await getProjects();
@@ -47,7 +54,7 @@ const isZhaichangxiangWebsite = entry.id === "zhaichangxiang-website";
           </a>
         )}
         {isZhaichangxiangWebsite && entry.data.website && (
-          <Button href={entry.data.website} size="small" class="project-website-visit">
+          <Button href={entry.data.website} size="small" class="project-website-visit" hidden>
             访问网站
             <span class="project-website-visit__icon" aria-hidden="true"></span>
           </Button>
@@ -76,7 +83,20 @@ const isZhaichangxiangWebsite = entry.id === "zhaichangxiang-website";
         <Content />
         <ZhaichangxiangCaseNotes slot="design-goals" section="goals" />
         <ZhaichangxiangSiteStructure slot="website-structure" id="zhaichangxiang-site-structure" />
+        <ZhaichangxiangVisualLanguage slot="website-visual-language" />
+        <ZhaichangxiangHomepage slot="website-homepage" />
         <ZhaichangxiangCaseNotes slot="reflection-notes" section="reflection" />
+      </ProjectCaseContent>
+    ) : entry.id === "Zhaichangxiang-App" ? (
+      <ProjectCaseContent>
+        <Content />
+        <AppResearch slot="app-research" />
+        <AppComparison slot="app-comparison" />
+        <AppVisualLanguage slot="app-visual-language" />
+        <AppDirection slot="app-goals" section="goals" />
+        <AppDirection slot="app-timeline" section="timeline" />
+        <AppOutcomes slot="app-results" section="results" />
+        <AppOutcomes slot="app-reflection" section="reflection" />
       </ProjectCaseContent>
     ) : <div class="article__body" id="content" data-route-enter-body><Content /></div>}
     <span id="reflection" class="detail-anchor" aria-hidden="true"></span>
@@ -85,6 +105,10 @@ const isZhaichangxiangWebsite = entry.id === "zhaichangxiang-website";
 </BaseLayout>
 
 <style>
+  .project-heading :global(.project-website-visit[hidden]) {
+    display: none;
+  }
+
   .project-heading :global(.project-website-visit) {
     flex: none;
     align-self: end;
@@ -112,7 +136,7 @@ const isZhaichangxiangWebsite = entry.id === "zhaichangxiang-website";
   }
 
   @media (max-width: 24rem) {
-    :global(html:lang(en)) .project-heading:has(:global(.project-website-visit)) {
+    :global(html:lang(en)) .project-heading:has(> .project-website-visit:not([hidden])) {
       flex-wrap: wrap;
       row-gap: var(--space-2);
     }

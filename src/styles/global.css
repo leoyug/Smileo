@@ -33,6 +33,14 @@
 }
 
 @font-face {
+  font-family: "HONOR Sans CN Timeline";
+  src: url("/fonts/honor-sans-cn/bold-app-timeline.woff2") format("woff2");
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
   font-family: "Chill Jinshu Song Compact";
   src: url("/fonts/chill-jinshu-song/compact-regular-v3.woff2") format("woff2");
   font-weight: 400;
@@ -44,6 +52,14 @@
   font-family: "Chill Jinshu Song Text";
   src: url("/fonts/chill-jinshu-song/text-regular-v1.woff2") format("woff2");
   font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Chill Jinshu Song Text";
+  src: url("/fonts/chill-jinshu-song/text-medium-app-goals.woff2") format("woff2");
+  font-weight: 500;
   font-style: normal;
   font-display: swap;
 }
@@ -211,6 +227,8 @@
     --color-article-divider: var(--color-line);
     --color-line-subtle: color-mix(in srgb, var(--color-line) 55%, var(--color-surface));
     --color-project-frame: #f5f4f2;
+    --color-project-case-surface: light-dark(var(--color-surface-2), var(--primitive-color-warm-975));
+    --color-project-case-finding-title: light-dark(var(--color-ink), var(--primitive-color-warm-300));
     --color-project-media-border: var(--primitive-color-gray-0);
     --color-project-attribute-bg: var(--color-surface);
     --color-project-attribute-border: var(--color-line);
@@ -370,7 +388,7 @@
     --dock-reserve: calc(var(--dock-backdrop-height) + var(--space-4));
     --detail-toc-width: 16.5rem; --detail-toc-label-width: 12.5rem;
     --detail-toc-inline-inset: calc(var(--space-8) + var(--space-2));
-    --detail-toc-content-gap: var(--space-4);
+    --detail-toc-content-gap: var(--space-20);
     --text-detail-toc: .9375rem;
     --page-top-space: var(--space-20);
     --text-article-title: clamp(2rem, calc(1rem + 2.5vw), 3rem);
@@ -877,8 +895,8 @@
   .progressive-blur__layer {
     -webkit-backdrop-filter: blur(calc(var(--progressive-blur-radius) * var(--blur-strength)));
     backdrop-filter: blur(calc(var(--progressive-blur-radius) * var(--blur-strength)));
-    -webkit-mask-image: linear-gradient(to bottom, transparent var(--blur-start), black var(--blur-end));
-    mask-image: linear-gradient(to bottom, transparent var(--blur-start), black var(--blur-end));
+    -webkit-mask-image: linear-gradient(var(--progressive-blur-direction, to bottom), transparent var(--blur-start), black var(--blur-end));
+    mask-image: linear-gradient(var(--progressive-blur-direction, to bottom), transparent var(--blur-start), black var(--blur-end));
   }
 
   /* Also serves as a fallback when backdrop filtering is unavailable. */

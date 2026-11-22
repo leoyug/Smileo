@@ -1,0 +1,296 @@
+.site-structure {
+  --diagram-mark: color-mix(in srgb, var(--color-ink) 10%, transparent);
+  --diagram-selected-fill: color-mix(in srgb, var(--primitive-color-gray-0) 80%, transparent);
+  --diagram-selected-stroke: var(--primitive-color-gray-0);
+  --diagram-selected-line-width: .5px;
+  --diagram-selected-shadow-color: var(--color-line);
+  max-inline-size: var(--content-reading);
+}
+
+.site-structure__panel {
+  container-type: inline-size;
+  padding: var(--space-6);
+  border-radius: var(--radius-lg);
+  background: var(--color-surface);
+}
+
+:root[data-theme="dark"] .site-structure {
+  --diagram-selected-fill: color-mix(in srgb, var(--primitive-color-gray-0) 18%, transparent);
+  --diagram-selected-stroke: color-mix(in srgb, var(--primitive-color-gray-0) 56%, transparent);
+  --diagram-selected-shadow-color: transparent;
+}
+
+.site-structure > figcaption {
+  margin-block-start: var(--space-2);
+  color: var(--color-copy);
+  font-size: var(--text-meta);
+  line-height: 1.5;
+  text-align: center;
+}
+
+.site-structure__stages {
+  display: grid;
+  list-style: none;
+  padding: 0;
+}
+
+.site-structure__stages > .site-structure__row + .site-structure__row {
+  margin-block-start: 0;
+}
+
+.site-structure__browser {
+  display: none;
+}
+
+.site-structure__choice {
+  position: relative;
+  display: grid;
+  align-content: start;
+  align-self: start;
+  gap: var(--space-2);
+  min-block-size: calc(var(--space-12) - var(--space-1));
+  padding: var(--space-3);
+  border-radius: var(--radius-sm);
+  color: var(--color-copy);
+  font-size: .6875rem;
+  line-height: var(--space-5);
+  cursor: pointer;
+}
+
+.site-structure__choice:not(:has(:checked)) > span {
+  opacity: .5;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .site-structure__choice:hover {
+    background: var(--color-surface-2);
+  }
+
+  .site-structure__wireframe:hover .site-structure__shape {
+    background-color: color-mix(in srgb, var(--diagram-mark), var(--diagram-selected-fill));
+  }
+}
+
+.site-structure__choice:has(:focus-visible) {
+  outline: 2px solid var(--color-accent-ink);
+  outline-offset: 2px;
+}
+
+.site-structure__heading {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--space-2);
+  color: var(--color-ink);
+}
+
+.site-structure__heading strong {
+  font-size: var(--text-meta);
+  font-weight: var(--weight-semibold);
+}
+
+.site-structure__number {
+  font: var(--weight-semibold) var(--space-4)/var(--space-5) var(--font-mono);
+}
+
+.site-structure__wireframe {
+  display: grid;
+  gap: var(--space-2);
+  cursor: pointer;
+}
+
+.site-structure__shape {
+  position: relative;
+  display: block;
+  min-block-size: var(--space-8);
+  border-radius: var(--radius-xs);
+  background-color: var(--diagram-mark);
+}
+
+.site-structure__shape::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  box-shadow:
+    inset 0 0 0 var(--diagram-selected-line-width) var(--diagram-selected-stroke),
+    0 0 0 var(--diagram-selected-line-width) var(--diagram-selected-shadow-color);
+  opacity: 0;
+}
+
+@media (forced-colors: active) {
+  .site-structure__shape::after {
+    outline: 1px solid Highlight;
+    outline-offset: -1px;
+  }
+}
+
+.site-structure__shape[data-shape="heading"] {
+  justify-self: center;
+  inline-size: 36%;
+  min-block-size: var(--space-3);
+}
+
+.site-structure__shape:is([data-shape="hero"], [data-shape="feature"]) {
+  min-block-size: var(--space-16);
+}
+
+.site-structure__shape[data-shape="action"] {
+  min-block-size: var(--space-12);
+}
+
+.site-structure__cases {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: var(--space-2);
+}
+
+.site-structure__row:has(:checked) .site-structure__shape {
+  background-color: var(--diagram-selected-fill);
+}
+
+.site-structure__row:has(:checked) .site-structure__shape::after {
+  opacity: 1;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .site-structure__layout:not(:has(:focus-visible)) .site-structure__choice > span {
+    transition: opacity var(--duration-quick) var(--ease-smooth-out);
+  }
+
+  .site-structure__layout:not(:has(:focus-visible)) .site-structure__shape {
+    transition: background-color var(--duration-fast) var(--ease-smooth-out);
+  }
+
+  .site-structure__layout:not(:has(:focus-visible)) .site-structure__shape::after {
+    transition: opacity var(--duration-fast) var(--ease-smooth-out);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .site-structure__choice > span,
+  .site-structure__shape,
+  .site-structure__shape::after {
+    transition-property: none;
+  }
+}
+
+@container (width > 31rem) {
+  .site-structure__layout {
+    /* Scale the 1680 px design. Shared grid rows keep the copy and diagram aligned. */
+    --diagram-unit: calc(100cqi / 1680);
+    --diagram-width: calc(1080 * var(--diagram-unit));
+    --diagram-inset: calc(64 * var(--diagram-unit));
+    --diagram-toolbar: max(var(--space-6), 56 * var(--diagram-unit));
+    --diagram-row-gap: calc(48 * var(--diagram-unit));
+    --diagram-guide: color-mix(in srgb, var(--color-ink) 8%, transparent);
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) var(--diagram-width);
+  }
+
+  .site-structure__browser {
+    position: relative;
+    grid-area: 1 / 2;
+    display: block;
+    overflow: clip;
+    min-inline-size: 0;
+    border: 1px solid var(--color-line);
+    border-radius: var(--radius-sm);
+    background: var(--color-surface-2);
+    pointer-events: none;
+  }
+
+  .site-structure__browser::after {
+    --guide-column: calc(61 * var(--diagram-unit));
+    --guide-pitch: calc(81 * var(--diagram-unit));
+    content: "";
+    position: absolute;
+    inset: calc(var(--diagram-toolbar) - 1px) calc(var(--diagram-inset) - 1px) 0;
+    background: repeating-linear-gradient(
+      to right,
+      var(--diagram-guide) 0 1px,
+      transparent 1px calc(var(--guide-column) - 1px),
+      var(--diagram-guide) calc(var(--guide-column) - 1px) var(--guide-column),
+      transparent var(--guide-column) var(--guide-pitch)
+    );
+  }
+
+  .site-structure__toolbar {
+    position: relative;
+    display: grid;
+    place-items: center;
+    block-size: calc(var(--diagram-toolbar) - 1px);
+    border-block-end: 1px solid var(--color-line);
+  }
+
+  .site-structure__toolbar img {
+    position: absolute;
+    inset-inline-start: calc(24 * var(--diagram-unit));
+    inline-size: calc(64 * var(--diagram-unit));
+    block-size: auto;
+    filter: invert(1);
+  }
+
+  :root[data-theme="dark"] .site-structure__toolbar img {
+    filter: none;
+  }
+
+  .site-structure__address {
+    inline-size: calc(544 * var(--diagram-unit));
+    block-size: var(--space-4);
+    margin-inline-start: calc(38 * var(--diagram-unit));
+    border-radius: var(--radius-xs);
+    background: color-mix(in srgb, var(--color-ink) 5%, var(--color-surface-2));
+  }
+
+  .site-structure__stages {
+    /* The browser frame stretches with this row, including wrapped translations. */
+    position: relative;
+    grid-area: 1 / 1 / 2 / -1;
+    gap: var(--diagram-row-gap);
+    padding-block: calc(var(--diagram-toolbar) + 24 * var(--diagram-unit)) calc(80 * var(--diagram-unit));
+  }
+
+  .site-structure__row {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) var(--diagram-width);
+    column-gap: var(--diagram-inset);
+  }
+
+  .site-structure__wireframe {
+    grid-template-rows: 1fr;
+    gap: var(--diagram-row-gap);
+    margin-inline: var(--diagram-inset);
+  }
+
+  .site-structure__wireframe:has(> [data-shape="heading"]) {
+    grid-template-rows: auto 1fr;
+  }
+
+  .site-structure__wireframe .site-structure__shape {
+    min-block-size: var(--space-8);
+  }
+
+  .site-structure__shape[data-shape="heading"] {
+    inline-size: calc(344 * var(--diagram-unit));
+    min-block-size: calc(48 * var(--diagram-unit));
+  }
+
+  .site-structure__cases {
+    gap: calc(20 * var(--diagram-unit));
+  }
+}
+
+@container (width <= 31rem) {
+  .site-structure__stages {
+    gap: var(--space-3);
+  }
+
+  .site-structure__wireframe {
+    margin-block-start: var(--space-2);
+  }
+
+  .site-structure__shape:is([data-shape="hero"], [data-shape="feature"]) {
+    min-block-size: var(--space-12);
+  }
+}

@@ -51,48 +51,30 @@
     .photo-lightbox__frame {
       aspect-ratio: 880 / 536;
     }
-
-    .detail-toc:not(.detail-toc--demo) {
-      width: 44px;
-    }
-
-    .detail-toc__label {
-      position: absolute;
-      z-index: 1;
-      left: calc(100% + 8px);
-      display: block;
-      padding: 2px 6px;
-      background: var(--color-canvas);
-      color: var(--color-ink);
-      opacity: 0;
-      pointer-events: none;
-      transform: translate(-4px, -50%);
-      transition: opacity var(--duration-quick) var(--ease-smooth-out), transform var(--duration-quick) var(--ease-smooth-out);
-      visibility: hidden;
-      white-space: nowrap;
-    }
-
-    .detail-toc__label {
-      top: 50%;
-      max-width: min(12rem, calc(100vw - 6rem));
-    }
-
-    .detail-toc__link:is(:hover, :focus-visible) .detail-toc__label {
-      opacity: 1;
-      transform: translate(0, -50%);
-      visibility: visible;
-    }
   }
 
-  @media (min-width: 60rem) {
+  @media (width >= 960px) {
     .detail-toc--reading:not(.detail-toc--demo) {
-      /* Reserve the full gap even when the viewport constrains the sidebar. */
-      width: min(var(--detail-toc-width), calc((100% - var(--content-reading)) / 2 - var(--detail-toc-inline-inset) - var(--detail-toc-content-gap)));
       z-index: 39; /* Paint after the dock backdrop at the same layer. */
       inset-block: calc(var(--space-24) + var(--space-2));
       height: auto;
       display: flex;
       flex-direction: column;
+    }
+
+    .detail-toc--reading:not(.detail-toc--demo) > :is(.detail-toc__back, .detail-toc__top) {
+      flex: none;
+    }
+
+    .detail-toc--reading:not(.detail-toc--demo) > .detail-toc__top {
+      position: static;
+      margin-block-start: auto;
+    }
+  }
+
+  @media (width >= 1080px) {
+    .detail-toc--reading:not(.detail-toc--demo) {
+      width: min(var(--detail-toc-width), calc((100% - var(--content-reading)) / 2 - var(--detail-toc-inline-inset) - var(--detail-toc-content-gap)));
     }
 
     .detail-toc--reading:not(.detail-toc--demo) > nav {
@@ -117,47 +99,25 @@
       outline-offset: calc(-1 * var(--space-1) / 2);
       box-shadow: none;
     }
-
-    .detail-toc--reading:not(.detail-toc--demo) > :is(.detail-toc__back, .detail-toc__top) {
-      flex: none;
-    }
-
-    .detail-toc--reading:not(.detail-toc--demo) > .detail-toc__top {
-      position: static;
-      margin-block-start: auto;
-    }
   }
 
-  @media (min-width: 60rem) and (hover: hover) and (pointer: fine) {
+  @media (width >= 1080px) and (hover: hover) and (pointer: fine) {
     .detail-toc--reading:not(.detail-toc--demo) > nav:not(:hover, :focus-visible, :has(:focus-visible)) {
       scrollbar-color: transparent transparent;
     }
   }
 
-  @media (min-width: 60rem) and (max-width: 79.999rem) {
-    .detail-toc--reading .detail-toc__label {
-      position: static;
-      max-width: none;
-      padding: 0;
-      background: none;
-      color: inherit;
-      opacity: 1;
-      pointer-events: auto;
-      transform: none;
-      visibility: visible;
-      white-space: normal;
+  @media (width < 1080px) {
+    .detail-toc--reading:not(.detail-toc--demo) {
+      width: calc(var(--space-8) + var(--space-3));
     }
 
-    .detail-toc--reading .detail-toc__link:is(:hover, :focus-visible) .detail-toc__label {
-      transform: none;
+    .detail-toc--reading:not(.detail-toc--demo) > nav {
+      display: none;
     }
   }
 
-  @media (max-width: 59.999rem) {
-    .detail-toc--reading:not(.detail-toc--demo) nav {
-      display: none;
-    }
-
+  @media (width < 960px) {
     .detail-toc__back,
     .detail-toc__top {
       gap: var(--space-1);

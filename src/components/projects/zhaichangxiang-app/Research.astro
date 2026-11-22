@@ -1,0 +1,259 @@
+---
+const assets = "/assets/figma/zhaichangxiang-app";
+const glyphAssets = `${assets}/research-type`;
+const analyses = [
+  {
+    key: "industry",
+    title: "行业分析",
+    subtitle: "Industry analysis",
+    findings: ["市场下沉，增量显著", "需求旺盛，供给低端", "设计同质，效率低下", "过程黑箱，信任缺失"],
+  },
+  {
+    key: "user",
+    title: "用户分析",
+    subtitle: "User analysis",
+    findings: ["追求“快”与“现成”", "交互设备高度碎片化", "简明直铺的操作逻辑", "协作链条存在断层"],
+  },
+];
+const themeArts = [
+  { name: "industry-ring", light: [224, 224], dark: [176, 176] },
+  { name: "user-ring", light: [224, 224], dark: [176, 176] },
+  { name: "arrow-left", light: [40, 28.1905], dark: [24, 16] },
+  { name: "arrow-right", light: [40, 28.1905], dark: [24, 16] },
+  { name: "center", light: [80, 80], dark: [72, 72] },
+] as const;
+---
+
+<div class="app-research" role="group" aria-label="调研分析">
+  <div class="app-research__map" aria-hidden="true">
+    {themeArts.map(({ name, light, dark }) => (
+      <span class={`app-research__art app-research__art--${name}`}>
+        <img src={`${assets}/research-${name}-light.svg`} alt="" width={light[0]} height={light[1]} loading="lazy" />
+        <img src={`${assets}/research-${name}-dark.svg`} class="app-research__dark" alt="" width={dark[0]} height={dark[1]} loading="lazy" />
+      </span>
+    ))}
+    {analyses.map(({ key, title, subtitle }) => (
+      <div class={`app-research__disc app-research__disc--${key}`}>
+        <img src={`${assets}/research-${key}-disc.svg`} alt="" width="113" height="113" loading="lazy" />
+        <span class="app-research__caption" style={{
+          "--research-glyph": `url(${glyphAssets}/${key}.svg)`,
+          "--research-glyph-en": `url(${glyphAssets}/en-${key}.svg)`,
+        }}>
+          <strong>{title}</strong>
+          <small>{subtitle}</small>
+        </span>
+      </div>
+    ))}
+    <strong class="app-research__center" style={{
+      "--research-glyph": `url(${glyphAssets}/center.svg)`,
+      "--research-glyph-en": `url(${glyphAssets}/en-center.svg)`,
+    }}><span>调研</span></strong>
+  </div>
+  {analyses.map(({ key, title, findings }) => (
+    <ol class={`app-research__findings app-research__findings--${key}`} aria-label={title} role="list">
+      {findings.map((finding, index) => {
+        const number = String(index + 1).padStart(2, "0");
+        return (
+          <li>
+            <span class="app-research__badge" aria-hidden="true" style={{ "--research-glyph": `url(${glyphAssets}/${number}.svg)` }}>
+              <span>{number}</span>
+            </span>
+            {finding}
+          </li>
+        );
+      })}
+    </ol>
+  ))}
+</div>
+
+<style>
+  .app-research {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) 19.75rem minmax(0, 1fr);
+    grid-template-areas: "industry map user";
+    align-items: center;
+    gap: var(--space-5);
+    max-inline-size: var(--content-reading);
+    margin-inline: auto;
+    padding-inline: calc(var(--space-1) * 1.5);
+  }
+
+  .app-research__map {
+    position: relative;
+    grid-area: map;
+    align-self: start;
+    isolation: isolate;
+    aspect-ratio: 316 / 176;
+  }
+
+  .app-research__art,
+  .app-research__disc,
+  .app-research__center {
+    position: absolute;
+    display: grid;
+    place-items: center;
+    inset-block-start: 50%;
+    transform: translateY(-50%);
+  }
+
+  .app-research__map img { display: block; width: 100%; height: auto; }
+  .app-research__map .app-research__dark,
+  :global([data-theme="dark"]) .app-research__art > img:first-child { display: none; }
+  :global([data-theme="dark"]) .app-research__map .app-research__dark { display: block; }
+
+  .app-research__art--industry-ring,
+  .app-research__art--user-ring,
+  .app-research__art--center {
+    aspect-ratio: 1;
+    border-radius: var(--radius-pill);
+    -webkit-backdrop-filter: blur(var(--research-circle-blur));
+    backdrop-filter: blur(var(--research-circle-blur));
+  }
+
+  .app-research__art--industry-ring,
+  .app-research__art--user-ring {
+    --research-circle-blur: 3.52px;
+    width: 55.7%;
+  }
+  .app-research__art--industry-ring,
+  .app-research__art--arrow-left { left: 0; }
+  .app-research__art--user-ring,
+  .app-research__art--arrow-right { right: 0; }
+  .app-research__art--user-ring img,
+  .app-research__art--arrow-right img { transform: scaleX(-1); }
+  .app-research__art--arrow-left,
+  .app-research__art--arrow-right { width: 7.6%; }
+
+  .app-research__disc { width: 35.73%; }
+  .app-research__disc--industry { left: 10%; }
+  .app-research__disc--user { right: 10%; }
+  .app-research__disc img { transform: translateY(2.5%); }
+
+  .app-research__caption {
+    position: absolute;
+    max-width: 90%;
+    display: grid;
+    align-content: center;
+    gap: calc(var(--space-1) / 2);
+    color: light-dark(rgb(255 255 255 / 95%), var(--color-ink));
+    text-align: center;
+  }
+
+  .app-research__disc strong {
+    font-size: var(--text-meta);
+    font-weight: var(--weight-bold);
+    line-height: var(--space-4);
+  }
+  .app-research__disc small {
+    display: block;
+    font-size: .375rem;
+    line-height: 1;
+  }
+  .app-research__disc:lang(en) strong {
+    justify-self: center;
+    inline-size: min-content;
+    font-size: .625rem;
+    font-weight: var(--weight-semibold);
+    line-height: var(--space-3);
+  }
+  .app-research__disc:lang(en) small { display: none; }
+
+  .app-research__art--center,
+  .app-research__center {
+    left: 49.37%;
+    width: 22.78%;
+    z-index: 1;
+    transform: translate(-50%, -50%);
+  }
+  .app-research__art--center { --research-circle-blur: 8.46px; }
+  .app-research__center {
+    color: light-dark(#393c43, var(--color-ink));
+    font-size: var(--text-lead);
+    font-weight: var(--weight-bold);
+    line-height: var(--space-5);
+  }
+  .app-research__center:lang(en) { font-size: var(--text-meta); }
+
+  .app-research__findings {
+    display: grid;
+    gap: var(--space-5);
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    color: light-dark(rgb(57 60 67 / 80%), var(--color-copy));
+    font-size: .625rem;
+    font-weight: var(--weight-medium);
+    line-height: var(--space-3);
+  }
+  .app-research__findings--industry { grid-area: industry; }
+  .app-research__findings--user { grid-area: user; }
+
+  .app-research__findings > li {
+    display: grid;
+    grid-template-columns: auto minmax(0, 1fr);
+    align-items: start;
+    gap: calc(var(--space-1) * 1.5);
+    margin: 0;
+  }
+  .app-research__findings:lang(zh) > li { white-space: nowrap; }
+
+  .app-research__badge {
+    position: relative;
+    align-self: start;
+    display: grid;
+    place-items: center;
+    min-width: var(--space-4);
+    block-size: var(--space-3);
+    border-radius: .1875rem;
+    background: #00b694;
+    color: var(--primitive-color-gray-0);
+    font: var(--weight-medium) .4375rem/1 var(--font-mono);
+    text-align: center;
+  }
+
+  @supports (mask-image: linear-gradient(black, transparent)) {
+    @media not (forced-colors: active) {
+      .app-research__caption {
+        inline-size: 90%;
+        min-block-size: 1.5625rem;
+      }
+
+      :is(.app-research__caption, .app-research__center, .app-research__badge) > * {
+        opacity: 0;
+      }
+
+      :is(.app-research__caption, .app-research__center, .app-research__badge)::after {
+        content: "";
+        position: absolute;
+        inset: 0;
+        background: currentColor;
+        mask: var(--research-glyph) center no-repeat;
+        pointer-events: none;
+      }
+
+      :is(.app-research__caption, .app-research__center):lang(en)::after {
+        mask-image: var(--research-glyph-en);
+      }
+
+      .app-research__center:lang(en)::after { mask-position: calc(50% + .5px) center; }
+    }
+  }
+
+  @media (max-width: 40rem) {
+    .app-research {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      grid-template-areas: "map map" "industry user";
+      align-items: start;
+      gap: var(--space-4);
+      padding-inline: 0;
+    }
+    .app-research__map { width: min(100%, 19.75rem); margin-inline: auto; }
+    .app-research__findings {
+      gap: var(--space-2);
+      font-size: var(--text-meta);
+      line-height: 1.3;
+    }
+    .app-research__findings:lang(zh) > li { white-space: normal; }
+    .app-research__badge { margin-top: .1875rem; }
+  }
+</style>

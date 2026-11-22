@@ -1,0 +1,87 @@
+---
+import Card from "../Card.astro";
+import preview from "../../assets/projects/zhaichangxiang-website/homepage-preview.webp";
+import full from "../../assets/projects/zhaichangxiang-website/homepage-full.webp";
+---
+
+<Card variant="quiet" class="zhaichangxiang-homepage">
+  <details data-no-image-zoom data-homepage-preview>
+    <summary>
+      <img src={preview.src} width={preview.width} height={preview.height} alt="宅畅想官网首屏，深绿色背景上展示可视化谈单软件和手机效果图" loading="lazy" decoding="async" />
+      <span class="homepage-toggle">展开完整长图</span>
+      <span class="homepage-toggle homepage-toggle--close">收起长图</span>
+    </summary>
+    <img src={full.src} width={full.width} height={full.height} alt="宅畅想官网全页，包括首屏、获客漏斗、产品功能、风格图库、客户案例和合作伙伴" loading="lazy" decoding="async" />
+  </details>
+</Card>
+
+<script>
+  const previewOffsets = new WeakMap<HTMLDetailsElement, number>();
+
+  document.addEventListener("click", (event) => {
+    if (event.defaultPrevented || !(event.target instanceof Element)) return;
+    const summary = event.target.closest("[data-homepage-preview] > summary");
+    const details = summary?.parentElement;
+    if (!(details instanceof HTMLDetailsElement)) return;
+
+    if (!details.open) {
+      previewOffsets.set(details, details.getBoundingClientRect().top);
+      return;
+    }
+
+    event.preventDefault();
+    details.open = false;
+    const previousTop = previewOffsets.get(details) ?? 0;
+    previewOffsets.delete(details);
+    window.scrollBy({ top: details.getBoundingClientRect().top - previousTop, behavior: "instant" });
+  });
+</script>
+
+<style>
+  :global(.zhaichangxiang-homepage) {
+    padding: var(--space-6);
+    border-radius: var(--radius-lg);
+    background: var(--color-surface);
+  }
+
+  details[open] {
+    display: flex;
+    flex-direction: column;
+  }
+
+  summary {
+    display: block;
+    border-radius: var(--radius-sm);
+    cursor: pointer;
+  }
+
+  details[open] summary {
+    order: 1;
+  }
+
+  summary::-webkit-details-marker {
+    display: none;
+  }
+
+  img {
+    display: block;
+    inline-size: 100%;
+    height: auto;
+    border-radius: var(--radius-sm);
+  }
+
+  .homepage-toggle {
+    display: grid;
+    min-block-size: var(--dock-control-size);
+    place-items: center;
+    color: var(--color-link);
+    font-size: var(--text-meta);
+    text-decoration: underline;
+    text-underline-offset: .2em;
+  }
+
+  details:not([open]) .homepage-toggle--close,
+  details[open] summary > :not(.homepage-toggle--close) {
+    display: none;
+  }
+</style>

@@ -1,3 +1,8 @@
+/* Keep the whole page inside the theme reveal, including Astro's unlayered shared elements. */
+html[data-theme-transition="circle-blur"] * {
+  view-transition-name: none;
+}
+
 @layer site {
   html {
     scrollbar-gutter: auto;
@@ -180,11 +185,13 @@
   }
 
   html[data-theme-transition="circle-blur"]::view-transition-old(root) {
+    z-index: 0;
     animation: none;
     mix-blend-mode: normal;
   }
 
   html[data-theme-transition="circle-blur"]::view-transition-new(root) {
+    z-index: 1;
     animation: theme-circle-blur-reveal var(--theme-transition-duration) cubic-bezier(.4, 0, .2, 1) both;
     mix-blend-mode: normal;
   }

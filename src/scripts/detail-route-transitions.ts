@@ -16,6 +16,8 @@ const detailKind = (path: string) => {
 };
 
 export function initDetailRouteTransitions() {
+  let activeRouteTransition: ViewTransition | undefined;
+
   document.addEventListener("astro:before-preparation", (event) => {
     document.querySelectorAll(".content-row.is-writing-transition").forEach((row) => row.classList.remove("is-writing-transition"));
     if (detailKind(event.to.pathname) === "/writing" && ["/", "/writing"].includes(withoutLanguage(normalizedPath(event.from.pathname)))) {
@@ -105,11 +107,19 @@ export function initDetailRouteTransitions() {
         }
       }
     }
+    const { viewTransition } = event;
+    activeRouteTransition = viewTransition;
     const finish = () => {
+      if (activeRouteTransition !== viewTransition) return;
+      activeRouteTransition = undefined;
+
       document.querySelectorAll(".is-writing-transition").forEach((row) => row.classList.remove("is-writing-transition"));
-      delete document.documentElement.dataset.writingTitleTransition;
+      const { dataset } = document.documentElement;
+      delete dataset.writingTitleTransition;
+      delete dataset.detailTransition;
+      delete dataset.detailTransitionKind;
     };
-    void event.viewTransition.finished.then(finish, finish);
+    void viewTransition.finished.then(finish, finish);
   });
 
   const clearStaleReturn = () => {

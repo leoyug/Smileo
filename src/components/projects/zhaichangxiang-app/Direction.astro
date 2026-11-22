@@ -1,0 +1,420 @@
+---
+import Button from "../../Button.astro";
+import Card from "../../Card.astro";
+
+interface Props {
+  section: "goals" | "timeline";
+}
+const { section } = Astro.props;
+const assets = "/assets/figma/zhaichangxiang-app";
+const goals = [
+  ["降低界面认知负担", "增加易用性"],
+  ["增加决策机制", "精简链路"],
+  ["保持多端一致性", "提升使用体验"],
+  ["展示效率提升", "体现产品价值"],
+];
+const stages = [
+  { version: "V1.0", title: "装修方案设计和管理", period: "2021.9-2022.8", diameter: 128 },
+  { version: "V2.0", title: "加入家装推广和营销业务", period: "2022.8-2023.12", diameter: 144 },
+  { version: "V3.0", title: "家装业务全链路的解决方案", period: "2023.12-至今", diameter: 164 },
+];
+const currentDiameter = stages[stages.length - 1].diameter;
+const arrow = `${assets}/timeline-end.svg`;
+---
+
+{section === "goals" ? (
+  <div class="app-goals" role="group" aria-label="设计目标">
+    {goals.map(([title, summary]) => (
+      <Card class="app-goals__tile">
+        <div class="app-goals__grain" aria-hidden="true"></div>
+        <span>{title}</span>
+        <span>{summary}</span>
+      </Card>
+    ))}
+  </div>
+) : (
+  <app-timeline class="app-timeline" role="group" aria-label="产品迭代路径" data-route-enter-exempt>
+    <div class="app-timeline__diagram">
+      <ol class="app-timeline__stages" role="list">
+        {stages.map(({ version, title, period, diameter }, index) => (
+          <li class="app-timeline__stage" style={{
+            "--timeline-stage-ratio": diameter / currentDiameter,
+            "--timeline-ring": `url(${assets}/timeline-v${index + 1}-ring.svg)`,
+            "--timeline-fill": `url(${assets}/timeline-v${index + 1}-disc.svg)`,
+          }}>
+            <div class="app-timeline__node">
+              {(index < stages.length - 1 ? [false, true] : [false]).map((lit) => (
+                <div class:list={["app-timeline__face", { "app-timeline__face--lit": lit }]} inert={lit}>
+                  <div class="app-timeline__disc" aria-hidden="true"></div>
+                  <div class="app-timeline__copy">
+                    <strong>{version}</strong>
+                    <span class="app-timeline__title">{title}</span>
+                    <small>{period}</small>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </li>
+        ))}
+      </ol>
+      <div class="app-timeline__track" aria-hidden="true">
+        <div class="app-timeline__line">
+          {["start", "connector", "connector", "end"].map((part) => (
+            <img src={`${assets}/timeline-${part}.svg`} alt="" />
+          ))}
+        </div>
+        <div class="app-timeline__arrow"><img src={arrow} alt="" /></div>
+      </div>
+    </div>
+    <Button variant="ghost" class="app-timeline__replay" data-timeline-replay hidden>重新播放</Button>
+  </app-timeline>
+)}
+
+<script>
+  import "../../../scripts/app-timeline";
+</script>
+
+<style>
+  .app-goals {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: var(--space-4);
+    --app-goal-fill-start: light-dark(color(display-p3 .507 .8965 .8158 / 30%), color(display-p3 .0234 .287 .243 / 30%));
+    --app-goal-fill-end: light-dark(color(display-p3 .5708 .6647 .6415 / 6%), color(display-p3 .0539 .2782 .2278 / 6%));
+    --app-goal-stroke-start: light-dark(color(display-p3 .9363 1 .949 / 40%), color(display-p3 .3253 .4108 .3315 / 40%));
+    --app-goal-stroke-end: light-dark(color(display-p3 .5893 .6484 .6208 / 40%), color(display-p3 .1065 .2402 .165 / 40%));
+    --app-goal-copy: light-dark(color(display-p3 .258 .3862 .3431 / 80%), color-mix(in display-p3, var(--primitive-color-gray-50) 85%, transparent));
+    --app-goal-text-size: .8125rem;
+    --app-goal-grain: url("/assets/figma/zhaichangxiang-website/goal-grain.png");
+  }
+
+  .app-goals :global(.app-goals__tile) {
+    position: relative;
+    isolation: isolate;
+    display: grid;
+    align-content: center;
+    justify-items: center;
+    min-block-size: var(--space-20);
+    padding: var(--space-5) min(12%, var(--space-8));
+    border: 0;
+    border-radius: var(--radius-md);
+    background: transparent;
+    backdrop-filter: blur(var(--space-2));
+    color: var(--app-goal-copy);
+    font-size: var(--app-goal-text-size);
+    font-weight: var(--weight-medium);
+    line-height: var(--space-5);
+    letter-spacing: .01em;
+    text-align: center;
+    overflow-wrap: anywhere;
+  }
+
+  .app-goals:lang(zh) {
+    font-family: var(--primitive-font-jinshu-text), var(--font-sans);
+  }
+
+  .app-goals:lang(zh) :global(.app-goals__tile) span {
+    max-inline-size: 10rem;
+  }
+
+  .app-goals:lang(en) :global(.app-goals__tile) {
+    font-family: "New Spirit Regular", var(--font-sans);
+    font-weight: var(--weight-regular);
+  }
+
+  .app-goals :global(.app-goals__tile)::before,
+  .app-goals :global(.app-goals__tile)::after {
+    content: "";
+  }
+
+  .app-goals :global(.app-goals__tile)::before,
+  .app-goals :global(.app-goals__tile)::after,
+  .app-goals__grain {
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    pointer-events: none;
+  }
+
+  .app-goals :global(.app-goals__tile)::before {
+    z-index: -1;
+    backdrop-filter: blur(var(--space-6));
+    background: linear-gradient(in display-p3, var(--app-goal-fill-start), var(--app-goal-fill-end));
+  }
+
+  .app-goals__grain {
+    z-index: -1;
+    background: var(--app-goal-grain) 0 0 / 144px 144px repeat;
+    opacity: .6;
+  }
+
+  :global([data-theme="dark"]) .app-goals__grain {
+    background: var(--app-goal-grain) repeat, var(--app-goal-grain) var(--space-8) var(--space-4) repeat;
+    opacity: 1;
+  }
+
+  .app-goals :global(.app-goals__tile)::after {
+    padding: 1px;
+    background: linear-gradient(in display-p3, var(--app-goal-stroke-start) 5.92%, var(--app-goal-stroke-end));
+    mask: linear-gradient(black 0 0) content-box, linear-gradient(black 0 0);
+    mask-composite: exclude;
+  }
+
+  .app-timeline {
+    --timeline-mint: color(display-p3 .086275 .701961 .584314);
+    --timeline-earlier-opacity: 50%;
+    display: block;
+    container-type: inline-size;
+  }
+
+  .app-timeline__diagram {
+    position: relative;
+    isolation: isolate;
+  }
+
+  :global([data-theme="dark"]) .app-timeline {
+    --timeline-earlier-opacity: 40%;
+  }
+
+  .app-timeline .app-timeline__stages {
+    position: relative;
+    z-index: 0;
+    display: grid;
+    grid-template-columns: 128fr 144fr 164fr;
+    align-items: center;
+    gap: calc(30 / 592 * 100cqi);
+    margin: 0;
+    padding: 0 calc(48 / 592 * 100%);
+    min-block-size: 10.5rem;
+    list-style: none;
+  }
+
+  .app-timeline__stages .app-timeline__stage {
+    --timeline-stage-opacity: 100%;
+    min-inline-size: 0;
+    margin: 0;
+  }
+
+  .app-timeline__stages .app-timeline__stage:not(:last-child) {
+    --timeline-stage-opacity: var(--timeline-earlier-opacity);
+  }
+
+  .app-timeline__node {
+    position: relative;
+    isolation: isolate;
+  }
+
+  .app-timeline__face {
+    /* Blend the resting design's alpha in the same color space as the SVGs. */
+    --timeline-shape-color: color-mix(in display-p3, var(--timeline-mint) var(--timeline-stage-opacity), var(--color-canvas));
+    --timeline-copy-color: color-mix(in display-p3, var(--primitive-color-gray-0) var(--timeline-stage-opacity), var(--color-canvas));
+    position: relative;
+    display: grid;
+    place-items: center;
+    aspect-ratio: 1;
+    color: var(--timeline-copy-color);
+    text-align: center;
+  }
+
+  .app-timeline__face--lit {
+    --timeline-stage-opacity: 100%;
+    position: absolute;
+    inset: 0;
+    opacity: 0;
+  }
+
+  .app-timeline__disc {
+    position: absolute;
+    inset: 0;
+    display: grid;
+    place-items: center;
+  }
+
+  .app-timeline__disc::before,
+  .app-timeline__disc::after {
+    content: "";
+    grid-area: 1 / 1;
+    inline-size: 100%;
+    aspect-ratio: 1;
+    background: var(--timeline-shape-color);
+    mask: var(--timeline-ring) center / contain no-repeat;
+  }
+
+  .app-timeline__disc::after {
+    inline-size: calc(144 / 164 * 100%);
+    mask-image: var(--timeline-fill);
+  }
+
+  .app-timeline__copy {
+    position: relative;
+    display: grid;
+    justify-items: center;
+    gap: calc(var(--space-2) * var(--timeline-stage-ratio));
+    inline-size: 86%;
+    font-family: "PingFang SC", var(--font-sans);
+    font-size: calc(.625rem * var(--timeline-stage-ratio));
+    font-weight: var(--weight-regular);
+    line-height: 1.2;
+    letter-spacing: normal;
+    overflow-wrap: anywhere;
+  }
+
+  .app-timeline__stage:last-child .app-timeline__title:lang(zh) {
+    max-inline-size: 7em;
+  }
+
+  .app-timeline__copy strong {
+    font-family: "HONOR Sans CN Timeline", var(--font-sans);
+    font-size: calc(var(--text-lead) * var(--timeline-stage-ratio));
+    font-weight: var(--weight-bold);
+    line-height: 1.25;
+    letter-spacing: .01em;
+  }
+
+  .app-timeline__copy small {
+    color: color-mix(in display-p3, currentColor 80%, var(--timeline-shape-color));
+    font-size: calc(.375rem * var(--timeline-stage-ratio));
+    line-height: 1.33333;
+    letter-spacing: .02em;
+  }
+
+  .app-timeline__track,
+  .app-timeline__line,
+  .app-timeline__arrow {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+  }
+
+  .app-timeline__track {
+    --timeline-axis: 50%;
+    z-index: -1;
+    overflow: clip;
+  }
+
+  .app-timeline__arrow {
+    opacity: 0;
+  }
+
+  .app-timeline__track img {
+    position: absolute;
+    top: var(--timeline-axis);
+    height: auto;
+    margin: 0;
+    transform: translateY(-50%);
+  }
+
+  .app-timeline__line img:first-child { left: 0; width: calc(48 / 592 * 100%); }
+  .app-timeline__line img:nth-child(2) { left: calc(175 / 592 * 100%); width: calc(31.5 / 592 * 100%); }
+  .app-timeline__line img:nth-child(3) { left: calc(349.5 / 592 * 100%); width: calc(31.5 / 592 * 100%); }
+
+  .app-timeline__line img:last-child,
+  .app-timeline__arrow img {
+    right: 0;
+    width: calc(48 / 592 * 100%);
+  }
+
+  /* The last exported segment includes the arrow. Isolate its tip while it travels. */
+  .app-timeline__arrow img { clip-path: inset(0 0 0 calc(43 / 48 * 100%)); }
+  .app-timeline[data-timeline-motion="playing"] .app-timeline__line img:last-child {
+    clip-path: inset(0 calc(5 / 48 * 100%) 0 0);
+  }
+
+  .app-timeline :global(.app-timeline__replay) {
+    display: none;
+    inline-size: max-content;
+    margin-block-start: var(--space-1);
+    margin-inline-start: auto;
+    color: var(--color-copy);
+    font-size: var(--text-meta);
+  }
+
+  .app-timeline :global(.app-timeline__replay[aria-disabled="true"]) {
+    cursor: default;
+    opacity: .65;
+  }
+
+  @media (prefers-reduced-motion: no-preference) {
+    .app-timeline[data-timeline-motion="pending"] :is(.app-timeline__node, .app-timeline__line) {
+      opacity: 0;
+    }
+
+    .app-timeline[data-timeline-motion] :global(.app-timeline__replay) {
+      display: flex;
+    }
+
+    .app-timeline :global(.app-timeline__replay[hidden]) {
+      visibility: hidden;
+    }
+  }
+
+  @media (hover: hover) and (pointer: fine) {
+    .app-timeline:not([data-timeline-motion="pending"], [data-timeline-motion="playing"])
+      .app-timeline__stage:not(:last-child):hover .app-timeline__node {
+      transform: scale(calc(1 / var(--timeline-stage-ratio)));
+    }
+
+    .app-timeline:not([data-timeline-motion="pending"], [data-timeline-motion="playing"])
+      .app-timeline__stage:hover .app-timeline__face--lit {
+      opacity: 1;
+    }
+  }
+
+  @media (hover: hover) and (pointer: fine) and (prefers-reduced-motion: no-preference) {
+    .app-timeline:not([data-timeline-motion="pending"], [data-timeline-motion="playing"]) .app-timeline__node {
+      transition: transform var(--duration-fast) var(--ease-smooth-out);
+    }
+
+    .app-timeline:not([data-timeline-motion="pending"], [data-timeline-motion="playing"]) .app-timeline__face--lit {
+      transition: opacity var(--duration-fast) var(--ease-smooth-out);
+    }
+  }
+
+  @container (max-width: 31rem) {
+    .app-timeline .app-timeline__stages {
+      align-items: start;
+      min-block-size: 0;
+    }
+
+    .app-timeline__node {
+      transform-origin: center calc(82 / 592 * 100cqi);
+    }
+
+    .app-timeline__face {
+      grid-template-rows: calc(164 / 592 * 100cqi) auto;
+      gap: var(--space-2);
+      aspect-ratio: auto;
+    }
+
+    .app-timeline__disc {
+      position: relative;
+      inline-size: 100%;
+      aspect-ratio: 1;
+    }
+
+    .app-timeline__copy {
+      inline-size: 100%;
+      gap: calc(var(--space-1) / 2);
+      color: var(--color-ink);
+      font-size: var(--text-meta);
+    }
+
+    .app-timeline__stage:last-child .app-timeline__title:lang(zh) {
+      max-inline-size: none;
+    }
+
+    .app-timeline__copy small {
+      color: var(--color-muted);
+      font-size: .625rem;
+      line-height: var(--space-3);
+    }
+
+    .app-timeline__track {
+      --timeline-axis: calc(82 / 592 * 100cqi);
+    }
+  }
+
+  @media (max-width: 27rem) {
+    .app-goals { gap: var(--space-2); }
+  }
+</style>

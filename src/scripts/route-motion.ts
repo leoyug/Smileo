@@ -23,7 +23,9 @@ const getEntranceTargets = (main: HTMLElement) => {
     // Groups and individual items share one document-order sequence. Never
     // animate a parent and its child together (which would compound the blur).
     return [...new Set(targets)]
-      .filter((target) => !target.matches(".is-transitioning, .is-writing-transition"))
+      .filter((target) => !target.matches(
+        ".is-transitioning, .is-writing-transition, [data-route-enter-exempt], [data-case-slot]:has(> [data-route-enter-exempt])",
+      ))
       .filter((target) => !targets.some((other) => other !== target && other.contains(target)))
       .sort((left, right) => left.compareDocumentPosition(right) & Node.DOCUMENT_POSITION_FOLLOWING ? -1 : 1);
   }
@@ -140,9 +142,12 @@ export function initRouteMotion() {
   };
 
   const onFocusIn = (event: FocusEvent) => {
-    if (!(event.target instanceof Node)) return;
+    const focused = event.target;
+    if (!(focused instanceof Element)) return;
     for (const target of targets) {
-      if (!target.contains(event.target)) continue;
+      if (!target.contains(focused)) continue;
+      // Pointer focus must not move a button out from under the active press.
+      if (target.dataset.routeEnterFocus === "keyboard" && !focused.matches(":focus-visible")) continue;
       pendingTargets.delete(target);
       viewportObserver?.unobserve(target);
       gsap.killTweensOf(target);

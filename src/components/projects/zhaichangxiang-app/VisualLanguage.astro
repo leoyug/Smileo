@@ -1,0 +1,206 @@
+---
+const assets = "/assets/figma/zhaichangxiang-app";
+---
+
+<div class="app-visual" role="group" aria-label="视觉规范">
+  <div class="app-visual__grid">
+    <div class="app-visual__tile app-visual__tile--glass">
+      <p>借助透明毛玻璃体现产品的质感，模糊背景的效果创造了层次感，让重要信息浮于上层，引导聚焦，减少认知负荷，显得更加现代而精致。</p>
+      <div class="app-visual__title">
+        <strong>通透</strong>
+        <img src={`${assets}/visual-glass-dot.svg`} alt="" width="3" height="3" loading="lazy" />
+        <span>毛玻璃质感</span>
+      </div>
+      <img class="app-visual__glass" src={`${assets}/visual-glass.png`} alt="" width="166" height="166" loading="lazy" />
+    </div>
+    <div class="app-visual__tile app-visual__tile--mint">
+      <div class="app-visual__swatch">
+        <div class="app-visual__title">
+          <strong>清新</strong>
+          <img src={`${assets}/visual-mint-dot.svg`} alt="" width="3" height="3" loading="lazy" />
+          <span>薄荷绿主色</span>
+        </div>
+        <img class="app-visual__mint-mark" src={`${assets}/visual-mint-mark.svg`} alt="" width="64" height="64" loading="lazy" />
+      </div>
+      <p>相比蓝色，薄荷绿色融合了青色的清新感与绿色的安全感，更能在众多蓝色系的家装App中形成品牌记忆。</p>
+    </div>
+    <div class="app-visual__tile app-visual__tile--gradient">
+      <div class="app-visual__title">
+        <strong>亲和</strong>
+        <img class="app-visual__gradient-dot-light" src={`${assets}/visual-gradient-dot-light.svg`} alt="" width="3" height="3" loading="lazy" />
+        <img class="app-visual__gradient-dot-dark" src={`${assets}/visual-gradient-dot.svg`} alt="" width="3" height="3" loading="lazy" />
+        <span>柔和渐变背景</span>
+      </div>
+      <p>大面积纯白背景生硬且冰冷。柔和、低饱和度的渐变色能为界面打下温暖、柔和的基调，极大提升亲和力。</p>
+    </div>
+    <div class="app-visual__tile app-visual__tile--mascot">
+      <div class="app-visual__title">
+        <strong>情感纽带</strong>
+        <img src={`${assets}/visual-mascot-dot.svg`} alt="" width="3" height="3" loading="lazy" />
+        <span>IP 叙事</span>
+      </div>
+      <p>解决“冰冷工具感”的痛点，塑造独一无二的品牌个性与记忆点。</p>
+      <img class="app-visual__mascot" src={`${assets}/visual-mascot.png`} alt="" width="112" height="103" loading="lazy" />
+    </div>
+  </div>
+</div>
+
+<style>
+  .app-visual {
+    /* The Figma file uses Display P3 for its paints and artwork. */
+    --visual-mint: color(display-p3 .086275 .701961 .584314);
+    --visual-paper: color(display-p3 .964706 .960784 .972549);
+    --visual-ink: color(display-p3 .223529 .235294 .262745 / 80%);
+    --visual-white: color(display-p3 1 1 1);
+    --visual-shadow-ink: rgb(0 0 0 / 4%);
+    max-inline-size: var(--content-reading);
+    padding: var(--space-6);
+    border-radius: var(--radius-lg);
+    background: light-dark(var(--color-project-frame), var(--color-surface));
+    container-type: inline-size;
+    font-family: "PingFang SC", var(--font-sans);
+    font-weight: 300;
+  }
+
+  .app-visual:lang(en) {
+    font-family: var(--font-sans);
+    font-weight: var(--weight-regular);
+  }
+
+  .app-visual__grid {
+    display: grid;
+    grid-template-columns: minmax(0, 200fr) minmax(0, 328fr);
+    gap: var(--space-4);
+  }
+
+  .app-visual__tile {
+    position: relative;
+    isolation: isolate;
+    display: grid;
+    align-content: space-between;
+    gap: var(--space-4);
+    min-width: 0;
+    overflow: clip;
+    padding: var(--space-5);
+    padding-block-end: var(--space-4);
+    border-radius: var(--radius-sm);
+    font-size: var(--text-meta);
+    line-height: 1.125rem;
+  }
+
+  .app-visual__tile p { margin: 0; color: inherit; line-height: inherit; }
+
+  :global(:root:not([data-theme="dark"])) .app-visual__tile {
+    box-shadow: 0 var(--space-1) var(--space-6) var(--visual-shadow-ink);
+  }
+
+  :global(:root:not([data-theme="dark"])) :is(.app-visual__tile--gradient, .app-visual__tile--mascot) {
+    --visual-shadow-ink: rgb(0 0 0 / 8%);
+  }
+
+  .app-visual__title {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    gap: var(--space-1);
+    font-size: var(--text-meta);
+    line-height: var(--space-5);
+  }
+  .app-visual__title strong { font-size: var(--text-body); font-weight: var(--weight-semibold); }
+  .app-visual__title img { flex: none; align-self: center; margin: 0; }
+
+  .app-visual__tile--glass {
+    --visual-glass-highlight: color-mix(in display-p3, var(--visual-white), var(--visual-paper));
+    --visual-glass-tint: color-mix(in display-p3, color(display-p3 .763907 .935566 .869763), var(--visual-paper));
+    grid-column: 1 / -1;
+    min-height: 11rem;
+    padding-block: var(--space-4) var(--space-5);
+    padding-inline-end: min(46.32%, 15.75rem);
+    background: linear-gradient(218.29deg in display-p3,
+      var(--visual-glass-highlight) -5.07%, var(--visual-glass-tint) 79.49%);
+    color: color(display-p3 .263966 .403514 .35955 / 80%);
+  }
+  :global(:root:not([data-theme="dark"])) .app-visual__tile--glass {
+    background: linear-gradient(255.97deg in display-p3,
+      var(--visual-glass-tint) 3.12%, var(--visual-glass-highlight) 95.35%);
+  }
+  .app-visual__tile--glass .app-visual__title { color: var(--visual-mint); }
+  .app-visual__tile > .app-visual__glass {
+    position: absolute;
+    right: min(5%, 1.6875rem);
+    bottom: -1.53px;
+    width: min(34%, 10.375rem);
+    height: auto;
+    z-index: -1;
+    filter: drop-shadow(0 var(--space-1) var(--space-3) var(--visual-shadow-ink));
+  }
+
+  .app-visual__tile--mint {
+    grid-row: span 2;
+    grid-template-rows: minmax(9rem, 1fr) minmax(4lh, auto);
+    padding: 0 0 var(--space-4);
+    background: light-dark(var(--visual-white), color-mix(in display-p3, var(--visual-white) 90%, transparent));
+    color: var(--visual-ink);
+  }
+  :global([data-theme="dark"]) .app-visual__tile--mint { backdrop-filter: blur(17px); }
+  .app-visual__swatch {
+    display: grid;
+    align-content: space-between;
+    gap: var(--space-4);
+    padding: var(--space-5) var(--space-5) var(--space-4) var(--space-4);
+    border-radius: inherit;
+    background: var(--visual-mint);
+    color: var(--visual-white);
+  }
+  .app-visual__swatch .app-visual__title { margin-inline-start: var(--space-1); }
+  .app-visual__swatch > .app-visual__mint-mark { margin: 0; transform: rotate(180deg); }
+  .app-visual__tile--mint p { padding-inline: var(--space-5); }
+  .app-visual__tile--mint p:lang(zh) { text-align: justify; }
+
+  .app-visual__tile--gradient {
+    min-height: 9.5rem;
+    color: light-dark(color(display-p3 .196078 .415686 .329412), color(display-p3 .194572 .414439 .328759));
+    background: linear-gradient(169.1deg in display-p3,
+      color-mix(in display-p3, color(display-p3 .254902 .874510 .544052) 80%, var(--visual-white)) -6.50%,
+      color(display-p3 .148173 .813308 .663116) 75.56%);
+  }
+  .app-visual__title .app-visual__gradient-dot-dark,
+  :global([data-theme="dark"]) .app-visual__title .app-visual__gradient-dot-light { display: none; }
+  :global([data-theme="dark"]) .app-visual__title .app-visual__gradient-dot-dark { display: block; }
+  .app-visual__tile--gradient p { color: color(display-p3 .057921 .357215 .297356); }
+
+  .app-visual__tile--mascot {
+    min-height: 9.5rem;
+    color: var(--visual-white);
+    background: linear-gradient(152.87deg in display-p3,
+      color(display-p3 .305439 .439960 .843525) 10.97%,
+      color(display-p3 .160599 .231331 .443525) 79.38%);
+  }
+  .app-visual__tile--mascot p {
+    padding-inline-end: min(47.22%, 8.5rem);
+    color: color-mix(in display-p3, var(--visual-white) 65%, transparent);
+  }
+  .app-visual__tile > .app-visual__mascot {
+    position: absolute;
+    right: var(--space-4);
+    bottom: -9px;
+    width: min(36%, 7rem);
+    height: auto;
+    aspect-ratio: 112 / 103;
+    object-fit: cover;
+    z-index: -1;
+    filter: drop-shadow(0 4px 8px rgb(0 0 0 / 20%));
+  }
+
+  @container (max-width: 24rem) {
+    .app-visual__grid { grid-template-columns: minmax(0, 1fr); }
+    .app-visual__tile--glass, .app-visual__tile--mint { grid-column: auto; grid-row: auto; }
+    .app-visual__tile--mint { grid-template-rows: minmax(9rem, 1fr) auto; }
+  }
+
+  @media (max-width: 32rem) {
+    .app-visual { padding: var(--space-3); }
+    .app-visual__tile, .app-visual__swatch { padding-block: var(--space-4); }
+    .app-visual__tile--mint { padding-block-start: 0; }
+  }
+</style>

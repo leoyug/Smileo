@@ -130,8 +130,6 @@ const initializeProjectFilters = () => {
       });
       animations = [];
     };
-    restorePanelSpace(root);
-    applyCategory(root, selectedCategory(root));
     positionActiveTab(root);
     const track = root.querySelector<HTMLElement>("[data-project-filter-track]");
     let layoutWidth = root.clientWidth;
@@ -238,15 +236,21 @@ const initializeProjectFilters = () => {
   });
 };
 
-initializeProjectFilters();
-document.addEventListener("astro:page-load", initializeProjectFilters);
-document.addEventListener("astro:before-swap", (event) => {
-  document.querySelectorAll<ProjectFiltersElement>("[data-project-filters]").forEach((root) => root.projectFiltersCleanup?.());
-  // Restore the filtered geometry before Astro captures the returning cover's destination.
-  event.newDocument.querySelectorAll<HTMLElement>("[data-project-filters]").forEach((root) => {
+const prepareProjectFilters = (page: Document) => {
+  page.querySelectorAll<HTMLElement>("[data-project-filters]").forEach((root) => {
     restorePanelSpace(root);
     applyCategory(root, selectedCategory(root));
   });
+};
+
+prepareProjectFilters(document);
+initializeProjectFilters();
+// Position the selected pill once the tabs are measurable, before the route snapshot.
+document.addEventListener("astro:after-swap", initializeProjectFilters);
+document.addEventListener("astro:before-swap", (event) => {
+  document.querySelectorAll<ProjectFiltersElement>("[data-project-filters]").forEach((root) => root.projectFiltersCleanup?.());
+  // Restore the filtered geometry before Astro captures the returning cover's destination.
+  prepareProjectFilters(event.newDocument);
 });
 
 export {};

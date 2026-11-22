@@ -43,21 +43,23 @@ The [opening section](/media/projects/zhaichangxiang-website/case-study/01-openi
 
 [Homepage structure](#case-website-structure)
 
+<span id="&#x901a;&#x8fc7;&#x5e03;&#x5c40;&#x6765;&#x5e73;&#x8861;&#x89c6;&#x89c9;&#x6548;&#x679c;&#x548c;&#x4fe1;&#x606f;&#x5c55;&#x793a;&#x7684;&#x9700;&#x6c42;" class="detail-anchor" aria-hidden="true"></span>
+
 *Visual system*
 
-## Balance visual impact with clear information
+## A design language that feels smart and warm
 
-The dark green hero, grid and diffuse light establish the software’s identity. Lighter sections carry explanations and interfaces, while renderings from the inspiration library show the spaces and materials. Brand green highlights key terms and primary actions. Type size and spacing establish the hierarchy.
+Our competitive research and visual explorations found that renovation websites often feel busy, present too much information at once, and struggle to build trust. We defined a visual language with both the professionalism of SaaS and the warmth of a home. Real product interfaces communicate how the software works, interior photography shows spaces people can picture living in, and translucent lighting and subtle technical details bring the two together.
 
-![An inspiration library using varied image sizes to show interior styles, light and materials](/media/projects/zhaichangxiang-website/case-study/04-styles.webp)
+[Visual system](#case-website-visual-language)
 
 *Website presentation*
 
 ## How the pages present the product
 
-Solutions follow the stages of the business. The acquisition section combines a handheld device, interior renderings, a mini-program code and lead cards to show how companies move from presenting a renovation concept to following up with a lead. [AI layout](/media/projects/zhaichangxiang-website/case-study/03-technology.webp) pairs recommendations with a 3D floor plan, while the desktop editor shows details such as walls, ceilings, floors, tiling and custom cabinets.
+The solutions section lists each business stage on the left and shows the corresponding product screens on the right. The [acquisition example](/media/projects/zhaichangxiang-website/case-study/02-scenarios.webp) puts a rendering on a phone alongside a mini-program code and lead cards, showing how homeowners scan to view the rendering and how renovation firms follow up. Further down, [AI layout](/media/projects/zhaichangxiang-website/case-study/03-technology.webp) shows recommended layouts alongside a 3D floor plan. Close-ups of the desktop editor show how to adjust walls, ceilings, floor tiling and custom cabinets.
 
-![Early-stage acquisition solution, with business stages and descriptions on the left and a handheld device, mini-program code and lead cards on the right](/media/projects/zhaichangxiang-website/case-study/02-scenarios.webp)
+[Full homepage screenshot](#case-website-homepage)
 
 ## Adapting to mobile
 
@@ -71,7 +73,7 @@ The mobile layout turns parallel desktop content into a vertical reading order. 
 
 As the company’s products and target customers changed, the site needed to explain the brand and product, convert leads and establish trust more clearly. The redesign focused on communicating product value quickly, building confidence and supporting conversion.
 
-In the month after launch, inquiries grew 27% over the previous month, the customer order rate rose 18%, and package purchases increased 15%.
+One month after the website launched, key metrics such as conversion and seven-day retention met the targets set before the redesign. Customer service follow-ups and on-site conversations showed a 60% increase in user satisfaction.
 
 | Monthly inquiries | Customer order rate | Package purchases |
 | --- | --- | --- |

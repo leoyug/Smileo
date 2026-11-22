@@ -1,13 +1,13 @@
 type SelectionEdges = { flushStart: boolean; flushEnd: boolean };
-type Fragment = SelectionEdges & { rect: DOMRect };
-type Line = SelectionEdges & { left: number; right: number; top: number; bottom: number };
+type Fragment = SelectionEdges & { rect: DOMRect; lineHeight: number };
+type Line = SelectionEdges & { left: number; right: number; top: number; bottom: number; lineHeight: number };
 
 const latin = /\p{Script=Latin}/u;
 const otherLetter = /(?=\p{Letter})\P{Script=Latin}/u;
 const trailingPunctuation = /^(?:(?![\p{Ps}\p{Pi}])\p{P})+/u;
 const segmenter = typeof Intl.Segmenter === "function" ? new Intl.Segmenter("en", { granularity: "word" }) : null;
 const nativeOnly = "input, textarea, select, button, [contenteditable], pre, svg, [data-selection-native]";
-const textHost = "p, h1, h2, h3, h4, h5, h6, li, dt, dd, figcaption, td, th, blockquote, div";
+const textHost = "[data-selection-container], p, h1, h2, h3, h4, h5, h6, li, dt, dd, figcaption, td, th, blockquote, div";
 const forcedColors = matchMedia("(forced-colors: active)");
 const overlays = new Map<HTMLElement, HTMLSpanElement>();
 let mouseSelection = false;
@@ -83,9 +83,12 @@ function collectFragments(range: Range) {
     if (!rects.length) continue;
 
     const parent = node.parentElement;
+    if (!parent || parent.closest(nativeOnly)) return null;
     // Paint above the inline code background and below its text.
-    const host = parent?.closest("code") ?? parent?.closest(textHost);
-    if (!(host instanceof HTMLElement) || parent?.closest(nativeOnly)) return null;
+    const host = parent.closest("code") ?? parent.closest(textHost);
+    if (!(host instanceof HTMLElement)) return null;
+    // Inline code has its own compact background inside the surrounding line.
+    const lineHeight = host.matches("code") ? 0 : Number.parseFloat(getComputedStyle(parent).lineHeight);
     const group = groups.get(host) ?? [];
     const selected = node.data.slice(start, end);
     const startsWithPunctuation = /^\p{P}/u.test(selected);
@@ -93,6 +96,7 @@ function collectFragments(range: Range) {
     for (const rect of rects) {
       group.push({
         rect,
+        lineHeight,
         flushStart: rect === rects[0] && startsWithPunctuation,
         flushEnd: rect === rects.at(-1) && endsWithPunctuation,
       });
@@ -102,10 +106,11 @@ function collectFragments(range: Range) {
   return groups;
 }
 
-function getLines(fragments: Fragment[]): Line[] {
+function getLines(fragments: Fragment[], scaleY: number): Line[] {
   const lines: Line[] = [];
-  for (const { rect, flushStart, flushEnd } of fragments) {
+  for (const { rect, lineHeight: computedLineHeight, flushStart, flushEnd } of fragments) {
     const line = lines.at(-1);
+    const lineHeight = computedLineHeight || rect.height / scaleY;
     const center = (rect.top + rect.bottom) / 2;
     if (line && center > line.top && center < line.bottom && rect.left <= line.right + 1 && rect.right >= line.left - 1) {
       if (rect.left < line.left) line.flushStart = flushStart;
@@ -114,8 +119,9 @@ function getLines(fragments: Fragment[]): Line[] {
       line.right = Math.max(line.right, rect.right);
       line.top = Math.min(line.top, rect.top);
       line.bottom = Math.max(line.bottom, rect.bottom);
+      line.lineHeight = Math.max(line.lineHeight, lineHeight);
     } else {
-      lines.push({ left: rect.left, right: rect.right, top: rect.top, bottom: rect.bottom, flushStart, flushEnd });
+      lines.push({ left: rect.left, right: rect.right, top: rect.top, bottom: rect.bottom, lineHeight, flushStart, flushEnd });
     }
   }
   return lines;
@@ -129,6 +135,12 @@ function removeOverlay(host: HTMLElement, overlay: HTMLSpanElement) {
 
 function clearOverlays() {
   for (const [host, overlay] of overlays) removeOverlay(host, overlay);
+}
+
+function selectionScale(renderedSize: number, layoutSize: string) {
+  const size = Number.parseFloat(layoutSize);
+  // Computed sizes retain fractions, with minor rounding when serialized to CSS pixels.
+  return size > 0 && renderedSize > 0 && Math.abs(renderedSize - size) >= 0.01 ? renderedSize / size : 1;
 }
 
 function drawSelection(groups: Map<HTMLElement, Fragment[]>) {
@@ -146,17 +158,18 @@ function drawSelection(groups: Map<HTMLElement, Fragment[]>) {
   }
   const geometry = Array.from(overlays, ([host, overlay]) => {
     const origin = overlay.getBoundingClientRect();
+    const { width, height } = getComputedStyle(overlay);
+    const scaleY = selectionScale(origin.height, height);
     return {
-      overlay, origin, lines: getLines(groups.get(host) ?? []),
-      scaleX: origin.width / overlay.offsetWidth || 1,
-      scaleY: origin.height / overlay.offsetHeight || 1,
-      lineHeight: host.matches("code") ? 0 : Number.parseFloat(getComputedStyle(host).lineHeight),
+      overlay, origin, lines: getLines(groups.get(host) ?? [], scaleY),
+      scaleX: selectionScale(origin.width, width),
+      scaleY,
     };
   });
-  for (const { overlay, origin, lines, scaleX, scaleY, lineHeight } of geometry) {
+  for (const { overlay, origin, lines, scaleX, scaleY } of geometry) {
     overlay.replaceChildren(...lines.map((line) => {
       const mark = document.createElement("span");
-      const height = Math.max(0, (lineHeight || (line.bottom - line.top) / scaleY) - 2);
+      const height = line.lineHeight <= 12 ? line.lineHeight * 0.9 : line.lineHeight - 2;
       const center = (line.top + line.bottom) / 2;
       mark.style.left = `${(line.left - origin.left) / scaleX}px`;
       mark.style.top = `${(center - origin.top) / scaleY - height / 2}px`;

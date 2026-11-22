@@ -1,0 +1,10 @@
+<svg preserveAspectRatio="none" overflow="visible" style="display: block;" width="180" height="143.25" viewBox="0 0 180 143.25" fill="none" xmlns="http://www.w3.org/2000/svg">
+<foreignObject x="-7.5" y="-7.5" width="195" height="158.25"><div xmlns="http://www.w3.org/1999/xhtml" style="backdrop-filter:blur(3.75px);clip-path:url(#bgblur_0_0_16_clip_path);height:100%;width:100%"></div></foreignObject><path id="Union" data-figma-bg-blur-radius="7.5" d="M157.5 71.3125H111.908L180 143.25H0L68.0918 71.3125H22.5L90 0L157.5 71.3125Z" fill="url(#paint0_linear_0_16)"/>
+<defs>
+<clipPath id="bgblur_0_0_16_clip_path" transform="translate(7.5 7.5)"><path d="M157.5 71.3125H111.908L180 143.25H0L68.0918 71.3125H22.5L90 0L157.5 71.3125Z"/>
+</clipPath><linearGradient id="paint0_linear_0_16" x1="90" y1="0" x2="90" y2="71.3123" gradientUnits="userSpaceOnUse">
+<stop stop-color="white" stop-opacity="0.15" style="stop-color:white;stop-opacity:0.15;"/>
+<stop offset="1" stop-color="white" stop-opacity="0.05" style="stop-color:white;stop-opacity:0.05;"/>
+</linearGradient>
+</defs>
+</svg>

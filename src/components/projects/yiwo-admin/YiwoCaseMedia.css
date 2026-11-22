@@ -22,8 +22,7 @@
   --yiwo-green: #16b395;
   --yiwo-blue: #3860f6;
   --yiwo-brand-gradient: linear-gradient(244deg, #2bc6a3 8%, #41dfa1 92%);
-  --yiwo-stage-dark: #13120f;
-  --yiwo-stage: light-dark(var(--color-surface-2), var(--yiwo-stage-dark));
+  --yiwo-stage: var(--color-project-case-surface);
   --yiwo-type: "HONOR Sans CN", "PingFang SC", "Microsoft YaHei", var(--font-sans);
 }
 

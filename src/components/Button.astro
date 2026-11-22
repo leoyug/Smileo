@@ -12,4 +12,4 @@ const { href, variant = "primary", size = "default", type = "button", class: cla
 const classes = ["button", `button--${variant}`, `button--${size}`, className];
 ---
 
-{href ? <a href={href} class:list={classes} {...attributes}><slot /></a> : <button type={type} class:list={classes} {...attributes}><slot /></button>}
+{href ? <a href={href} class:list={classes} data-selection-container {...attributes}><slot /></a> : <button type={type} class:list={classes} {...attributes}><slot /></button>}

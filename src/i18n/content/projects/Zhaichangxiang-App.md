@@ -3,94 +3,104 @@ title: "Zhaichangxiang App"
 description: "An all-in-one platform for renovation companies"
 role: "UI design, design system"
 ---
-Zhaichangxiang supports small and medium-sized home renovation companies with design proposals, visual presentations and client communication. I joined in September 2021, collaborating with two other designers through ongoing iterations.
-
-**My responsibilities** — I independently owned the creation flow, renovation editor, cross-platform adaptation and design system, contributed to the home screen, and followed development through release acceptance.
-
-The screens in this case study are design deliverables used to explain decisions and interactions.
+*Project background*
 
 ## Starting point: make operations support conversation
 
-During a sales conversation, staff need to find a floor plan, try renovation options and generate renderings to discuss with clients. Unclear creation options, indistinguishable proposals and cumbersome rendering steps can all interrupt that conversation.
+Zhaichangxiang is a sales presentation tool built around renderings for the home renovation industry. During a client consultation, sales staff often need to find a floor plan, try design options and generate renderings to discuss with the client. Unclear creation options, proposals that look alike and cumbersome rendering steps can all interrupt the conversation.
 
-My focus was to help people know where to start, what to compare and what happens next at every step.
+Zhaichangxiang brings sales presentations, design and marketing into one tool. Real-time visualization and intelligent features help small and medium-sized renovation companies and individual users develop and discuss proposals. For renovation companies, the aim is to make that work more efficient and improve close rates.
 
-> Support the immediate task first, then reveal complex operations as needed.
+*My role*
 
-## Make creation an explicit starting point
+## Designing an easy-to-use product from scratch
 
-For the home screen, we considered a top shortcut area and a floating creation button at the bottom. I proposed exposing the main creation options directly: a floor plan must exist before renovation and rendering can continue.
+I joined the project in January 2022 and worked alongside two other designers. I contributed to the home screen layout, took ownership of the creation flow and renovation editor, and was responsible for cross-device adaptation, the design system and release acceptance. We built these parts from scratch, which gave us the best chance to set the quality bar while the product was still taking shape.
 
-The final design emphasizes floor-plan search and places import and freehand drawing alongside it. Short explanations help people choose based on the materials they have. Giving these entry points more space above the fold was a trade-off in favor of the core task.
+The product primarily serves small and medium-sized renovation companies in smaller cities. Staff mainly need a tool they can pick up quickly and use to generate renderings while the client is there. My focus was to make the next step clear and help users see what to compare and what would happen next.
 
-![The old plus menu compared with the new home screen, which directly exposes search, import and freehand drawing](/media/projects/Zhaichangxiang-App/case-study/03-create-entry.webp)
+*Research*
 
-*From opening a menu to find a function, to recognizing creation options directly on the home screen.*
+## Industry and user analysis
 
-## Make differences between proposals visible
+I used reports from the market team and public sources to identify what could inform design decisions, looking at both what the industry offers and how renovation staff actually work.
 
-Some users reported that several proposals looked alike and were hard to choose between. I focused comparison on specific changes: retain the complete floor plan as a reference and mark differences in furniture placement and layout with green dashed lines.
+[Research diagram](#case-app-research)
 
-Style selection offers large previews, while local proposals include reasons for the recommendation, letting images and explanations support the decision together.
+## Competitive analysis
 
-![Two layouts retain a complete floor-plan reference, with green dashed lines marking local differences](/media/projects/Zhaichangxiang-App/case-study/07-layout-difference.webp)
+I compared renovation platforms, design tools and related services, focusing on the **functionality and presentation** of their home screens, creation flows and renovation editors. I followed familiar patterns for common actions and used the business context to decide which steps could happen earlier, be combined or be revealed on demand. This made the comparison quicker to use and gave me clearer guidance for design decisions.
 
-*Guide comparison toward the areas that changed, reducing repeated searches across the entire image.*
+[Competitor categories and comparison criteria](#case-app-comparison)
 
-## Separate basic rendering from detailed settings
+*Visual language*
 
-To reduce rendering steps and make the entry point easier to find, I brought room selection and image quality into a bottom sheet while keeping the canvas visible. Camera-position adjustments sit one level deeper and open only when needed.
+## Exploring a visual direction through research
 
-1. **Set up**
+**Audience** — Renovation professionals aged 30 to 50 in second- and third-tier cities.
 
-   Choose the rooms and image quality.
-2. **Submit**
+**User needs** — Straightforward interactions that work across multiple devices.
 
-   Show task status and estimated time.
-3. **Finish**
+**Product scope** — Renovation design, marketing and proposal management in one platform.
 
-   Open the rendering and continue the conversation.
+**Reference products** — Clear structure, straightforward interactions and a trustworthy visual language.
 
-*Camera-position adjustment is an optional branch rather than a mandatory step for every rendering.*
+[Visual language](#case-app-visual-language)
 
-![Rendering settings, optional camera-position adjustment and completion feedback](/media/projects/Zhaichangxiang-App/case-study/08-render-flow.webp)
+*Design direction*
 
-*Basic operations stay together while detailed control remains available. The middle step is optional; the three screens illustrate functional states.*
+## Design principles and goals
 
-## Explain why the redesign is worth implementing
+<div class="app-goals__copy">
 
-The editor's bottom toolbar was the hardest change to move forward. The old design showed first- and second-level functions together, and restructuring it required changes to both organization and development effort. In requirements discussions, I explained the need through visual hierarchy and functional grouping, then followed development and release acceptance.
+**Design principles:** Four principles guided the design process: <b>ease of use, consistency, efficiency and standardization</b>.
 
-![Hierarchy and grouping in the old floating controls compared with the new fixed bottom toolbar](/media/projects/Zhaichangxiang-App/case-study/12-editor-toolbar.webp)
+Business needs, user feedback and issues found during internal reviews helped us identify what to improve. We set actionable goals and defined measurable criteria for evaluating the design after the project.
 
-*Ground the rationale in specific interface choices: which functions are peers, how they are grouped and how primary actions appear.*
+**Design goals:**
 
-Cross-platform adaptation followed the same task-oriented approach. The design system supplied shared visual and component rules across devices.
+</div>
 
-- **Phone**
+[Design goals](#case-app-goals)
 
-  Fast creation and selection, focused on the main entry points.
-- **Tablet**
+## How the product evolved
 
-  Face-to-face presentations and adjustments using landscape split views.
-- **Web**
+The design evolved alongside changes in **strategic direction and product positioning**. Version 1.0 focused on designing and managing renovation proposals, with an interface built for efficiency. Version 2.0 added marketing and promotion for renovation services and introduced entry points for those activities. Version 3.0 covered the full renovation workflow, bringing sales conversations, design, marketing and proposal management together on one platform.
 
-  Detailed design and parameter editing in a denser workspace.
+[Product timeline](#case-app-timeline)
+
+*Design strategy*
+
+## Restructure the product around ease of use
+
+A floor plan is the starting point for renovation and rendering. We considered a shortcut area at the top of the home screen and a floating creation button. I proposed presenting the main creation options directly. The final design emphasizes floor-plan search and places import and freehand drawing alongside it. Short explanations help people choose based on what they have, and the most frequent task gets priority above the fold. [View the creation options before and after](/media/projects/Zhaichangxiang-App/case-study/03-create-entry.webp).
+
+## Shorten the workflow and support decisions
+
+Some users found it hard to tell proposals apart. I kept the complete floor plan as a reference and marked changes in furniture placement and layout with green dashed lines. Larger style previews and explanations for local recommendations make the differences easier to identify. [View the proposal comparison](/media/projects/Zhaichangxiang-App/case-study/07-layout-difference.webp).
+
+I brought room selection and image quality into a bottom sheet while keeping the canvas visible. Detailed camera-position controls are available on demand. After submission, users see the task status and estimated time before moving on to the rendering. [View the rendering flow](/media/projects/Zhaichangxiang-App/case-study/08-render-flow.webp).
+
+## Keep the experience consistent across devices
+
+The phone focuses on quick creation and selection. The tablet uses a landscape split view for face-to-face presentations and adjustments. The web workspace supports detailed design and parameter editing in a denser layout. Shared rules in the design system tie these experiences together.
+
+## Make the workflow more efficient
+
+The previous editor displayed primary and secondary controls together in a floating toolbar. I used visual hierarchy and functional grouping to explain the redesign in requirements discussions, brought the primary tools into a fixed bottom bar, and followed implementation through release acceptance. [View the editor toolbar before and after](/media/projects/Zhaichangxiang-App/case-study/12-editor-toolbar.webp).
+
+Cross-device handoff, cloud saving, prompts and recommendations, AI explanations and quotations have launched, helping staff continue from design into a sales conversation.
+
+*Results*
 
 ## Outcomes and value
 
-Following the broader product and operational changes, core measures such as customer conversion and seven-day retention met the expectations set before the redesign.
+Following the combined product and operational changes, core measures such as customer conversion and seven-day retention met the expectations set before the redesign. Customer-service follow-ups and on-site conversations indicated a 60% rise in satisfaction after the overall redesign.
 
-Architectural improvements and usability changes strengthened engagement. A simpler workflow supported decisions, reduced drop-off and increased rendering activity. Multi-device support and intelligent features helped improve customer conversion.
+[Project results](#case-app-results)
 
-Customer-service follow-ups and on-site product conversations indicated that satisfaction rose by 60% and the number of active users by 23% after the overall redesign.
+## Lessons from the project
 
-![Five redesign measures: seven-day retention up 15%, active users up 23%, operation paths shortened by 37%, customer conversion up 18% and rendering activity up 22%](/media/projects/Zhaichangxiang-App/case-study/13-outcomes.webp)
+The iterations helped me better understand the renovation SaaS workflow and develop my approach to building design standards, keeping experiences consistent across devices and working across teams. The release schedule left room for further work on recommendations. I would next investigate their timing, the clarity of their rationale and how easily users can continue comparing proposals.
 
-*Design proposals supported business goals across retention, activity, task paths, conversion and rendering.*
-
-## Delivery and next steps
-
-Cross-device handoff, cloud saving, prompts and recommendations, AI explanations and quotations have launched. I continued to own core flows and cross-platform design and followed their implementation.
-
-The recommendation module remains a regret: the release schedule left too little room for refinement after delivery. Next, I would check when recommendations appear, whether their reasons are clear and how people continue comparing, so they better support the conversation happening at that moment.
+[Lessons from the project](#case-app-reflection)
