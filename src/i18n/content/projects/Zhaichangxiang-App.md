@@ -71,36 +71,96 @@ The design evolved alongside changes in **strategic direction and product positi
 
 *Design strategy*
 
-## Restructure the product around ease of use
+## Rethink the structure to make the app easier to use
 
-A floor plan is the starting point for renovation and rendering. We considered a shortcut area at the top of the home screen and a floating creation button. I proposed presenting the main creation options directly. The final design emphasizes floor-plan search and places import and freehand drawing alongside it. Short explanations help people choose based on what they have, and the most frequent task gets priority above the fold. [View the creation options before and after](/media/projects/Zhaichangxiang-App/case-study/03-create-entry.webp).
+### Rework the layout and interactions
+
+Information architecture determines how the app communicates its features. We rebuilt the structure around how people use the product and <b>made the home screen the starting point for their tasks</b>.
+
+[Home screen evolution](#case-app-home)
+
+The first editor used a floating bottom toolbar that put primary and secondary features on the same level. This made it difficult to find the next action. We simplified and regrouped the tools as we introduced intelligent features, moved them to a fixed bottom bar and used filled icons to make the functions easier to identify.
+
+[Editor toolbar redesign](#case-app-editor)
+
+### Refine the visual experience
+
+As the focus shifted from displaying information to helping staff run consultations, we redesigned the proposal card three times.
+
+[Proposal card evolution](#case-app-plan-cards)
+
+### Reduce the effort needed to understand information
+
+Renovation terms are often difficult to explain briefly. Misunderstandings during client conversations contributed to higher drop-off on some screens. We paired <b>images with short explanations</b> to make specialized terms and concepts easier to understand.
+
+[Terms and concepts](#case-app-explanations)
 
 ## Shorten the workflow and support decisions
 
-Some users found it hard to tell proposals apart. I kept the complete floor plan as a reference and marked changes in furniture placement and layout with green dashed lines. Larger style previews and explanations for local recommendations make the differences easier to identify. [View the proposal comparison](/media/projects/Zhaichangxiang-App/case-study/07-layout-difference.webp).
+The examples below show the main steps in a sales consultation. We reduced the number of steps, simplified entry points, combined related actions, set common choices as defaults and added decision support so users could reach a proposal they could present and close with less effort.
 
-I brought room selection and image quality into a bottom sheet while keeping the canvas visible. Detailed camera-position controls are available on demand. After submission, users see the task status and estimated time before moving on to the rendering. [View the rendering flow](/media/projects/Zhaichangxiang-App/case-study/08-render-flow.webp).
+### Streamline the workflow
+
+We walked through the process as users did to identify their needs and where they encountered friction. The simplest path was to <b>find their floor plan directly and begin designing and rendering</b>.
+
+[Finding a floor plan](#case-app-search)
+
+### Help users make decisions
+
+Renovation decisions involve many options, high perceived risk and users who often lack specialist knowledge. The interface helps narrow down the options so users can make decisions with more confidence.
+
+Recommendations, explanations in context, visual comparisons and guidance at each step help non-specialists make choices faster. Reducing the effort and stress involved helps users confirm proposals, generate renderings and move consultations forward.
+
+[Decision support](#case-app-decisions)
+
+### Make rendering easier
+
+We turned complex rendering settings into a straightforward flow. Fewer screen changes help users stay on task, defaults make choices easier, and background rendering gives users time to continue working.
+
+[Rendering workflow](#case-app-rendering)
 
 ## Keep the experience consistent across devices
 
-The phone focuses on quick creation and selection. The tablet uses a landscape split view for face-to-face presentations and adjustments. The web workspace supports detailed design and parameter editing in a denser layout. Shared rules in the design system tie these experiences together.
+### Adapt the interface to each device
+
+We prioritized the core tasks for each device and adapted their layouts accordingly. Information density and interaction complexity vary by device.
+
+[Interfaces across devices](#case-app-devices)
+
+### Unify the visual language
+
+We defined shared design rules and standardized components across all three platforms. This made Zhaichangxiang feel consistent as users moved through their work across devices.
+
+[Shared visual language](#case-app-consistency)
 
 ## Make the workflow more efficient
 
-The previous editor displayed primary and secondary controls together in a floating toolbar. I used visual hierarchy and functional grouping to explain the redesign in requirements discussions, brought the primary tools into a fixed bottom bar, and followed implementation through release acceptance. [View the editor toolbar before and after](/media/projects/Zhaichangxiang-App/case-study/12-editor-toolbar.webp).
+### Make time savings visible
 
-Cross-device handoff, cloud saving, prompts and recommendations, AI explanations and quotations have launched, helping staff continue from design into a sales conversation.
+Visual summaries quantify the time saved with the software and give users immediate feedback on how much more efficiently they can work.
+
+[Time savings](#case-app-efficiency)
+
+### Intelligent features
+
+Efficiency helps small and medium-sized renovation businesses provide more value. The AI sales assistant and real-time cost estimation help staff run more efficient consultations.
+
+[Intelligent features](#case-app-business)
 
 *Results*
 
 ## Outcomes and value
 
-Following the combined product and operational changes, core measures such as customer conversion and seven-day retention met the expectations set before the redesign. Customer-service follow-ups and on-site conversations indicated a 60% rise in satisfaction after the overall redesign.
+As the company expanded its product line and its target customers changed, the website needed to communicate the brand, explain the product, convert leads and build trust. The website design focused on communicating the product’s value quickly, establishing credibility and helping visitors take the next step.
+
+One month after the website launched, core measures including conversion and seven-day retention met the targets set before the redesign. Customer-service follow-ups and on-site conversations indicated a 60% increase in satisfaction.
 
 [Project results](#case-app-results)
 
+*Lessons*
+
 ## Lessons from the project
 
-The iterations helped me better understand the renovation SaaS workflow and develop my approach to building design standards, keeping experiences consistent across devices and working across teams. The release schedule left room for further work on recommendations. I would next investigate their timing, the clarity of their rationale and how easily users can continue comparing proposals.
+The Zhaichangxiang project deepened my understanding of complex renovation SaaS workflows, design systems and collaboration across roles. Across the redesigns, I developed practical experience in defining standards, aligning the experience across devices and moving work forward with other teams. This helped us deliver the iterations and make later design decisions faster and more consistently.
 
 [Lessons from the project](#case-app-reflection)

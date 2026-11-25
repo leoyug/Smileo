@@ -1,16 +1,30 @@
 ---
+import Button from "./Button.astro";
+import PlaySpinLoader from "./PlaySpinLoader.astro";
+
 interface Props {
   selector?: string;
+  previewWidth?: number;
 }
 
-const { selector = '[data-detail-page] .content-detail__cover, [data-detail-page] .article__body img' } = Astro.props;
+const {
+  selector = '[data-detail-page] .content-detail__cover, [data-detail-page] .article__body img',
+  previewWidth,
+} = Astro.props;
 ---
 
-<dialog class="article-image-zoom" data-article-image-zoom data-image-selector={selector} aria-label="图片预览">
+<dialog class="article-image-zoom" data-article-image-zoom data-image-selector={selector} data-preview-width={previewWidth} aria-label="图片预览">
   <div class="article-image-zoom__backdrop" aria-hidden="true"></div>
   <button class="article-image-zoom__view" type="button" aria-label="缩小图片" autofocus>
     <img alt="" draggable="false" />
   </button>
+  <div class="article-image-zoom__status">
+    <PlaySpinLoader label="高清图片加载中" />
+    <div class="article-image-zoom__error" hidden>
+      <p role="status">高清图片加载失败</p>
+      <Button variant="secondary" data-image-zoom-retry>重试</Button>
+    </div>
+  </div>
 </dialog>
 
 <script>

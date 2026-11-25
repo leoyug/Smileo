@@ -16,15 +16,33 @@ const metrics = [
 const reflections = [
   {
     title: "设计系统的搭建",
-    copy: "将常用的视觉与组件规则统一进设计系统，让首页、创建流程和装修编辑有共同的设计依据，也能在后续迭代中复用。",
+    points: [
+      "统一色彩、字体、间距、圆角等视觉变量，建立清晰的界面基础规则",
+      "梳理高频页面与核心业务场景，提取可复用的基础组件和业务组件",
+      "补充组件的不同状态，提升复杂场景下的可用性",
+      "推动设计组件与代码组件命名、属性和版本保持一致",
+      "通过实际项目验证，并持续回收问题与迭代",
+    ],
   },
   {
     title: "多端协同的系统化思维",
-    copy: "手机聚焦快速创建和选择，Pad 支持横屏演示与调整，Web 容纳深度设计和参数编辑。共同的规则维持跨端一致性，各端保留适合自身场景的布局。",
+    points: [
+      "梳理核心业务链路，保证用户在不同设备间切换时理解成本更低",
+      "根据屏幕尺寸调整信息密度，电脑端承载更多信息，移动端突出关键内容",
+      "组件建立跨端适配规则确保稳定性，根据操作方式差异调整交互细节",
+      "设计交付时补充不同端的布局说明，帮助研发理解响应式和适配规则",
+      "根据业务反馈持续调整各端优先级，让多端体验更贴近真实使用场景",
+    ],
   },
   {
     title: "跨职能团队的沟通与推动力",
-    copy: "重构编辑器工具栏时，我通过界面对照说明功能分组和视觉层级，和产品、研发讨论改动的价值，再跟进实现与上线验收。",
+    points: [
+      "参与需求评审，与产品拆解需求，明确目标、范围与优先级",
+      "通过交互原型说明设计逻辑，降低团队理解偏差",
+      "与研发提前对齐技术可行性，并通过设计走查保障还原质量",
+      "整理评审反馈、边界状态和验收问题，推动关键问题逐项解决",
+      "上线后复盘问题，沉淀可复用的设计经验和规范补充。",
+    ],
   },
 ];
 ---
@@ -52,18 +70,20 @@ const reflections = [
         ))}
       </dl>
       <div class="app-results__note">
-        <p>产品与运营共同调整后，成交率和七日留存率达到预期。</p>
-        <p>简化流程减少了用户跳出，增加了渲染量。多端支持和智能功能帮助提升了成交率。</p>
-        <p>客服回访和现场沟通显示，用户满意度提升 60%。</p>
+        <p>根据改版前的预期，用户成交率和七日留存率等核心数据再经过产品和运营整体方案调整后均符合预期。</p>
+        <p>通过架构革新与增加易用性提高了用户粘性；精简链路帮助决策，显著减少了用户跳出，提升了渲染量；多端设备的支持和智能功能助力提高了成交率。</p>
+        <p>通过整体改版，根据客服回访与产品现场沟通的方式了解到，用户满意度提升了60%，活跃用户数量提升了23%。</p>
       </div>
     </div>
   </div>
 ) : (
   <div class="app-reflection" role="group" aria-label="经验沉淀">
-    {reflections.map(({ title, copy }) => (
+    {reflections.map(({ title, points }) => (
       <Card class="app-reflection__card">
         <strong>{title}</strong>
-        <p>{copy}</p>
+        <ul>
+          {points.map((point) => <li>{point}</li>)}
+        </ul>
       </Card>
     ))}
   </div>
@@ -304,28 +324,37 @@ const reflections = [
   }
 
   .app-reflection {
+    --reflection-fill: light-dark(color-mix(in srgb, var(--color-canvas) 99%, var(--color-ink)), rgb(255 255 255 / 1%));
+    --reflection-border: light-dark(var(--color-line), rgb(239 255 242 / 20%));
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(min(100%, 11rem), 1fr));
     gap: var(--space-4);
   }
   .app-reflection :global(.app-reflection__card) {
     display: grid;
     align-content: start;
     gap: var(--space-3);
-    padding: var(--space-4);
-    border: 1px solid var(--color-line);
+    padding: calc(var(--space-4) - 1px);
+    border: 1px solid var(--reflection-border);
     border-radius: var(--radius-lg);
-    background: color-mix(in srgb, var(--color-canvas) 99%, var(--color-ink));
+    background: var(--reflection-fill);
   }
   .app-reflection strong {
-    color: var(--color-ink);
+    color: light-dark(var(--color-ink), rgb(250 250 250 / 80%));
     font: var(--weight-bold) var(--text-body)/var(--space-5) var(--font-heading);
+    letter-spacing: .02em;
   }
-  .app-reflection p {
+  :global([data-theme="dark"]) .app-reflection strong {
+    text-shadow: 0 1px 2px var(--primitive-color-warm-975);
+  }
+  .app-reflection ul {
     margin: 0;
-    color: var(--color-copy);
-    font-size: var(--text-meta);
-    line-height: 1.125rem;
+    padding-inline-start: var(--space-4);
+    list-style: disc;
+    color: var(--color-faint);
+    font: 300 .6875rem/var(--space-4) "PingFang SC", var(--font-sans);
+  }
+  .app-reflection ul > li + li {
+    margin-block-start: calc(var(--space-3) / 2);
   }
 
   @container (max-width: 27rem) {

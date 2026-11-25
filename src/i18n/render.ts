@@ -133,7 +133,8 @@ export async function localizePage(html: string, pathname: string, site: URL | u
     replaceChildren(node,[...caption].map((char,index)=>`<span ${scope} style="--label-delay:calc(${index / Math.max(1,caption.length-1)} * var(--duration-very-slow))">${char === ' ' ? '&#160;' : char.replaceAll('&','&amp;').replaceAll('<','&lt;')}</span>`).join(''));
   });
   const translatedAttributes = new Set(['alt','title','aria-label','placeholder','data-tooltip-description','data-empty-default','data-empty-experiment','data-title-en']);
-  function localize(node: Node, skip = false) {
+  const projectCardTranslations = { ...headings, '项目': 'Project', '案例': 'Case study' };
+  function localize(node: Node, skip = false, additions = headings) {
     if (isElement(node)) {
       if (node.tagName === 'script') {
         if (attr(node,'type') === 'application/json') {
@@ -143,8 +144,9 @@ export async function localizePage(html: string, pathname: string, site: URL | u
       }
       if (node.tagName === 'style') return;
       skip ||= attr(node,'lang') === 'zh-CN';
+      if (hasClass(node, 'project-card__shot')) additions = projectCardTranslations;
       for (const item of node.attrs) {
-        if (translatedAttributes.has(item.name) && !skip) item.value = translateText(item.value, headings);
+        if (translatedAttributes.has(item.name) && !skip) item.value = translateText(item.value, additions);
         if (item.name === 'href' && pageHref(item.value)) item.value = languagePath(item.value,'en');
         if (item.name === 'data-preference-group' && item.value === 'language') {
           const selected = attr(node,'data-preference-value') === 'en';
@@ -173,10 +175,10 @@ export async function localizePage(html: string, pathname: string, site: URL | u
     }
     if (!skip && node.nodeName === '#text') {
       const leaf = node as DefaultTreeAdapterMap['textNode'];
-      leaf.value = translateText(leaf.value,headings);
+      leaf.value = translateText(leaf.value,additions);
     }
-    if ('childNodes' in node) for (const child of node.childNodes) localize(child,skip);
-    if ('content' in node) localize(node.content,skip);
+    if ('childNodes' in node) for (const child of node.childNodes) localize(child,skip,additions);
+    if ('content' in node) localize(node.content,skip,additions);
     if (!skip && hasClass(node, 'home-intro__projects-link')) setText(node, 'projects');
     // English places the inspiration phrase after the linked word of thanks.
     if (!skip && hasClass(node, 'site-footer__credit-copy') && 'childNodes' in node) {

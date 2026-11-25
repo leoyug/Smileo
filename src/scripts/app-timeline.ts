@@ -12,16 +12,36 @@ const observer = "IntersectionObserver" in window
     }, { threshold: revealThreshold })
   : undefined;
 
-// The arrow cruises through the diagram, then decelerates on the final segment.
-const exitPosition = 544 / 592;
-const drawDuration = 1360;
-const duration = drawDuration + 210;
-const playbackRate = 0.76;
+// Cubic ramps match the cruising speed where the end segments meet the middle.
+const entryPosition = 24 / 592;
+const exitPosition = 1 - entryPosition;
+const edgeDuration = 180;
+const cruiseDuration = 1360;
+const drawDuration = edgeDuration + cruiseDuration;
+const duration = drawDuration + edgeDuration;
+const playbackRate = duration / 2000;
 const travel = [
-  { position: 0, offset: 0 },
-  { position: exitPosition, offset: drawDuration / duration, easing: "ease-out" },
+  { position: 0, offset: 0, easing: "cubic-bezier(.333333, 0, .666667, 0)" },
+  { position: entryPosition, offset: edgeDuration / duration, easing: "linear" },
+  { position: exitPosition, offset: drawDuration / duration, easing: "cubic-bezier(.333333, 1, .666667, 1)" },
   { position: 1, offset: 1 },
 ];
+const scaleEasing = (() => {
+  // Sample one damped response so the scale starts and settles at rest.
+  const damping = 5.3;
+  const cycle = 2 * Math.PI;
+  const settled = 1 - Math.exp(-damping);
+  const steps = 32;
+  const stops = Array.from({ length: steps + 1 }, (_, index) => {
+    const time = index / steps;
+    const angle = cycle * time;
+    const displacement = 1 - Math.exp(-damping * time) *
+      (Math.cos(angle) + damping / cycle * Math.sin(angle));
+    return (displacement / settled).toFixed(5);
+  });
+  const curve = `linear(${stops.join(", ")})`;
+  return CSS.supports("animation-timing-function", curve) ? curve : "ease-out";
+})();
 
 class AppTimeline extends HTMLElement {
   #animations: Animation[] = [];
@@ -75,9 +95,10 @@ class AppTimeline extends HTMLElement {
     // Measure the layout boxes so a hovered node cannot alter replay timing.
     const geometry = nodes.map((node) => (node.parentElement ?? node).getBoundingClientRect());
     const diameter = geometry[geometry.length - 1].width;
-    const leadTime = (x: number) => (x - left) / width / exitPosition * drawDuration;
+    const leadTime = (x: number) => edgeDuration +
+      ((x - left) / width - entryPosition) / (exitPosition - entryPosition) * cruiseDuration;
     const styles = getComputedStyle(this);
-    const easing = styles.getPropertyValue("--ease-smooth-out").trim();
+    const easing = styles.getPropertyValue("--primitive-ease-in-out").trim();
     const grow = cssTimeToMilliseconds(styles.getPropertyValue("--duration-fast"));
     const dim = cssTimeToMilliseconds(styles.getPropertyValue("--duration-quick"));
     const startTime = document.timeline.currentTime;
@@ -105,7 +126,7 @@ class AppTimeline extends HTMLElement {
       const bounds = geometry[index];
       const peak = diameter / bounds.width;
       const arrival = leadTime(bounds.left);
-      const appearance = { transform: `scale(${peak * 0.62})`, opacity: 0, easing };
+      const appearance = { transform: `scale(${peak * 0.62})`, opacity: 0, easing: scaleEasing };
       const expanded = { transform: `scale(${peak})`, opacity: 1 };
       const highlight = node.querySelector<HTMLElement>(".app-timeline__face--lit");
       if (!highlight) {
@@ -120,7 +141,7 @@ class AppTimeline extends HTMLElement {
       animate(node, [
         appearance,
         { ...expanded, offset: grow / nodeDuration },
-        { ...expanded, offset: settle / nodeDuration, easing },
+        { ...expanded, offset: settle / nodeDuration, easing: scaleEasing },
         { transform: "scale(1)", opacity: 1 },
       ], { delay: arrival, duration: nodeDuration });
       animate(highlight, [{ opacity: 1 }, { opacity: 0 }], {

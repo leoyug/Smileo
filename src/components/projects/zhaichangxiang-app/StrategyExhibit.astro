@@ -1,0 +1,449 @@
+---
+import Card from "../../Card.astro";
+import ProjectMediaTabs from "../ProjectMediaTabs.astro";
+import ConsistencyExhibit from "./ConsistencyExhibit.astro";
+import EfficiencyScreens from "./EfficiencyScreens.astro";
+
+type Exhibit = "home" | "editor" | "plan-cards" | "explanations" | "search" | "decisions" | "rendering" | "devices" | "consistency" | "efficiency" | "business";
+
+interface Props {
+  exhibit: Exhibit;
+  id?: string;
+}
+
+interface Artwork {
+  file: string;
+  width: number;
+  height: number;
+  alt: string;
+  caption?: string;
+  frame?: "phone" | "tablet" | "desktop";
+  hd?: boolean;
+}
+
+interface TabbedExhibit {
+  label: string;
+  width: number;
+  tabs: string[];
+  panels: Artwork[];
+  initialIndex?: number;
+}
+
+const { exhibit, id = `app-strategy-${exhibit}` } = Astro.props;
+const assets = "/assets/figma/zhaichangxiang-app/strategy";
+const highResolution = `${assets}/hd`;
+const imageSources = (file: string, hd?: boolean) => ({
+  src: `${assets}/${file}.webp`,
+  srcset: hd ? `${highResolution}/${file}-2x.webp 2x, ${highResolution}/${file}-3x.webp 3x` : undefined,
+  "data-zoom-src": hd ? `${highResolution}/${file}-zoom.webp` : undefined,
+});
+const captions: Record<Exhibit, string> = {
+  home: "不同时期根据产品定位选择合理的首页模块架构",
+  editor: "编辑器功能栏重构",
+  "plan-cards": "方案卡片的迭代",
+  explanations: "通过图片和说明来解释一些概念",
+  search: "缩短寻找户型流程",
+  decisions: "帮助用户决策的设计",
+  rendering: "通过图片和说明来解释一些概念",
+  devices: "各端适配页面",
+  consistency: "帮助用户决策的设计",
+  efficiency: "渲染效率反馈",
+  business: "智能化功能页面",
+};
+
+const sideBySide: Partial<Record<Exhibit, Artwork[]>> = {
+  home: [
+    { file: "home-v1", width: 155, height: 336, alt: "首页集中展示设计方案，底部设有新建按钮", caption: "1.0 版本首页", hd: true },
+    { file: "home-v2", width: 155, height: 336, alt: "首页以地图为主，显示附近小区及户型入口", caption: "2.0 版本首页", hd: true },
+    { file: "home-v3", width: 155, height: 336, alt: "首页首屏并列展示搜索户型、导入户型和自由绘制", caption: "3.0 版本首页", hd: true },
+  ],
+  explanations: [
+    { file: "terminology", width: 200, height: 433, alt: "下吊高度说明弹窗用三维图和剖面图解释术语", caption: "专业术语解释", hd: true },
+    { file: "import-help", width: 200, height: 433, alt: "户型搜索引导并列对照可导入和不可导入的图片示例", caption: "错误导入图片展示", hd: true },
+  ],
+};
+
+const businessPanels = [
+  { view: "sales", caption: "AI 谈单助手" },
+  { view: "quote", caption: "实时报价估算" },
+] as const;
+
+const tabbed: Partial<Record<Exhibit, TabbedExhibit>> = {
+  "plan-cards": {
+    label: "方案卡片的迭代", width: 360, tabs: ["1.0 版本", "2.0 版本", "3.0 版本"], panels: [], initialIndex: 2,
+  },
+  search: {
+    label: "寻找户型流程", width: 280, tabs: ["寻找到户型", "未能寻找的户型"],
+    panels: [
+      { file: "search-found", width: 544, height: 269, alt: "搜索小区后从结果中选择楼盘，再浏览可用户型的四步界面", caption: "寻找户型-能够搜索到目标小区", hd: true },
+      { file: "search-missing", width: 424, height: 269, alt: "无匹配小区时显示附近户型，并提供手绘和导入的引导", caption: "寻找户型-未能搜索到目标小区", hd: true },
+    ],
+  },
+  decisions: {
+    label: "帮助用户决策的设计", width: 280, tabs: ["智能推荐标签", "方案差异标注"],
+    panels: [
+      { file: "recommendations", width: 544, height: 349, alt: "墙面、顶面、地面推荐列表显示推荐标签、效果图和推荐理由", caption: "墙面、顶面、地面装修方案选择", hd: true },
+      { file: "layout-differences", width: 371, height: 349, alt: "布局推荐用绿色标注对比不同方案的家具位置", caption: "方案差异标注", hd: true },
+    ],
+  },
+  rendering: {
+    label: "出图流程", width: 360, tabs: ["减少页面跳转", "默认预设选项", "后台静默渲染"],
+    panels: [
+      { file: "render-bottom-sheet", width: 161, height: 349, alt: "渲染设置底部弹窗保留背景画布，提供房间范围和画质选择", caption: "弃用传统的全屏跳转，改用底部弹窗", hd: true },
+      { file: "render-presets", width: 185, height: 349, alt: "点位调整界面预先放置摄像机点位，并允许手动修改", caption: "预设选项代替用户自己操作，消除操作断点", hd: true },
+      { file: "render-background", width: 161, height: 349, alt: "装修编辑器顶部提示渲染任务已提交，用户可以继续编辑", caption: "渲染任务提交后，通过 toast 给予用户反馈，由后台静默处理", hd: true },
+    ],
+  },
+  devices: {
+    label: "各端适配页面", width: 320, tabs: ["移动端", "Pad 端", "Web 端"],
+    panels: [
+      { file: "device-mobile", width: 179, height: 387, alt: "移动端采用底部家具选择面板，保留上方户型预览", caption: "极简入口，决策优先", frame: "phone", hd: true },
+      { file: "device-pad", width: 544, height: 380, alt: "Pad 横屏左侧展示户型，右侧展示家具库", caption: "分栏协同，沉浸演示", frame: "tablet", hd: true },
+      { file: "device-web", width: 544, height: 387, alt: "Web 工作台同时显示素材库、三维画布和属性面板", caption: "专业级工作台", frame: "desktop", hd: true },
+    ],
+  },
+  business: {
+    label: "智能化功能", width: 280, tabs: businessPanels.map(({ caption }) => caption), panels: [],
+  },
+};
+
+const revisions = [
+  {
+    title: "1.0 版本 - 建立基础认知",
+    copy: "传达方案基本信息，但存在视觉动线杂乱、标签太多、方案封面图较混乱且较难识别等问题。",
+    sources: imageSources("card-v1", true),
+    width: 262,
+    height: 179,
+    alt: "两张初版方案卡片，一张以装修效果图为封面，另一张以平面户型图为封面",
+  },
+  {
+    title: "2.0 版本 - 提升视觉秩序",
+    copy: "统一了生成规则，放大了视觉占比，查看更清晰；标签优化，图册入口外置，更易了解方案信息及查看效果图。",
+    sources: { src: `${highResolution}/card-v2-zoom.webp` },
+    width: 264,
+    height: 192,
+    alt: "两张二版方案卡片使用统一的户型图封面，其中一张显示图册入口",
+  },
+  {
+    title: "3.0 版本 - 聚焦谈单效率",
+    copy: "完善功能与信息，引入文件夹聚合功能；避免误触，将更多功能以长按的交互方式唤出；支持团队协作场景，更高效的完成效果图制作。",
+    sources: { src: `${highResolution}/card-v3-zoom.webp` },
+    width: 264,
+    height: 184,
+    alt: "第三版的单个方案显示图册入口，文件夹卡片显示共享状态和方案数量",
+  },
+];
+
+const tabGroup = tabbed[exhibit];
+const pair = sideBySide[exhibit];
+---
+
+<figure
+  class:list={["app-strategy", `app-strategy--${exhibit}`]}
+  data-app-exhibit={exhibit}
+  data-no-image-zoom={exhibit === "plan-cards" ? "" : undefined}
+>
+  <div class="app-strategy__stage">
+    {tabGroup ? (
+      <div style={{ "--media-tab-width": `${tabGroup.width / 16}rem` }}>
+        <ProjectMediaTabs id={id} label={tabGroup.label} tabs={tabGroup.tabs} initialIndex={tabGroup.initialIndex}>
+          {exhibit === "plan-cards" ? revisions.map(({ title, copy, sources, width, height, alt }) => (
+            <div class="app-strategy__panel" aria-label={title}>
+              <Card class="app-strategy__revision">
+                <strong>{title}</strong>
+                <p>{copy}</p>
+                <img {...sources} {width} {height} {alt} style={{ "--strategy-image-width": `${width}px` }} loading="lazy" decoding="async" />
+              </Card>
+            </div>
+          )) : exhibit === "business" ? businessPanels.map(({ view, caption }) => (
+            <div class="app-strategy__panel">
+              <EfficiencyScreens {view} />
+              <span class="app-strategy__label">{caption}</span>
+            </div>
+          )) : tabGroup.panels.map(({ file, width, height, alt, caption, frame, hd }) => (
+            <div class="app-strategy__panel" aria-label={caption}>
+              <img
+                {...imageSources(file, hd)}
+                {width}
+                {height}
+                {alt}
+                data-device-frame={frame}
+                style={{
+                  "--strategy-image-width": `${width}px`,
+                  aspectRatio: exhibit === "decisions" ? `${width} / ${height}` : undefined,
+                }}
+                loading="lazy"
+                decoding="async"
+              />
+              <span class="app-strategy__label">{caption}</span>
+            </div>
+          ))}
+        </ProjectMediaTabs>
+      </div>
+    ) : pair ? (
+      <div class="app-strategy__screens">
+        {pair.map(({ file, width, height, alt, caption, hd }) => (
+          <div class="app-strategy__panel">
+            <img {...imageSources(file, hd)} {width} {height} {alt} style={{ "--strategy-image-width": `${width}px` }} loading="lazy" decoding="async" />
+            <span class="app-strategy__label">{caption}</span>
+          </div>
+        ))}
+      </div>
+    ) : exhibit === "editor" ? (
+      <div class="app-strategy__editor">
+        {[
+          { version: "before", title: "旧版编辑器", alt: "旧版编辑器在浮动工具栏同时展示一级和二级功能" },
+          { version: "after", title: "新版编辑器", alt: "新版编辑器将主要工具固定在底栏，用填充图标区分功能" },
+        ].map(({ version, title, alt }) => (
+          <div class="app-strategy__panel">
+            <div class="app-strategy__editor-crop" style={{ "--strategy-editor-mask": `url(${assets}/editor-${version}-mask.svg)` }} data-no-image-zoom>
+              <img src={`${assets}/editor-${version}.webp`} width="610" height="1286" {alt} loading="lazy" decoding="async" />
+            </div>
+            <span class="app-strategy__label">{title}</span>
+          </div>
+        ))}
+        <img class="app-strategy__editor-arrow" src={`${assets}/editor-arrow.svg`} alt="" />
+      </div>
+    ) : exhibit === "consistency" ? (
+      <ConsistencyExhibit />
+    ) : (
+      <div class="app-strategy__panel">
+        <EfficiencyScreens view="result" />
+        <span class="app-strategy__label">渲染成功页面</span>
+      </div>
+    )}
+  </div>
+  <figcaption>{captions[exhibit]}</figcaption>
+</figure>
+
+<style>
+  .app-strategy {
+    --strategy-caption: var(--color-copy);
+    --strategy-label: var(--text-meta);
+    --strategy-stage: var(--color-project-case-surface);
+    --strategy-frame-color: #d0d2d5;
+    display: grid;
+    gap: var(--space-2);
+    min-inline-size: 0;
+    margin: 0;
+  }
+
+  .app-strategy__stage {
+    container-type: inline-size;
+    min-inline-size: 0;
+    padding: var(--space-4) clamp(var(--space-3), 4.05%, var(--space-6)) var(--space-6);
+    border-radius: var(--radius-lg);
+    background: var(--strategy-stage);
+  }
+
+  .app-strategy--plan-cards {
+    --strategy-stage: var(--color-surface);
+  }
+
+  .app-strategy--efficiency .app-strategy__stage {
+    padding-block-start: var(--space-5);
+  }
+
+  .app-strategy__stage :global(.project-media-tabs) {
+    gap: var(--space-6);
+  }
+
+  .app-strategy__stage :global(.project-media-tabs__pill) {
+    background: var(--strategy-stage);
+  }
+
+  .app-strategy__stage :global(.project-media-tabs__button) {
+    font-family: "PingFang SC", var(--font-sans);
+  }
+
+  .app-strategy__stage :global(.project-media-tabs__button:not([aria-selected="true"], :hover)) {
+    color: var(--color-faint);
+  }
+
+  .app-strategy__stage :global(.project-media-tabs__button[aria-selected="true"]) {
+    font-weight: var(--weight-semibold);
+  }
+
+  .app-strategy__stage :global(.project-media-tabs[data-ready] .project-media-tabs__panels) {
+    align-items: start;
+  }
+
+  .app-strategy--business .app-strategy__stage :global(.project-media-tabs) {
+    gap: var(--space-5);
+  }
+
+  :is(.app-strategy--efficiency, .app-strategy--business) .app-strategy__panel {
+    grid-template-columns: minmax(0, 1fr);
+    gap: var(--space-3);
+  }
+
+  .app-strategy__screens {
+    display: flex;
+    justify-content: space-between;
+    align-items: start;
+    gap: var(--space-3);
+  }
+
+  .app-strategy--home .app-strategy__screens {
+    padding: calc(var(--space-3) / 2) calc(var(--space-3) / 4) 0;
+  }
+
+  .app-strategy--explanations .app-strategy__stage {
+    padding: var(--space-6) clamp(var(--space-4), 10.47%, 3.875rem);
+  }
+
+  .app-strategy__panel {
+    display: grid;
+    justify-items: center;
+    align-content: start;
+    min-inline-size: 0;
+    gap: var(--space-4);
+    text-align: center;
+  }
+
+  .app-strategy__panel :is(img, :global(.article-image-zoom-trigger)) {
+    display: block;
+    max-inline-size: 100%;
+  }
+
+  .app-strategy__panel img {
+    inline-size: var(--strategy-image-width);
+    block-size: auto;
+  }
+
+  .app-strategy--home .app-strategy__panel img {
+    border-radius: .8326rem;
+    background-color: var(--strategy-frame-color);
+    box-shadow: 0 0 0 .2082rem var(--strategy-frame-color);
+  }
+
+  .app-strategy--explanations .app-strategy__panel img {
+    outline: .3125rem solid var(--strategy-frame-color);
+    border-radius: 1.0714rem;
+  }
+
+  .app-strategy--devices .app-strategy__panel img {
+    box-shadow: 0 .375rem 1.25rem rgb(0 0 0 / 10%);
+  }
+
+  .app-strategy__panel [data-device-frame="phone"] {
+    outline: .2793rem solid var(--strategy-frame-color);
+    border-radius: .6703rem;
+  }
+
+  .app-strategy__panel [data-device-frame="tablet"] {
+    outline: .3864rem solid var(--strategy-frame-color);
+    border-radius: .9273rem;
+  }
+
+  .app-strategy__panel [data-device-frame="desktop"] {
+    outline: .3036rem solid var(--strategy-frame-color);
+    border-radius: .7286rem;
+  }
+
+  .app-strategy--decisions .app-strategy__panel {
+    align-self: end;
+  }
+
+  .app-strategy__label,
+  .app-strategy > figcaption {
+    display: block;
+    color: var(--strategy-caption);
+    font-size: var(--strategy-label);
+    line-height: var(--space-4);
+  }
+
+  .app-strategy__label {
+    font-family: var(--font-heading);
+    letter-spacing: .01em;
+  }
+
+  .app-strategy__label:lang(zh) {
+    font-weight: var(--weight-bold);
+  }
+
+  .app-strategy > figcaption {
+    font-family: "PingFang SC", var(--font-sans);
+    text-align: center;
+  }
+
+  .app-strategy__editor {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
+    align-items: start;
+    column-gap: clamp(var(--space-2), 6.6cqi, calc(var(--space-8) + var(--space-1)));
+    padding: var(--space-5) clamp(0rem, 3.35cqi, var(--space-5)) 0;
+  }
+
+  .app-strategy__editor .app-strategy__panel:first-child { grid-column: 1; grid-row: 1; }
+  .app-strategy__editor .app-strategy__panel:nth-child(2) { grid-column: 3; grid-row: 1; }
+
+  .app-strategy__editor-arrow {
+    grid-column: 2;
+    grid-row: 1;
+    align-self: start;
+    margin-block-start: min(22cqi, 7.5rem);
+    transform: rotate(180deg) scaleY(-1);
+  }
+
+  .app-strategy__editor-crop {
+    position: relative;
+    inline-size: 100%;
+    max-inline-size: 12.719rem;
+    aspect-ratio: 203.496 / 278.093;
+    mask: var(--strategy-editor-mask) center / contain no-repeat;
+  }
+
+  .app-strategy__editor-crop img {
+    position: absolute;
+    inset-block-start: -55.86%;
+    inset-inline-start: -.728%;
+    inline-size: 100.86%;
+    max-inline-size: none;
+  }
+
+  .app-strategy__panel :global(.app-strategy__revision) {
+    --strategy-revision-surface: light-dark(rgb(227 227 227 / 80%), rgb(255 255 255 / 80%));
+    --strategy-revision-line: light-dark(var(--primitive-color-gray-0), rgb(255 255 255 / 60%));
+    --strategy-revision-title: color-mix(in srgb, var(--primitive-color-gray-875) 80%, transparent);
+    display: grid;
+    justify-items: start;
+    gap: var(--space-2);
+    inline-size: min(100%, 19.5rem);
+    padding: var(--space-4) clamp(var(--space-3), 5cqi, var(--space-6)) var(--space-6);
+    border: 1px solid var(--strategy-revision-line);
+    border-radius: var(--radius-lg);
+    background: var(--strategy-revision-surface);
+    color: var(--primitive-color-gray-600);
+    box-shadow: 0 var(--space-1) 2.5rem rgb(0 0 0 / 4%);
+    text-align: start;
+  }
+
+  .app-strategy__panel :global(.app-strategy__revision) > strong {
+    color: var(--strategy-revision-title);
+    font: var(--weight-bold) var(--text-body)/var(--space-5) var(--font-heading);
+    letter-spacing: .01em;
+  }
+
+  .app-strategy__panel :global(.app-strategy__revision) > p {
+    margin: 0;
+    color: inherit;
+    font: var(--weight-regular) var(--text-meta)/var(--space-5) "PingFang SC", var(--font-sans);
+  }
+
+  .app-strategy__panel :global(.app-strategy__revision) > img {
+    margin-block-start: var(--space-2);
+  }
+
+  @container (max-width: 32rem) {
+    :is(.app-strategy--devices, .app-strategy--business) :global(.project-media-tabs[data-ready] .project-media-tabs__panels > [aria-hidden="true"]) {
+      display: none;
+    }
+  }
+
+  @container (max-width: 22rem) {
+    .app-strategy__stage :global(.project-media-tabs__button) {
+      padding-inline: var(--space-1);
+    }
+  }
+</style>

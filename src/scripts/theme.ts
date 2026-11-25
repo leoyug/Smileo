@@ -18,13 +18,18 @@ let activeThemeTransition: ThemeTransition | null = null;
 const resolveTheme = (preference: ThemePreference): ResolvedTheme =>
   preference === "system" ? (mediaQuery.matches ? "dark" : "light") : preference;
 
-const applyTheme = (preference: ThemePreference) => {
+const applyDocumentTheme = (target: Document, preference: ThemePreference): ResolvedTheme => {
   const theme = resolveTheme(preference);
-  document.documentElement.dataset.theme = theme;
-  document.documentElement.dataset.themePreference = preference;
-  document
+  target.documentElement.dataset.theme = theme;
+  target.documentElement.dataset.themePreference = preference;
+  target
     .querySelector<HTMLMetaElement>('meta[name="theme-color"]')
     ?.setAttribute("content", theme === "dark" ? "#191918" : "#fbfaf9");
+  return theme;
+};
+
+const applyTheme = (preference: ThemePreference) => {
+  const theme = applyDocumentTheme(document, preference);
 
   document.querySelectorAll<HTMLButtonElement>("[data-theme-option]").forEach((option) => {
     const selected = option.dataset.themeValue === preference;
@@ -100,5 +105,10 @@ mediaQuery.addEventListener("change", () => {
   if (document.documentElement.dataset.themePreference === "system") applyTheme("system");
 });
 document.addEventListener("astro:before-preparation", clearThemeTransition);
+document.addEventListener("astro:before-swap", ({ newDocument }) => {
+  // The incoming document is painted before its page scripts finish loading.
+  const preference = document.documentElement.dataset.themePreference;
+  applyDocumentTheme(newDocument, preference === "dark" || preference === "light" ? preference : "system");
+});
 document.addEventListener("astro:page-load", initializeTheme);
 initializeTheme();

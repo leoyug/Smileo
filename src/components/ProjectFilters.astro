@@ -7,11 +7,12 @@ interface Props {
 }
 
 const { id, rememberSelection = false } = Astro.props;
+const { personal, "case-study": caseStudy, experiment } = projectBadgeVariants;
 const options = [
   { value: "all", label: "全部", icon: "/assets/figma/project-tab-all.svg" },
-  { value: "personal", label: "项目", icon: projectBadgeVariants.personal.tabIcon },
-  { value: "case-study", label: "案例", icon: projectBadgeVariants["case-study"].tabIcon },
-  { value: "experiment", label: "实验", icon: projectBadgeVariants.experiment.tabIcon },
+  { value: "personal", label: personal.label, icon: personal.tabIcon },
+  { value: "case-study", label: caseStudy.label, icon: caseStudy.tabIcon },
+  { value: "experiment", label: "实验", icon: experiment.tabIcon },
 ];
 const panelId = `${id}-panel`;
 ---

@@ -349,7 +349,15 @@
     --shimmer-speed: 100;
     --shimmer-band-width: .85em;
     --shimmer-highlight-strength: 100%;
-    --duration-project-attribute: 300ms; --duration-photo-fan: 420ms; --duration-label-character: 300ms; --duration-text-link: 600ms; --duration-highlight-draw: 600ms; --duration-highlight-glint: 200ms; --delay-highlight-glint-first: 420ms; --delay-highlight-glint-second: 480ms; --delay-highlight-glint-third: 540ms; --delay-highlight-glint-fourth: 600ms; --ease-highlight-draw: var(--primitive-ease-in-out);
+    --duration-project-attribute: 300ms; --duration-photo-fan: 420ms; --duration-label-character: 300ms; --duration-text-link: 600ms;
+    --delay-highlight-hover: var(--duration-micro);
+    --duration-highlight-draw: 720ms;
+    --duration-highlight-glint: 200ms;
+    --delay-highlight-glint-first: 520ms;
+    --delay-highlight-glint-second: 580ms;
+    --delay-highlight-glint-third: 640ms;
+    --delay-highlight-glint-fourth: 700ms;
+    --ease-highlight-draw: var(--primitive-ease-in-out);
     --copy-icon-size: .875em;
     --copy-icon-gap: var(--space-1);
     --copy-feedback-duration: 1500ms;

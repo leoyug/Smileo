@@ -149,6 +149,7 @@ const initializeCopyLinks = () => {
     document.addEventListener("click", (event) => {
       if (!hovering || event.button !== 0 || event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) return;
       if (blockedByDialog()) { endHover(); return; }
+      if (event.detail > 0 && document.getSelection()?.isCollapsed === false) return;
       const target = event.target;
       if (!(target instanceof Element) || link.contains(target) || !retainsPointer(event.clientX, event.clientY)) return;
       if (target.closest("a, button, input, select, textarea, [role=button]")) return;

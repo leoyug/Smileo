@@ -20,6 +20,7 @@ import AppComparison from "../../components/projects/zhaichangxiang-app/Comparis
 import AppVisualLanguage from "../../components/projects/zhaichangxiang-app/VisualLanguage.astro";
 import AppDirection from "../../components/projects/zhaichangxiang-app/Direction.astro";
 import AppOutcomes from "../../components/projects/zhaichangxiang-app/Outcomes.astro";
+import AppStrategyExhibit from "../../components/projects/zhaichangxiang-app/StrategyExhibit.astro";
 
 export async function getStaticPaths() {
   const projects = await getProjects();
@@ -95,6 +96,17 @@ const isZhaichangxiangWebsite = entry.id === "zhaichangxiang-website";
         <AppVisualLanguage slot="app-visual-language" />
         <AppDirection slot="app-goals" section="goals" />
         <AppDirection slot="app-timeline" section="timeline" />
+        <AppStrategyExhibit slot="app-home" exhibit="home" />
+        <AppStrategyExhibit slot="app-editor" exhibit="editor" />
+        <AppStrategyExhibit slot="app-plan-cards" exhibit="plan-cards" />
+        <AppStrategyExhibit slot="app-explanations" exhibit="explanations" />
+        <AppStrategyExhibit slot="app-search" exhibit="search" />
+        <AppStrategyExhibit slot="app-decisions" exhibit="decisions" />
+        <AppStrategyExhibit slot="app-rendering" exhibit="rendering" />
+        <AppStrategyExhibit slot="app-devices" exhibit="devices" />
+        <AppStrategyExhibit slot="app-consistency" exhibit="consistency" />
+        <AppStrategyExhibit slot="app-efficiency" exhibit="efficiency" />
+        <AppStrategyExhibit slot="app-business" exhibit="business" />
         <AppOutcomes slot="app-results" section="results" />
         <AppOutcomes slot="app-reflection" section="reflection" />
       </ProjectCaseContent>

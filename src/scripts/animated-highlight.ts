@@ -11,6 +11,7 @@ const initializeHighlights = () => {
     const reduced = matchMedia("(prefers-reduced-motion: reduce)");
     const hoverable = matchMedia("(hover: hover) and (pointer: fine)");
     const animations = new Map<SVGPathElement, Animation>();
+    let hoverTimer = 0;
     let hovering = false;
     let active = false;
     const timing = (name: string) => cssTimeToMilliseconds(getComputedStyle(root).getPropertyValue(name));
@@ -33,14 +34,11 @@ const initializeHighlights = () => {
       paths.forEach((path, index) => {
         // Sample before cancellation: leave/re-enter starts at the visible stroke.
         const style = getComputedStyle(path);
-        const from = fresh ? { strokeDashoffset: "1", opacity: "0" } : {
-          strokeDashoffset: style.strokeDashoffset,
-          opacity: style.opacity,
-        };
+        const from = fresh ? "1" : style.strokeDashoffset;
         animations.get(path)?.cancel();
         const duration = nextActive ? timing(index === 0 ? "--duration-highlight-draw" : "--duration-highlight-glint") : timing("--duration-quick");
         const delay = fresh && index > 0 ? cssTimeToMilliseconds(style.getPropertyValue("--draw-delay")) : 0;
-        const animation = path.animate([from, { strokeDashoffset: "0", opacity: "1" }], {
+        const animation = path.animate([{ strokeDashoffset: from }, { strokeDashoffset: "0" }], {
           duration,
           delay,
           easing: getComputedStyle(root).getPropertyValue(nextActive ? "--ease-highlight-draw" : "--ease-smooth-out").trim(),
@@ -54,17 +52,29 @@ const initializeHighlights = () => {
         }).catch(() => {});
       });
     };
-    root.addEventListener("pointerenter", (event) => {
-      if (event.pointerType === "touch" || !hoverable.matches) return;
+    const startHover = () => {
       hovering = true;
       update();
+    };
+    root.addEventListener("pointerenter", (event) => {
+      if (event.pointerType === "touch" || !hoverable.matches) return;
+      if (animations.size || reduced.matches) {
+        startHover();
+        return;
+      }
+      hoverTimer = window.setTimeout(startHover, timing("--delay-highlight-hover"));
     }, options);
-    root.addEventListener("pointerleave", () => { hovering = false; update(); }, options);
+    root.addEventListener("pointerleave", () => {
+      window.clearTimeout(hoverTimer);
+      hovering = false;
+      update();
+    }, options);
     root.addEventListener("focus", update, options);
     root.addEventListener("blur", update, options);
     reduced.addEventListener("change", update, options);
     root.highlightCleanup = () => {
       controller.abort();
+      window.clearTimeout(hoverTimer);
       cancelAll();
       delete root.highlightCleanup;
     };

@@ -28,6 +28,12 @@ export async function mediaFile(root, source) {
 async function collectMedia(root, { includeDrafts = false } = {}) {
   const sources = new Set();
   const jobs = new Map();
+  let portfolioMedia = {};
+  try {
+    portfolioMedia = JSON.parse(await readFile(path.join(root, 'src/data/portfolio-media.json'), 'utf8'));
+  } catch (error) {
+    if (error.code !== 'ENOENT') throw error;
+  }
   const add = value => {
     if (!value?.startsWith('/media/')) return;
     sources.add(assertMediaPath(decodeURI(value.split(/[?#]/)[0])));
@@ -57,6 +63,10 @@ async function collectMedia(root, { includeDrafts = false } = {}) {
       } else {
         track(data.cover, contentPreviewWidths);
         for (const image of data.archiveImages ?? []) track(image, [thumbPreviewWidth]);
+        if (collection === 'projects' && !data.hidden) {
+          const id = path.basename(name, path.extname(name));
+          for (const image of portfolioMedia[id] ?? []) track(image, [readingPreviewWidth]);
+        }
         try { for (const ref of bodyMediaReferences(content)) track(ref, [readingPreviewWidth]); }
         catch (error) { throw new Error(`${collection}/${name}: ${error.message}`); }
       }

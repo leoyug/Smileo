@@ -45,6 +45,7 @@ const profileLinks = links.filter((link) => link.href && link.label !== "RSS").m
       href={link.href}
       rel={link.rel}
       target={link.href.startsWith("https:") ? "_blank" : undefined}
+      data-selection-container
       data-hover-sound={hoverSound || undefined}
       aria-describedby={link.label !== "RSS" ? tooltipId : undefined}
       data-tooltip-name={link.label !== "RSS" ? link.label : undefined}

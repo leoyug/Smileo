@@ -1,0 +1,422 @@
+---
+import Card from "../../Card.astro";
+
+const assets = "/assets/figma/zhaichangxiang-app/consistency";
+const colors = [
+  { label: "Brand Primary", paint: "var(--consistency-brand)" },
+  { label: "Info Blue", paint: "color(display-p3 .219608 .376471 1)" },
+  { label: "Warning Orange", paint: "color(display-p3 1 .517647 .121569)" },
+  { label: "Error Red", paint: "color(display-p3 1 .321569 .321569)" },
+];
+const neutrals = [
+  "var(--consistency-neutral-ink)",
+  "color(display-p3 .333333 .356863 .407843)",
+  "color(display-p3 .596078 .615686 .662745)",
+  "color(display-p3 .792157 .811765 .847059)",
+  "var(--primitive-color-gray-0)",
+];
+const spacingCopy = "以t为4px单位定义不同模块间距使信息更清晰明了，布局更合理";
+const details = [
+  { kind: "radius", title: "更统一的圆角", copy: "以a为2px的单位定义圆角大小让不同的容器在视觉上统一" },
+  { kind: "spacing", title: "更舒适的间距", copy: spacingCopy },
+  { kind: "shadow", title: "更柔和的阴影", copy: spacingCopy },
+] as const;
+const corners = ["top-left", "top-right", "bottom-left", "bottom-right"];
+---
+
+<div class="app-consistency" data-no-image-zoom>
+  <Card class="app-consistency__card app-consistency__palette">
+    <div class="app-consistency__copy">
+      <strong>更专业的配色</strong>
+      <p>色彩体系以品牌主色为核心，结合信息、提醒、风险与中性色构建语义化配色规范。通过为不同颜色定义明确的使用场景与状态含义，提升界面在复杂业务场景下的识别效率与视觉一致性。</p>
+    </div>
+    <ul class="app-consistency__swatches" role="list">
+      {colors.map(({ label, paint }) => (
+        <li class="app-consistency__swatch" style={{ "--swatch-paint": paint }}>
+          <span class="app-consistency__swatch-label">{label}<span class="app-consistency__hex">#3860FF</span></span>
+          <span class="app-consistency__tints" aria-hidden="true"></span>
+        </li>
+      ))}
+    </ul>
+    <ul class="app-consistency__neutrals" role="list" aria-label="中性色">
+      {neutrals.map((paint, index) => (
+        <li style={{ "--swatch-paint": paint, "--swatch-layer": neutrals.length - index }}>
+          <span class="app-consistency__hex">#3860FF</span>
+        </li>
+      ))}
+    </ul>
+  </Card>
+
+  <Card class="app-consistency__card app-consistency__type">
+    <div class="app-consistency__specimen">
+      <strong>通用字体</strong>
+      <div class="app-consistency__selection">
+        <span class="app-consistency__system-type" lang="zh-CN">系统字体</span>
+        {corners.map(corner => <span class="app-consistency__handle" data-corner={corner} aria-hidden="true"></span>)}
+      </div>
+      <span class="app-consistency__sample"><span class="app-consistency__honor" role="img" lang="zh-CN" aria-label="科技不必远，生活刚刚好"></span></span>
+    </div>
+    <div class="app-consistency__specimen">
+      <strong>特殊数字</strong>
+      <div class="app-consistency__selection">
+        <span class="app-consistency__din" role="img" aria-label="D-DIN-PRO"></span>
+        {corners.map(corner => <span class="app-consistency__handle" data-corner={corner} aria-hidden="true"></span>)}
+      </div>
+      <span class="app-consistency__sample"><span class="app-consistency__numerals" role="img" aria-label="0123456789,./?!"></span></span>
+    </div>
+  </Card>
+
+  <div class="app-consistency__card app-consistency__icons" role="img" aria-label="统一线条与圆角的工具图标">
+    <div class="app-consistency__icon-crop">
+      <img src={`${assets}/icon-pattern.png`} width="2470" height="1824" alt="" loading="lazy" decoding="async" />
+    </div>
+  </div>
+
+  {details.map(({ kind, title, copy }) => (
+    <Card class="app-consistency__card app-consistency__detail">
+      <div class="app-consistency__diagram" data-diagram={kind} aria-hidden="true">
+        {kind === "radius" && <>
+          <img class="app-consistency__radius-inner" src={`${assets}/radius-inner.svg`} alt="" loading="lazy" />
+          <img class="app-consistency__radius-outer" src={`${assets}/radius-outer.svg`} alt="" loading="lazy" />
+          <span>a</span><span>2a</span>
+        </>}
+        {kind === "spacing" && <><i></i><i></i><i></i><span>t</span><span>2t</span></>}
+      </div>
+      <div class="app-consistency__copy"><strong>{title}</strong><p>{copy}</p></div>
+    </Card>
+  ))}
+</div>
+
+<style>
+  .app-consistency {
+    --consistency-white: var(--primitive-color-gray-0);
+    --consistency-brand: color(display-p3 .086275 .701961 .584314);
+    --consistency-neutral-ink: color(display-p3 .105882 .117647 .156863);
+    --consistency-light-ink: color(display-p3 .223529 .235294 .262745);
+    --consistency-ink: light-dark(var(--consistency-light-ink), var(--primitive-color-gray-50));
+    --consistency-copy: light-dark(color(display-p3 .223529 .235294 .262745 / 80%), color(display-p3 .639216 .631373 .619608));
+    --consistency-card-fill: light-dark(rgb(255 255 255 / 30%), rgb(255 255 255 / 10%));
+    --consistency-card-line: light-dark(rgb(255 255 255 / 60%), rgb(255 255 255 / 10%));
+    --consistency-shadow: 0 var(--space-1) 2.5rem rgb(0 0 0 / 4%);
+    --consistency-tight-radius: calc((var(--radius-xs) + var(--radius-sm)) / 2);
+    --consistency-handle: light-dark(var(--consistency-white), color(display-p3 .168627 .164706 .152941));
+    --consistency-chip-line: light-dark(rgb(255 255 255 / 90%), rgb(255 255 255 / 40%));
+    --consistency-chip-copy: rgb(255 255 255 / 60%);
+    display: grid;
+    gap: var(--space-4);
+    color: var(--consistency-ink);
+    font: var(--weight-regular) var(--text-body)/var(--space-5) "PingFang SC", var(--font-sans);
+    letter-spacing: 0;
+  }
+
+  .app-consistency :global(.app-consistency__card) {
+    min-inline-size: 0;
+    padding: calc(var(--space-4) - 1px);
+    border: 1px solid var(--consistency-card-line);
+    border-radius: var(--radius-md);
+    background: var(--consistency-card-fill);
+    box-shadow: var(--consistency-shadow);
+    backdrop-filter: blur(40px);
+  }
+
+  .app-consistency strong { font-weight: var(--weight-semibold); }
+
+  .app-consistency__copy { display: grid; gap: var(--space-1); }
+  .app-consistency__copy p { color: var(--consistency-copy); font-size: var(--text-meta); font-weight: 300; line-height: var(--space-5); }
+
+  .app-consistency :global(.app-consistency__palette) { display: grid; gap: var(--space-3); }
+
+  .app-consistency__swatches,
+  .app-consistency__neutrals {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    font-family: var(--font-sans);
+  }
+
+  .app-consistency li { margin-block-start: 0; }
+
+  .app-consistency__swatches {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: var(--space-2);
+  }
+
+  .app-consistency__swatch {
+    position: relative;
+    display: grid;
+    grid-template-rows: minmax(var(--space-16), auto) var(--space-8);
+    overflow: clip;
+    border-radius: var(--radius-sm);
+    background: var(--swatch-paint);
+    color: var(--consistency-white);
+  }
+
+  .app-consistency__swatch::after {
+    position: absolute;
+    inset: 0;
+    border: 1px solid var(--consistency-chip-line);
+    border-radius: inherit;
+    pointer-events: none;
+    content: "";
+  }
+
+  .app-consistency__swatch-label {
+    display: grid;
+    align-self: end;
+    row-gap: calc(var(--space-1) / 2);
+    padding: var(--space-2) var(--space-3);
+    font-size: var(--text-meta);
+    line-height: var(--space-4);
+  }
+
+  .app-consistency__swatch:last-child .app-consistency__swatch-label { padding: var(--space-2) var(--space-4) var(--space-3); }
+
+  .app-consistency__hex {
+    color: var(--consistency-chip-copy);
+    font-size: .625rem;
+    font-weight: 300;
+    line-height: var(--space-3);
+    letter-spacing: .04em;
+  }
+
+  .app-consistency__tints {
+    background: linear-gradient(to right in display-p3,
+      color-mix(in display-p3, var(--swatch-paint), white 80%) 0 25%,
+      color-mix(in display-p3, var(--swatch-paint), white 60%) 25% 50%,
+      color-mix(in display-p3, var(--swatch-paint), white 40%) 50% 75%,
+      color-mix(in display-p3, var(--swatch-paint), white 20%) 75% 100%);
+  }
+
+  .app-consistency__neutrals {
+    --neutral-overlap: min(6.618cqi, 2.25rem);
+    isolation: isolate;
+    display: flex;
+    overflow: clip;
+    border-radius: var(--radius-sm);
+  }
+
+  .app-consistency__neutrals li {
+    z-index: var(--swatch-layer);
+    display: grid;
+    align-items: end;
+    flex: 1 0 0;
+    min-inline-size: 0;
+    min-block-size: var(--space-12);
+    border-radius: var(--radius-sm);
+    background: var(--swatch-paint);
+  }
+
+  .app-consistency__neutrals li:not(:last-child) { margin-inline-end: calc(-1 * var(--neutral-overlap)); }
+  .app-consistency__neutrals .app-consistency__hex { padding: var(--space-2) 0 var(--space-2) var(--space-3); white-space: nowrap; }
+  .app-consistency__neutrals li + li .app-consistency__hex { padding-inline-start: calc(var(--neutral-overlap) + var(--space-3)); }
+  .app-consistency__neutrals li:nth-child(n + 3) .app-consistency__hex { color: var(--consistency-neutral-ink); }
+
+  .app-consistency :global(.app-consistency__type) {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    gap: var(--space-3);
+    padding-block-end: calc(var(--space-2) - 1px);
+  }
+
+  .app-consistency__specimen {
+    display: grid;
+    min-inline-size: 0;
+    max-inline-size: 100%;
+    gap: var(--space-2);
+    padding: var(--space-3) var(--space-4);
+    border-radius: var(--consistency-tight-radius);
+    background: linear-gradient(to bottom, light-dark(white, rgb(255 255 255 / 10%)), transparent);
+  }
+
+  .app-consistency__selection {
+    position: relative;
+    display: grid;
+    place-items: center;
+    min-block-size: var(--space-16);
+    padding-inline: var(--space-4);
+    outline: 1px solid var(--consistency-brand);
+    outline-offset: -1px;
+  }
+
+  .app-consistency__system-type { font-size: 2.5rem; line-height: var(--space-12); }
+
+  .app-consistency__handle {
+    position: absolute;
+    inline-size: var(--space-2);
+    block-size: var(--space-2);
+    border: 1px solid var(--consistency-brand);
+    background: var(--consistency-handle);
+  }
+
+  .app-consistency__handle[data-corner^="top"] { inset-block-start: calc(-1 * var(--space-1)); }
+  .app-consistency__handle[data-corner^="bottom"] { inset-block-end: calc(-1 * var(--space-1)); }
+  .app-consistency__handle[data-corner$="left"] { inset-inline-start: calc(-1 * var(--space-1)); }
+  .app-consistency__handle[data-corner$="right"] { inset-inline-end: calc(-1 * var(--space-1)); }
+
+  .app-consistency__sample { display: grid; min-block-size: var(--space-5); place-items: center end; color: var(--consistency-copy); }
+  .app-consistency__din,
+  .app-consistency__numerals,
+  .app-consistency__honor { display: block; max-inline-size: 100%; background: currentColor; }
+
+  .app-consistency__din {
+    inline-size: 11.875rem;
+    aspect-ratio: 190 / 29;
+    mask: url("/assets/figma/zhaichangxiang-app/consistency/din-title.svg") center / contain no-repeat;
+  }
+
+  .app-consistency__numerals {
+    inline-size: 79px;
+    block-size: 11px;
+    mask: url("/assets/figma/zhaichangxiang-app/consistency/din-numerals.svg") center no-repeat;
+  }
+
+  .app-consistency__honor {
+    inline-size: 131px;
+    block-size: 12px;
+    mask: url("/assets/figma/zhaichangxiang-app/consistency/honor-sample.svg") center no-repeat;
+  }
+
+  .app-consistency .app-consistency__icons {
+    position: relative;
+    inline-size: 100%;
+    min-block-size: var(--space-32);
+    aspect-ratio: 544 / 180;
+    padding: 0;
+    overflow: clip;
+    border-color: light-dark(rgb(255 255 255 / 60%), rgb(255 255 255 / 20%));
+    background: rgb(255 255 255 / 30%);
+  }
+
+  .app-consistency__icons::after {
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    box-shadow: inset 0 0 var(--space-6) var(--space-4) rgb(255 255 255 / 20%);
+    content: "";
+  }
+
+  /* Keep the Figma image and its alpha mask in the same coordinate space. */
+  .app-consistency__icon-crop {
+    position: absolute;
+    inset-inline-start: calc(50% - 416px);
+    inset-block-start: calc(50% - 331px);
+    inline-size: 875px;
+    block-size: 646px;
+    background: color(display-p3 .937255 .94902 .941176);
+    mask: url("/assets/figma/zhaichangxiang-app/consistency/icon-mask.svg") 144px 241px no-repeat;
+  }
+
+  .app-consistency__icon-crop img { inline-size: 100%; block-size: 100%; object-fit: cover; }
+
+  .app-consistency :global(.app-consistency__detail) { display: grid; grid-template-columns: var(--space-16) minmax(0, 1fr); align-items: center; gap: var(--space-3); }
+
+  .app-consistency__diagram {
+    position: relative;
+    isolation: isolate;
+    overflow: clip;
+    inline-size: var(--space-16);
+    block-size: var(--space-16);
+    border-radius: var(--consistency-tight-radius);
+    background: var(--consistency-white);
+    color: var(--consistency-brand);
+    font-size: 5.517px;
+    font-weight: 300;
+    line-height: 8.828px;
+  }
+
+  .app-consistency__diagram :is(span, img),
+  .app-consistency__diagram::before,
+  .app-consistency__diagram::after { position: absolute; }
+
+  .app-consistency__diagram img { max-inline-size: none; }
+  .app-consistency__radius-inner { inset: 22.48px auto auto 19.17px; }
+  .app-consistency__radius-outer { inset: 10.9px auto auto 8.69px; }
+  .app-consistency__diagram[data-diagram="radius"] span:first-of-type { inset: 28.69px auto auto 28.69px; }
+  .app-consistency__diagram[data-diagram="radius"] span:last-of-type { inset: 39.72px auto auto 16.55px; }
+
+  .app-consistency__diagram[data-diagram="radius"]::before {
+    z-index: -2;
+    inset: 11.03px auto auto -79.45px;
+    inline-size: 132.41px;
+    block-size: 132.41px;
+    border-radius: 22.07px;
+    background: radial-gradient(58.91px at 119.59px 12.55px in display-p3, color(display-p3 .256916 .814035 .615063 / 66%), color(display-p3 .258824 .815686 .615686 / 1%));
+    content: "";
+  }
+
+  .app-consistency__diagram[data-diagram="radius"]::after {
+    z-index: -1;
+    inset: 22.62px auto auto -91.04px;
+    inline-size: 132.41px;
+    block-size: 116.97px;
+    border-radius: 11.03px;
+    background: var(--consistency-white);
+    content: "";
+  }
+
+  .app-consistency__diagram[data-diagram="spacing"] i {
+    position: absolute;
+    left: -17.66px;
+    inline-size: 61.79px;
+    block-size: 26.48px;
+    border-radius: 6.62px;
+    background: linear-gradient(to left in display-p3, color(display-p3 .256916 .814035 .615063 / 66%) -27.232%, color(display-p3 .258824 .815686 .615686 / 1%));
+  }
+
+  .app-consistency__diagram[data-diagram="spacing"] i:nth-child(1) { top: -19.86px; block-size: 35.31px; }
+  .app-consistency__diagram[data-diagram="spacing"] i:nth-child(2) { top: 18.76px; }
+  .app-consistency__diagram[data-diagram="spacing"] i:nth-child(3) { top: 51.86px; }
+  .app-consistency__diagram[data-diagram="spacing"] span:first-of-type { inset: 12.14px auto auto 49.66px; }
+  .app-consistency__diagram[data-diagram="spacing"] span:last-of-type { inset: 45.24px auto auto 49.66px; }
+
+  .app-consistency__diagram[data-diagram="shadow"]::before,
+  .app-consistency__diagram[data-diagram="shadow"]::after {
+    border: 4.414px solid var(--consistency-white);
+    box-shadow:
+      0 2.207px 2.207px var(--diagram-shadow-spread) color(display-p3 .053333 .069333 .106667 / 15%),
+      0 6.621px 13.241px color(display-p3 .053333 .069333 .106667 / 6%),
+      0 .552px 1.103px color(display-p3 .054902 .070588 .105882 / 3%);
+    content: "";
+  }
+
+  .app-consistency__diagram[data-diagram="shadow"]::before {
+    --diagram-shadow-spread: -3.31px;
+    inset: -22.07px auto auto -28.14px;
+    inline-size: 81.10px;
+    block-size: 61.79px;
+    border-radius: 13.24px;
+    background: linear-gradient(to left in display-p3, color(display-p3 .563396 .82952 .734736) -6.803%, color(display-p3 .838519 .93428 .90236) 46.599%);
+  }
+
+  .app-consistency__diagram[data-diagram="shadow"]::after {
+    --diagram-shadow-spread: -5.517px;
+    inset: -19.31px auto auto -22.07px;
+    inline-size: 61.79px;
+    block-size: 72.28px;
+    border-radius: 17.66px;
+    background: linear-gradient(to left in display-p3, color(display-p3 .619608 .905882 .803922) -27.232%, color(display-p3 .890196 .972549 .945098));
+  }
+
+  @container (max-width: 32rem) {
+    .app-consistency__swatches { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  }
+
+  @container (max-width: 31rem) {
+    .app-consistency__specimen { inline-size: 100%; }
+    .app-consistency__system-type { font-size: clamp(1.5rem, 10cqi, 2.5rem); }
+  }
+
+  @container (max-width: 25rem) {
+    .app-consistency__neutrals { --neutral-overlap: var(--space-2); }
+    .app-consistency__neutrals .app-consistency__hex { padding-inline-start: var(--space-1); }
+    .app-consistency__neutrals li + li .app-consistency__hex { padding-inline-start: calc(var(--neutral-overlap) + var(--space-1)); }
+  }
+
+  @container (max-width: 19rem) {
+    .app-consistency__neutrals { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: var(--space-1); }
+    .app-consistency__neutrals li:not(:last-child) { margin-inline-end: 0; }
+    .app-consistency__neutrals li + li .app-consistency__hex { padding-inline-start: var(--space-1); }
+  }
+</style>

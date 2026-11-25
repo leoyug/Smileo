@@ -1,0 +1,75 @@
+---
+type View = "result" | "sales" | "quote";
+
+interface Props {
+  view: View;
+}
+
+interface Screen {
+  file: string;
+  width: number;
+  height: number;
+  alt: string;
+  frame?: boolean;
+}
+
+const { view } = Astro.props;
+const assets = "/assets/figma/zhaichangxiang-app/strategy";
+const screens: Record<View, Screen[]> = {
+  result: [
+    { file: "render-success", width: 564, height: 1188, alt: "渲染成功弹窗显示耗时 10 秒、效率提升 20%" },
+  ],
+  sales: [
+    { file: "sales-showcase", width: 508, height: 1072, alt: "谈单展示页同时呈现客餐厅效果图、户型图和空间切换入口" },
+    { file: "sales-explanation", width: 508, height: 1072, alt: "AI 讲解界面保留客餐厅效果图，底部显示讲解控制" },
+  ],
+  quote: [
+    { file: "quote-renovation", width: 508, height: 1072, alt: "选择装修页并列展示半包、全包、整装和不同装修档位" },
+    { file: "quote-edit", width: 508, height: 1072, alt: "编辑报价页展示预算概览、可编辑的分项费用和报价总额" },
+    { file: "quote-preview", width: 484, height: 1047, alt: "预览报价页展示按房间拆分的工程费用和合计金额", frame: true },
+  ],
+};
+---
+
+<div class="app-efficiency-screens" data-view={view}>
+  {screens[view].map(({ file, width, height, alt, frame }) => (
+    <div class:list={{ "app-efficiency-screens__frame": frame }}>
+      <img src={`${assets}/${file}.png`} {width} {height} {alt} loading="lazy" decoding="async" />
+    </div>
+  ))}
+</div>
+
+<style>
+  .app-efficiency-screens {
+    display: grid;
+    grid-auto-flow: column;
+    grid-auto-columns: minmax(0, 1fr);
+    align-items: start;
+    max-inline-size: 100%;
+  }
+
+  .app-efficiency-screens[data-view="result"] { inline-size: 11.731rem; }
+
+  .app-efficiency-screens[data-view="sales"] {
+    inline-size: 23.542rem;
+    gap: min(2.375rem, 7cqi);
+  }
+
+  .app-efficiency-screens[data-view="quote"] {
+    inline-size: 33.621rem;
+    gap: min(.936rem, 3cqi);
+  }
+
+  .app-efficiency-screens :is(img, :global(.article-image-zoom-trigger)) {
+    display: block;
+    inline-size: 100%;
+    block-size: auto;
+  }
+
+  /* The Figma export at full bounds excludes the preview's outside stroke. */
+  .app-efficiency-screens__frame {
+    padding: 2.38%;
+    border-radius: min(.882rem, 2.6cqi);
+    background: color(display-p3 .815686 .823529 .835294 / 60%);
+  }
+</style>

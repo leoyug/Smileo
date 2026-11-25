@@ -5,26 +5,32 @@ interface Props {
   id: string;
   label: string;
   tabs: string[];
+  initialIndex?: number;
   variant?: "media" | "scenarios";
 }
 
-const { id, label, tabs, variant = "media" } = Astro.props;
+const { id, label, tabs, initialIndex = 0, variant = "media" } = Astro.props;
 ---
 
-<project-media-tabs class:list={["project-media-tabs", { "project-media-tabs--scenarios": variant === "scenarios" }]}>
-  <div class="project-media-tabs__list" role="tablist" aria-label={label} data-media-tablist style={{ "--media-tab-count": tabs.length }} hidden>
-    <span class="project-media-tabs__pill" aria-hidden="true"></span>
-    {tabs.map((tab, index) => (
-      <button
-        class="project-media-tabs__button"
-        type="button"
-        role="tab"
-        id={`${id}-tab-${index + 1}`}
-        aria-selected={index === 0 ? "true" : "false"}
-        aria-controls={`${id}-panel-${index + 1}`}
-        tabindex={index === 0 ? 0 : -1}
-      >{tab}</button>
-    ))}
+<project-media-tabs
+  class:list={["project-media-tabs", { "project-media-tabs--scenarios": variant === "scenarios" }]}
+  data-media-initial-index={initialIndex}
+>
+  <div class="project-media-tabs__scroll">
+    <div class="project-media-tabs__list" role="tablist" aria-label={label} data-media-tablist style={{ "--media-tab-count": tabs.length }} hidden>
+      <span class="project-media-tabs__pill" aria-hidden="true"></span>
+      {tabs.map((tab, index) => (
+        <button
+          class="project-media-tabs__button"
+          type="button"
+          role="tab"
+          id={`${id}-tab-${index + 1}`}
+          aria-selected={index === initialIndex ? "true" : "false"}
+          aria-controls={`${id}-panel-${index + 1}`}
+          tabindex={index === initialIndex ? 0 : -1}
+        >{tab}</button>
+      ))}
+    </div>
   </div>
   <div class="project-media-tabs__panels" data-media-tab-panels>
     <slot />
@@ -42,7 +48,7 @@ const { id, label, tabs, variant = "media" } = Astro.props;
     const styles = getComputedStyle(list);
     const duration = cssTimeToMilliseconds(styles.getPropertyValue("--duration-fast"));
     const easing = styles.getPropertyValue("--ease-smooth-out").trim();
-    let activeTab = tabs[0];
+    let activeTab = tabs.find((tab) => tab.getAttribute("aria-selected") === "true") ?? tabs[0];
     let left = NaN;
     let width = 0;
     let motion: Animation | undefined;
@@ -97,8 +103,9 @@ const { id, label, tabs, variant = "media" } = Astro.props;
       this.#controller = controller;
       const { signal } = controller;
       const scenarios = this.classList.contains("project-media-tabs--scenarios");
-      let selected = 0;
-      let requested = 0;
+      let selected = Number(this.dataset.mediaInitialIndex) || 0;
+      if (!tabs[selected]) selected = 0;
+      let requested = selected;
       let moveScenarioPill: ReturnType<typeof trackScenarioPill>;
       const select = (index: number, animate = false) => {
         selected = index;
@@ -137,7 +144,7 @@ const { id, label, tabs, variant = "media" } = Astro.props;
         panel.setAttribute("role", "tabpanel");
         panel.setAttribute("aria-labelledby", tabs[index].id);
       });
-      select(0);
+      select(selected);
       this.dataset.ready = "";
       list.hidden = false;
       if (scenarios) moveScenarioPill = trackScenarioPill(list, tabs, signal);
@@ -156,7 +163,16 @@ const { id, label, tabs, variant = "media" } = Astro.props;
         if (destination === undefined) return;
         event.preventDefault();
         void requestSelection(destination);
-        tabs[destination].focus({ preventScroll: !scenarios });
+        const tab = tabs[destination];
+        tab.focus({ preventScroll: !scenarios });
+        const scroll = list.parentElement;
+        if (!scenarios && list.matches(":lang(zh)") && scroll && scroll.scrollWidth > scroll.clientWidth) {
+          const viewport = scroll.getBoundingClientRect();
+          const target = tab.getBoundingClientRect();
+          const start = target.left - viewport.left;
+          const end = target.right - viewport.right;
+          scroll.scrollLeft += start < 0 ? start : Math.max(0, Math.min(start, end));
+        }
       }, { signal });
     }
 

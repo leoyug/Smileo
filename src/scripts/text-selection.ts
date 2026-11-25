@@ -83,12 +83,15 @@ function collectFragments(range: Range) {
     if (!rects.length) continue;
 
     const parent = node.parentElement;
-    if (!parent || parent.closest(nativeOnly)) return null;
+    if (!parent) return null;
+    const style = getComputedStyle(parent);
+    if (style.userSelect === "none") continue;
+    if (parent.closest(nativeOnly)) return null;
     // Paint above the inline code background and below its text.
     const host = parent.closest("code") ?? parent.closest(textHost);
     if (!(host instanceof HTMLElement)) return null;
     // Inline code has its own compact background inside the surrounding line.
-    const lineHeight = host.matches("code") ? 0 : Number.parseFloat(getComputedStyle(parent).lineHeight);
+    const lineHeight = host.matches("code") ? 0 : Number.parseFloat(style.lineHeight);
     const group = groups.get(host) ?? [];
     const selected = node.data.slice(start, end);
     const startsWithPunctuation = /^\p{P}/u.test(selected);
@@ -227,8 +230,12 @@ document.addEventListener("astro:page-load", prepareInlineCode);
 document.addEventListener("pointerdown", (event) => {
   if (event.button !== 0 || !(event.target instanceof Element)) return;
   if (event.target.closest("[data-preferences-toggle], [data-preferences-panel]")) return;
-  useNativeSelection();
-  if (event.pointerType !== "mouse" || forcedColors.matches || event.target.closest(nativeOnly)) return;
+  if (event.pointerType !== "mouse") {
+    useNativeSelection();
+    return;
+  }
+  if (forcedColors.matches || event.target.closest(nativeOnly)) return;
+  // A click may leave the range intact until mouseup. Let selectionchange clear its highlight.
   mouseSelection = true;
   pointerId = event.pointerId;
 }, true);
@@ -256,7 +263,9 @@ document.addEventListener("keydown", (event) => {
   if (/^(Arrow|Home$|End$|Page)/.test(event.key) ||
     ((event.metaKey || event.ctrlKey) && event.key.toLowerCase() === "a")) useNativeSelection();
 }, true);
-document.addEventListener("pointercancel", useNativeSelection);
+document.addEventListener("pointercancel", (event) => {
+  if (event.pointerId === pointerId) pointerId = null;
+});
 document.addEventListener("astro:before-swap", useNativeSelection);
 window.addEventListener("blur", () => {
   // Losing focus can interrupt a drag without clearing the text selection.

@@ -13,20 +13,8 @@ for (const [, name] of source.matchAll(projectCaseSlotLink)) {
 <div class="article__body" id="content" data-route-enter-body set:html={renderProjectCaseBody(source, slots)} />
 
 <style>
-  .article__body > :global(:is(p, .app-goals__copy) + [data-case-slot]) {
-    margin-block-start: var(--space-8);
-  }
-
-  .article__body > :global(p + :is([data-case-slot="website-structure"], [data-case-slot="website-visual-language"])) {
-    margin-block-start: var(--space-4);
-  }
-
-  .article__body > :global(h2 + [data-case-slot="reflection-notes"]) {
-    margin-block-start: var(--space-8);
-  }
-
   .article__body > :global(.project-case-label) {
-    margin-block: var(--space-12) var(--space-2);
+    margin-block-end: var(--space-2);
   }
 
   :global(html:not(:lang(en))) .article__body > :global(.project-case-label) {
@@ -68,5 +56,32 @@ for (const [, name] of source.matchAll(projectCaseSlotLink)) {
   .article__body > :global(.app-goals__copy b) {
     color: var(--color-ink);
     font-weight: var(--weight-medium);
+  }
+
+  :global([data-project-id="Zhaichangxiang-App"]) .article__body > :global(h3) {
+    margin-block-end: var(--space-3);
+    color: var(--color-ink);
+    font: var(--weight-semibold) var(--text-body)/var(--space-5) "PingFang SC", var(--font-sans);
+  }
+
+  :global([data-project-id="Zhaichangxiang-App"]) .article__body > :global(h3 + p) {
+    margin-block-start: var(--space-3);
+  }
+
+  :global([data-project-id="Zhaichangxiang-App"]) .article__body > :global(p b) {
+    color: var(--color-ink);
+    font-weight: var(--weight-medium);
+  }
+
+  :global([data-project-id="Zhaichangxiang-App"]) .article__body > :global(.project-case-label:lang(zh):has(+ h2 + h3)) {
+    margin-block-end: var(--space-3);
+    font-weight: var(--weight-regular);
+    font-size: var(--text-meta);
+    line-height: 1.125rem;
+    letter-spacing: var(--tracking-body);
+  }
+
+  :global([data-project-id="Zhaichangxiang-App"]) .article__body > :global(.project-case-label:has(~ [data-case-slot="app-reflection"]):not(:has(~ [data-case-slot="app-business"]))) {
+    margin-block-end: var(--space-3);
   }
 </style>

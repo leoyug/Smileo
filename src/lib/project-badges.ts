@@ -1,11 +1,11 @@
 export const projectBadgeVariants = {
   personal: {
-    label: "个人项目",
+    label: "项目",
     icon: "/assets/figma/project-badge-personal.svg",
     tabIcon: "/assets/figma/project-tab-personal.svg",
   },
   "case-study": {
-    label: "设计案例",
+    label: "案例",
     icon: "/assets/figma/project-badge-case-study.svg",
     tabIcon: "/assets/figma/project-tab-case-study.svg",
   },

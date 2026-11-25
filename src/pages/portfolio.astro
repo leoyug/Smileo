@@ -3,6 +3,7 @@ import { readingImage } from "../lib/display-image";
 import BaseLayout from "../layouts/BaseLayout.astro";
 import TextLink from "../components/TextLink.astro";
 import { getProjects } from "../lib/projects";
+import portfolioMedia from "../data/portfolio-media.json";
 
 type Segment = string | { highlight: string };
 type PortfolioImage = { src: string; alt: string };
@@ -21,11 +22,11 @@ const narratives: Record<string, PortfolioNarrative> = {
     ],
     images: [
       {
-        src: "/media/projects/Zhaichangxiang-App/case-study/03-create-entry.webp",
+        src: portfolioMedia["Zhaichangxiang-App"][0],
         alt: "旧版加号展开创建菜单，与新版首页直接展示搜索、导入和自由绘制的对照",
       },
       {
-        src: "/media/projects/Zhaichangxiang-App/case-study/07-layout-difference.webp",
+        src: portfolioMedia["Zhaichangxiang-App"][1],
         alt: "两套布局方案保留完整户型参照，并以绿色虚线标出局部变化",
       },
     ],
@@ -57,11 +58,11 @@ const narratives: Record<string, PortfolioNarrative> = {
     ],
     images: [
       {
-        src: "/media/projects/zhaichangxiang-website/case-study/01-opening.webp",
+        src: portfolioMedia["zhaichangxiang-website"][0],
         alt: "深绿色首屏、平台规模数据栏与家装获客转化漏斗纵向相接",
       },
       {
-        src: "/media/projects/zhaichangxiang-website/case-study/02-scenarios.webp",
+        src: portfolioMedia["zhaichangxiang-website"][1],
         alt: "前期获客解决方案，左侧为业务阶段与场景说明，右侧为手持设备、小程序码和线索卡片",
       },
     ],

@@ -163,6 +163,10 @@ const arrow = `${assets}/timeline-end.svg`;
   .app-timeline {
     --timeline-mint: color(display-p3 .086275 .701961 .584314);
     --timeline-earlier-opacity: 50%;
+    --timeline-version-size: 1.25rem;
+    --timeline-title-size: .625rem;
+    --timeline-period-size: .5rem;
+    --timeline-copy-gap: var(--space-2);
     display: block;
     container-type: inline-size;
   }
@@ -249,32 +253,40 @@ const arrow = `${assets}/timeline-end.svg`;
     position: relative;
     display: grid;
     justify-items: center;
-    gap: calc(var(--space-2) * var(--timeline-stage-ratio));
+    gap: calc(var(--timeline-copy-gap) * var(--timeline-stage-ratio));
     inline-size: 86%;
     font-family: "PingFang SC", var(--font-sans);
-    font-size: calc(.625rem * var(--timeline-stage-ratio));
+    font-size: calc(var(--timeline-title-size) * var(--timeline-stage-ratio));
     font-weight: var(--weight-regular);
     line-height: 1.2;
     letter-spacing: normal;
     overflow-wrap: anywhere;
   }
 
+  .app-timeline__stage:first-child .app-timeline__title:lang(en) {
+    max-inline-size: 10em;
+    text-wrap: balance;
+  }
+
   .app-timeline__stage:last-child .app-timeline__title:lang(zh) {
+    --timeline-title-paragraph-spacing: .14095em;
     max-inline-size: 7em;
+    line-height: calc(1.2em + var(--timeline-title-paragraph-spacing));
+    margin-block: calc(var(--timeline-title-paragraph-spacing) / -2);
   }
 
   .app-timeline__copy strong {
     font-family: "HONOR Sans CN Timeline", var(--font-sans);
-    font-size: calc(var(--text-lead) * var(--timeline-stage-ratio));
+    font-size: calc(var(--timeline-version-size) * var(--timeline-stage-ratio));
     font-weight: var(--weight-bold);
-    line-height: 1.25;
+    line-height: 1.2;
     letter-spacing: .01em;
   }
 
   .app-timeline__copy small {
     color: color-mix(in display-p3, currentColor 80%, var(--timeline-shape-color));
-    font-size: calc(.375rem * var(--timeline-stage-ratio));
-    line-height: 1.33333;
+    font-size: calc(var(--timeline-period-size) * var(--timeline-stage-ratio));
+    line-height: 1.25;
     letter-spacing: .02em;
   }
 
@@ -401,6 +413,8 @@ const arrow = `${assets}/timeline-end.svg`;
 
     .app-timeline__stage:last-child .app-timeline__title:lang(zh) {
       max-inline-size: none;
+      line-height: inherit;
+      margin-block: 0;
     }
 
     .app-timeline__copy small {

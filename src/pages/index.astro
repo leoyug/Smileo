@@ -5,8 +5,10 @@ import DraggablePhotoStack from "../components/DraggablePhotoStack.astro";
 import PhotoFanStack from "../components/PhotoFanStack.astro";
 import ProjectCard from "../components/ProjectCard.astro";
 import DashedUnderline from "../components/DashedUnderline.astro";
+import AnimatedHighlight from "../components/AnimatedHighlight.astro";
 import ContactLinks from "../components/ContactLinks.astro";
 import TooltipGroup from "../components/TooltipGroup.astro";
+import ArticleImageZoom from "../components/ArticleImageZoom.astro";
 import { Image } from "astro:assets";
 import { aiLogos, everydayTools } from "../data/site";
 import SignatureMark from "../components/SignatureMark.astro";
@@ -16,6 +18,12 @@ import { getProjects, projectPreview } from "../lib/projects";
 import { getComponentPhotos } from "../lib/photo-components";
 import { curatedWorks } from "../data/curated-works";
 import { formatDate } from "../lib/content";
+
+const portraitAssets = "/assets/figma/home-portrait";
+const portraits = [
+  { theme: "light", alt: "Leo 的彩色插画头像" },
+  { theme: "dark", alt: "Leo 的黑白网点头像" },
+];
 
 const fanPhotos = await getComponentPhotos("homeFan");
 const recentPhotos = await getComponentPhotos("homeDrag");
@@ -36,12 +44,20 @@ const homeFanPhotos = fanPhotos.map((photo) => ({
     <h1 class="sr-only">Leo 的个人网站</h1>
     <SignatureMark class="hero__signature" data-route-enter />
     <div class="hero__copy">
-      <p data-route-enter>欢迎来到我的<DashedUnderline effect="flowers">数字花园</DashedUnderline>，我是 Leo，一名产品设计师。</p>
+      <p data-route-enter>欢迎来到我的<DashedUnderline effect="flowers">数字花园</DashedUnderline>，我是 <span class="home-intro__name">{portraits.map(({ theme, alt }) => (
+        <span class="home-intro__portrait" data-portrait-theme={theme}>
+          <span class:list={["home-intro__portrait-frame", `home-intro__portrait-frame--${theme}`]} data-zoom-frame>
+            <img src={`${portraitAssets}/${theme}-thumb.webp`} alt={alt} width="22" height="22" data-zoom-src={`${portraitAssets}/${theme}-preview.webp`} />
+          </span>
+        </span>
+      ))}<span class="home-intro__name-label">Leo</span></span>，一名<AnimatedHighlight>产品设计师</AnimatedHighlight>。</p>
       <p data-route-enter>我使用 <DashedUnderline data-touch-effect="" effect="selection">Figma</DashedUnderline> 进行设计，使用 <DashedUnderline data-touch-effect="" effect="logos" logos={aiLogos}>AI Agent</DashedUnderline> 进行构建。我喜欢探索一切<DashedUnderline effect="work-stack" photos={curatedWorks}>用心创作的事物</DashedUnderline>。最近，我开始更多地借助 AI 来<DashedUnderline data-touch-effect="" effect="pixel-person">实现自己的想法</DashedUnderline>，并尝试将其融入日常工作流中。</p>
       <p data-route-enter>在这里，你可以{hasProjects ? <>看到我正在折腾的<TextLink href="/projects" class="home-intro__projects-link">项目</TextLink>，也可以探索我记录的</> : <>探索我记录的</>}<TextLink href="/writing">文字</TextLink>与<TextLink href="/photos">影像</TextLink>——关于生活、工作、兴趣，以及那些还没想明白的问题。</p>
       <p data-route-enter>目前我正在寻找全职工作，如果你感兴趣，不妨<TextLink href="/resume">了解更多</TextLink>。</p>
     </div>
   </section>
+
+  <ArticleImageZoom selector=".home-intro__portrait .home-intro__portrait-frame > img" previewWidth={320} />
 
   <section class="home-section reading-column contact-section" data-route-enter-viewport>
     <div class="section-topline" data-route-enter><h2>联系到我</h2></div>
@@ -56,7 +72,7 @@ const homeFanPhotos = fanPhotos.map((photo) => ({
   </section>
 
   {featuredProjectPreviews.length > 0 && <section class="home-section reading-column project-home" data-route-enter-viewport>
-    <div class="section-topline" data-route-enter><h2>精选项目</h2></div>
+    <div class="section-topline" data-route-enter><h2>精选作品</h2></div>
     <div class="project-grid" data-route-enter-group>
       {featuredProjectPreviews.map((project) => <ProjectCard {...project} />)}
     </div>
