@@ -1,0 +1,996 @@
+---
+import Button from "./Button.astro";
+import Card from "./Card.astro";
+import ProgressiveBlur from "./ProgressiveBlur.astro";
+
+interface Props {
+  id: string;
+}
+
+const { id } = Astro.props;
+const assets = "/assets/figma/avatar-lightbox";
+const rings = [
+  { name: "move", rotation: -110 },
+  { name: "exercise", rotation: 150 },
+  { name: "stand", rotation: 0 },
+] as const;
+const activityDates = [
+  ["19", "12:25"],
+  ["18", "16:12"],
+  ["16", "11:33"],
+  ["12", "09:53"],
+  ["04", "20:27"],
+] as const;
+---
+
+<dialog id={id} class="avatar-lightbox" data-avatar-lightbox aria-label="Leo 的个人状态">
+  <div class="avatar-lightbox__layout" data-avatar-layout>
+    <p class="avatar-lightbox__close-hint">按 ESC 退出</p>
+    <div class="avatar-lightbox__overview">
+      <div class="avatar-lightbox__intro">
+        <figure class="avatar-lightbox__portrait avatar-lightbox__module">
+          <div class="avatar-lightbox__portrait-art">
+            <div class="avatar-lightbox__portrait-orbit">
+              <img class="avatar-lightbox__photo" src={`${assets}/portrait.webp`} alt="Leo 在海边穿着黑色上衣，比出剪刀手" width="150" height="197" loading="lazy" draggable="false" tabindex="0" aria-describedby={`${id}-portrait-help`} aria-keyshortcuts="ArrowLeft ArrowRight Home" />
+            </div>
+            <span class="avatar-lightbox__pin" aria-hidden="true">
+              <img class="avatar-lightbox__pin-shadow" src={`${assets}/pin-shadow.svg`} alt="" loading="lazy" />
+              <img class="avatar-lightbox__pin-highlight" src={`${assets}/pin-highlight.svg`} alt="" loading="lazy" />
+              <img class="avatar-lightbox__pin-head" src={`${assets}/pin.webp`} alt="" width="13" height="13" loading="lazy" />
+            </span>
+          </div>
+          <span class="sr-only" id={`${id}-portrait-help`}>拖动照片或按左右方向键旋转，按 Home 复位。</span>
+        </figure>
+        <Card class="avatar-lightbox__module avatar-lightbox__card avatar-lightbox__weather" variant="media">
+          <div class="avatar-lightbox__card-body">
+            <h2><img src={`${assets}/weather.svg`} alt="" width="20" height="20" loading="lazy" />天气</h2>
+            <div class="avatar-lightbox__temperature">
+              <p>9℃</p>
+              <p>多云</p>
+            </div>
+          </div>
+        </Card>
+      </div>
+
+      <Card class="avatar-lightbox__module avatar-lightbox__card" variant="media">
+        <div class="avatar-lightbox__card-body">
+          <h2><img src={`${assets}/social.svg`} alt="" width="16" height="16" loading="lazy" />社媒</h2>
+          <div class="avatar-lightbox__social-slots" aria-hidden="true">
+            {Array.from({ length: 6 }, () => <span></span>)}
+          </div>
+          <p class="sr-only">社交链接待补充</p>
+        </div>
+      </Card>
+
+      <div class="avatar-lightbox__status">
+        <Card class="avatar-lightbox__module avatar-lightbox__card avatar-lightbox__availability" variant="media">
+          <div class="avatar-lightbox__card-body">
+            <h2><img src={`${assets}/presence.svg`} alt="" width="20" height="20" loading="lazy" />状态</h2>
+            <p class="avatar-lightbox__offline">
+              <img src={`${assets}/offline.svg`} alt="" width="8" height="8" loading="lazy" />
+              离线
+            </p>
+          </div>
+        </Card>
+        <Card class="avatar-lightbox__module avatar-lightbox__card avatar-lightbox__fitness" variant="media">
+          <div class="avatar-lightbox__card-body">
+            <h2><img src={`${assets}/fitness.svg`} alt="" width="20" height="20" loading="lazy" />健身</h2>
+            <div class="avatar-lightbox__rings" aria-hidden="true">
+              {rings.map(({ name, rotation }) => (
+                <div class="avatar-lightbox__ring-layer" style={`--ring-rotation: ${rotation}deg`}>
+                  <img src={`${assets}/ring-${name}.svg`} alt="" width="120" height="120" loading="lazy" />
+                  <img src={`${assets}/ring-${name}-cap.svg`} alt="" width="120" height="120" loading="lazy" />
+                </div>
+              ))}
+              <div class="avatar-lightbox__ring-arrows">
+                {rings.map(({ name }) => <img src={`${assets}/ring-${name}-arrow.svg`} alt="" />)}
+              </div>
+            </div>
+            <p class="avatar-lightbox__steps">
+              <img src={`${assets}/steps.svg`} alt="" width="24" height="24" loading="lazy" />
+              1458<span class="sr-only"> 步</span>
+            </p>
+          </div>
+        </Card>
+        <div class="avatar-lightbox__location avatar-lightbox__module" data-avatar-clock role="group" aria-label="时区与概略位置">
+          <div class="avatar-lightbox__location-row">
+            <span class="avatar-lightbox__clock-face" aria-hidden="true">
+              <img src={`${assets}/clock.svg`} alt="" width="32" height="32" loading="lazy" />
+              <span class="avatar-lightbox__clock-hour"></span>
+              <span class="avatar-lightbox__clock-minute"></span>
+              <span class="avatar-lightbox__clock-second"></span>
+            </span>
+            <div>
+              <p>UTC+8</p>
+              <time class="avatar-lightbox__clock-time"><span data-clock-digits>--:--</span> <span data-clock-period></span></time>
+            </div>
+          </div>
+          <div class="avatar-lightbox__location-row" role="group" aria-label="上海概略坐标">
+            <img src={`${assets}/globe.svg`} alt="" width="32" height="32" loading="lazy" />
+            <div><p>121.47° E</p><p>31.23° N</p></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <Card class="avatar-lightbox__module avatar-lightbox__card avatar-lightbox__activity" variant="media">
+      <div class="avatar-lightbox__card-body">
+        <h2 id={`${id}-activity`}><img src={`${assets}/reading.svg`} alt="" width="18" height="18" loading="lazy" />动态</h2>
+        <div class="avatar-lightbox__activity-scroll" data-avatar-activity role="region" aria-labelledby={`${id}-activity`} tabindex="0">
+          <ol class="avatar-lightbox__activity-list">
+            {activityDates.map(([day, time]) => (
+              <li class="avatar-lightbox__activity-entry">
+                <div class="avatar-lightbox__activity-date">
+                  <span>{day}</span>
+                  <time datetime={time}>{time}</time>
+                </div>
+                <div class="avatar-lightbox__activity-copy">
+                  <p>分享下之前提过几次的 herdr-coordinator skill，这是我目前工作的主力工具之一，尤其适合长线任务。另一个是开发中的 vibench，现在所有单个需求都是用它来记录和实现的。</p>
+                  <div class="avatar-lightbox__reading-preview">
+                    <p>tinyhost.space</p>
+                    <h3>Herdr Coordinator 研读笔记</h3>
+                    <p>一份只协调、不执行的多 Agent编排提示词：全文与研读。</p>
+                  </div>
+                </div>
+              </li>
+            ))}
+          </ol>
+        </div>
+      </div>
+    </Card>
+  </div>
+  <form class="avatar-lightbox__dismiss" method="dialog">
+    <ProgressiveBlur class="avatar-lightbox__dismiss-backdrop" />
+    <Button class="avatar-lightbox__close" type="submit" variant="ghost" aria-label="关闭个人状态" aria-keyshortcuts="Escape" autofocus>
+      关闭
+    </Button>
+  </form>
+</dialog>
+
+<script>
+  import { cssTimeToMilliseconds } from "../lib/css-time";
+  import { bindAvatarPortrait } from "../scripts/avatar-lightbox-portrait";
+
+  const initialized = new WeakSet<HTMLDialogElement>();
+  const localTime = new Intl.DateTimeFormat("en-GB", {
+    timeZone: "Asia/Shanghai",
+    hour: "2-digit",
+    minute: "2-digit",
+    hourCycle: "h23",
+  });
+
+  function bindAvatarClock(dialog: HTMLDialogElement) {
+    const clock = dialog.querySelector<HTMLElement>("[data-avatar-clock]");
+    const time = clock?.querySelector("time");
+    const digits = time?.querySelector("[data-clock-digits]");
+    const period = time?.querySelector("[data-clock-period]");
+    const secondHand = clock?.querySelector<HTMLElement>(".avatar-lightbox__clock-second");
+    if (!clock || !time || !digits || !period || !secondHand) return;
+
+    let timer: number | undefined;
+    let shownMinute: number | undefined;
+    const listeners = new AbortController();
+
+    const refresh = () => {
+      window.clearTimeout(timer);
+      if (!dialog.isConnected || !dialog.open || document.hidden) return;
+
+      const now = new Date();
+      const minuteStamp = Math.floor(now.getTime() / 60_000);
+      if (shownMinute !== minuteStamp) {
+        shownMinute = minuteStamp;
+        const formatted = localTime.format(now);
+        const [hour, minute] = formatted.split(":");
+        const twelveHour = Number(hour) % 12;
+        time.dateTime = formatted;
+        digits.textContent = `${twelveHour || 12}:${minute}`;
+        period.textContent = Number(hour) < 12 ? "AM" : "PM";
+        clock.style.setProperty("--clock-hour-angle", `${twelveHour * 30 + Number(minute) / 2}deg`);
+        clock.style.setProperty("--clock-minute-angle", `${Number(minute) * 6}deg`);
+      }
+      secondHand.style.transform = `rotate(${now.getUTCSeconds() * 6 - 90}deg)`;
+      timer = window.setTimeout(refresh, 1000 - (now.getTime() % 1000));
+    };
+
+    dialog.addEventListener("close", refresh, { signal: listeners.signal });
+    document.addEventListener("visibilitychange", refresh, { signal: listeners.signal });
+    document.addEventListener("astro:before-swap", () => {
+      window.clearTimeout(timer);
+      listeners.abort();
+    }, { once: true, signal: listeners.signal });
+
+    return refresh;
+  }
+
+  function bindAvatarLayoutMotion(dialog: HTMLDialogElement, layout: HTMLElement | null) {
+    if (!layout || !window.ResizeObserver || !CSS.supports("translate", "1px 1px")) return;
+
+    const modules = [...layout.querySelectorAll<HTMLElement>(
+      ".avatar-lightbox__card, .avatar-lightbox__portrait-art, .avatar-lightbox__location-row",
+    )];
+    const socialSlots = layout.querySelector<HTMLElement>(".avatar-lightbox__social-slots");
+    const clock = layout.querySelector<HTMLElement>("[data-avatar-clock]");
+    const reduced = matchMedia("(prefers-reduced-motion: reduce)");
+    const listeners = new AbortController();
+    const animations = new Map<HTMLElement, Animation>();
+    let previousMode = "";
+    let previousPositions: { x: number; y: number }[] = [];
+    let previousWidth = 0;
+    let previousScrollTop = 0;
+
+    const update = () => {
+      if (!dialog.open || dialog.hasAttribute("data-closing")) return;
+
+      const styles = getComputedStyle(layout);
+      const mode = [
+        styles.getPropertyValue("--avatar-lightbox-layout-mode"),
+        socialSlots?.clientHeight,
+        clock ? getComputedStyle(clock).gridTemplateColumns.split(" ").length : 0,
+      ].join(":");
+      const layoutTop = layout.getBoundingClientRect().top;
+      const measurements = modules.map((module) => {
+        const rect = module.getBoundingClientRect();
+        const translate = animations.has(module) ? getComputedStyle(module).translate : "none";
+        const [offsetX = 0, offsetY = 0] = translate === "none" ? [] : translate.split(" ").map(parseFloat);
+        // Measure relative to the layout so scrolling and the dialog entrance do not affect the card offset.
+        return { x: rect.left - offsetX, y: rect.top - layoutTop - offsetY, offsetX, offsetY };
+      });
+      const reflowed = previousMode !== "" && previousMode !== mode;
+      const from = previousPositions;
+      const scrollOffset = dialog.scrollTop - previousScrollTop;
+      previousMode = mode;
+      previousPositions = measurements;
+      previousWidth = innerWidth;
+      previousScrollTop = dialog.scrollTop;
+      if (!reflowed || reduced.matches) return;
+
+      const duration = cssTimeToMilliseconds(styles.getPropertyValue("--duration-fast"));
+      const easing = styles.getPropertyValue("--ease-smooth-out").trim();
+      modules.forEach((module, index) => {
+        const { x, y, offsetX, offsetY } = measurements[index];
+        const dx = from[index].x + offsetX - x;
+        const dy = from[index].y + offsetY - y + scrollOffset;
+        animations.get(module)?.cancel();
+        animations.delete(module);
+        if (Math.abs(dx) < 1 && Math.abs(dy) < 1) return;
+
+        const animation = module.animate([{ translate: `${dx}px ${dy}px` }, { translate: "0px 0px" }], {
+          duration, easing, fill: "backwards",
+        });
+        animations.set(module, animation);
+        animation.addEventListener("finish", () => {
+          if (animations.get(module) === animation) animations.delete(module);
+        }, { once: true });
+      });
+    };
+
+    const observer = new ResizeObserver(update);
+    const stop = () => {
+      observer.disconnect();
+      animations.forEach((animation) => animation.cancel());
+      animations.clear();
+      previousMode = "";
+      previousPositions = [];
+    };
+    const start = () => {
+      stop();
+      if (!dialog.open || reduced.matches) return;
+      update();
+      observer.observe(dialog);
+    };
+
+    dialog.addEventListener("close", () => { if (!dialog.open) stop(); }, { signal: listeners.signal });
+    dialog.addEventListener("scroll", () => {
+      // A resize can clamp the scroll position before the observer measures the new layout.
+      if (dialog.open && innerWidth === previousWidth) previousScrollTop = dialog.scrollTop;
+    }, { passive: true, signal: listeners.signal });
+    reduced.addEventListener("change", start, { signal: listeners.signal });
+    document.addEventListener("astro:before-swap", () => {
+      stop();
+      listeners.abort();
+    }, { once: true, signal: listeners.signal });
+
+    return start;
+  }
+
+  function bindAvatarLightboxes() {
+    document.querySelectorAll<HTMLDialogElement>("[data-avatar-lightbox]").forEach((dialog) => {
+      if (initialized.has(dialog)) return;
+      initialized.add(dialog);
+      const refreshClock = bindAvatarClock(dialog);
+      const stopPortrait = bindAvatarPortrait(dialog);
+      const activity = dialog.querySelector<HTMLElement>("[data-avatar-activity]");
+      const layout = dialog.querySelector<HTMLElement>("[data-avatar-layout]");
+      const startLayoutMotion = bindAvatarLayoutMotion(dialog, layout);
+
+      const requestClose = () => {
+        if (!dialog.open || dialog.hasAttribute("data-closing")) return;
+        stopPortrait?.();
+        dialog.setAttribute("data-closing", "");
+
+        const finishClose = () => {
+          dialog.close();
+          dialog.removeAttribute("data-closing");
+        };
+        const transitions = dialog.getAnimations({ subtree: true })
+          .filter((animation) => animation instanceof CSSTransition);
+        if (transitions.length === 0) {
+          finishClose();
+          return;
+        }
+        void Promise.allSettled(transitions.map((transition) => transition.finished)).then(finishClose);
+      };
+
+      document.querySelectorAll<HTMLButtonElement>(
+        `[data-avatar-lightbox-trigger][aria-controls="${CSS.escape(dialog.id)}"]`,
+      ).forEach((trigger) => {
+        trigger.addEventListener("click", () => {
+          if (dialog.open) return;
+          trigger.focus({ preventScroll: true });
+          dialog.showModal();
+          dialog.scrollTop = 0;
+          if (activity) activity.scrollTop = 0;
+          refreshClock?.();
+          startLayoutMotion?.();
+        });
+      });
+
+      let pressedBackdrop = false;
+      dialog.addEventListener("pointerdown", (event) => { pressedBackdrop = event.target === dialog; });
+      dialog.addEventListener("click", (event) => {
+        if (pressedBackdrop && event.target === dialog) requestClose();
+      });
+      dialog.addEventListener("cancel", (event) => {
+        event.preventDefault();
+        requestClose();
+      });
+      dialog.addEventListener("submit", (event) => {
+        event.preventDefault();
+        requestClose();
+      });
+    });
+  }
+
+  bindAvatarLightboxes();
+  document.addEventListener("astro:page-load", bindAvatarLightboxes);
+</script>
+
+<style>
+  :global(html:has(.avatar-lightbox[open])) { overflow: hidden; }
+
+  .avatar-lightbox {
+    position: fixed;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    max-width: none;
+    max-height: none;
+    margin: 0;
+    padding: 0;
+    overflow: auto;
+    overflow-x: hidden;
+    overscroll-behavior: contain;
+    scrollbar-color: var(--color-avatar-lightbox-caption) var(--color-avatar-lightbox-surface);
+    border: 0;
+    background: transparent;
+    color: var(--color-avatar-lightbox-caption);
+    color-scheme: dark;
+    cursor: pointer;
+    font-size: var(--text-body);
+    line-height: var(--space-5);
+  }
+
+  .avatar-lightbox::backdrop {
+    background: color-mix(in srgb, var(--primitive-color-warm-925) var(--avatar-lightbox-backdrop-opacity), transparent);
+    backdrop-filter: blur(var(--space-5));
+  }
+
+  .avatar-lightbox__dismiss {
+    --avatar-lightbox-close-inset: calc(var(--space-1) + 1px);
+    position: fixed;
+    z-index: 1;
+    inset: auto 0 0;
+    display: grid;
+    justify-items: center;
+    padding-block-end: calc(var(--space-8) + env(safe-area-inset-bottom, 0px));
+    pointer-events: none;
+  }
+
+  .avatar-lightbox__dismiss :global(.avatar-lightbox__dismiss-backdrop) {
+    --progressive-blur-height: var(--dock-backdrop-height);
+    --progressive-blur-color: var(--primitive-color-warm-925);
+  }
+
+  .avatar-lightbox__dismiss :global(.avatar-lightbox__close) {
+    --avatar-lightbox-close-highlight: 0;
+    position: relative;
+    isolation: isolate;
+    width: 11rem;
+    max-width: 100%;
+    min-height: calc(var(--space-12) + var(--space-1) / 2);
+    border: 0;
+    border-radius: var(--radius-lg);
+    color: var(--color-avatar-lightbox-caption);
+    font: var(--weight-regular) var(--text-body)/var(--space-5) "PingFang SC", var(--font-sans);
+    pointer-events: auto;
+  }
+
+  @media (width < 720px) {
+    .avatar-lightbox__dismiss :global(.avatar-lightbox__close) {
+      --avatar-lightbox-close-highlight: 1;
+    }
+  }
+
+  .avatar-lightbox__dismiss :global(.avatar-lightbox__close:focus-visible) {
+    --avatar-lightbox-close-highlight: 1;
+    color: var(--color-avatar-lightbox-text);
+  }
+
+  @media (hover: hover) and (pointer: fine) {
+    .avatar-lightbox__dismiss :global(.avatar-lightbox__close:hover) {
+      --avatar-lightbox-close-highlight: 1;
+      color: var(--color-avatar-lightbox-text);
+    }
+  }
+
+  .avatar-lightbox__dismiss :global(.avatar-lightbox__close)::before,
+  .avatar-lightbox__dismiss :global(.avatar-lightbox__close)::after {
+    position: absolute;
+    border: 1px solid var(--color-avatar-lightbox-line);
+    content: "";
+  }
+
+  .avatar-lightbox__dismiss :global(.avatar-lightbox__close)::before {
+    z-index: -2;
+    inset: 0;
+    border-radius: var(--radius-lg);
+    background: var(--color-avatar-lightbox-frame);
+    opacity: var(--avatar-lightbox-close-highlight);
+    transform: scale(calc(.96 + .04 * var(--avatar-lightbox-close-highlight)));
+  }
+
+  .avatar-lightbox__dismiss :global(.avatar-lightbox__close)::after {
+    z-index: -1;
+    inset: var(--avatar-lightbox-close-inset) var(--space-1);
+    border-radius: var(--radius-md);
+    background: var(--color-avatar-lightbox-surface);
+    transform: scaleX(calc(1 - var(--avatar-lightbox-close-highlight) / 84));
+  }
+
+  .avatar-lightbox__close-hint { display: none; }
+
+  .avatar-lightbox__layout {
+    --avatar-lightbox-layout-mode: narrow;
+    display: grid;
+    max-width: 90rem;
+    margin-inline: auto;
+    padding: calc(var(--space-16) + env(safe-area-inset-top, 0px))
+      max(var(--space-4), env(safe-area-inset-right, 0px))
+      var(--dock-reserve)
+      max(var(--space-4), env(safe-area-inset-left, 0px));
+    gap: var(--space-6);
+    pointer-events: none;
+  }
+
+  .avatar-lightbox__layout :global(.avatar-lightbox__card),
+  .avatar-lightbox__location {
+    pointer-events: auto;
+    cursor: default;
+  }
+
+  .avatar-lightbox__overview,
+  .avatar-lightbox__intro,
+  .avatar-lightbox__status {
+    display: grid;
+    align-content: start;
+    gap: var(--space-6);
+    min-width: 0;
+  }
+
+  .avatar-lightbox__intro {
+    --avatar-lightbox-portrait-width: 15rem;
+    --avatar-lightbox-intro-gap: var(--space-4);
+    grid-template-columns: minmax(0, 1fr) minmax(7rem, .75fr);
+    gap: var(--avatar-lightbox-intro-gap);
+  }
+
+  .avatar-lightbox__portrait {
+    position: relative;
+    width: min(100%, var(--avatar-lightbox-portrait-width));
+    height: 13.125rem;
+  }
+
+  .avatar-lightbox__portrait-art {
+    --avatar-lightbox-portrait-scale: .72;
+    --avatar-pin-left: 4.021875rem;
+    --avatar-pin-top: .6875rem;
+    --avatar-pin-center-x: .5847rem;
+    --avatar-pin-center-y: .5222rem;
+    position: absolute;
+    inset: 50% auto auto 50%;
+    width: var(--avatar-lightbox-portrait-width);
+    height: 17.5rem;
+    transform: translate(-50%, -50%) scale(var(--avatar-lightbox-portrait-scale));
+  }
+
+  .avatar-lightbox__portrait-orbit {
+    position: absolute;
+    inset: 0;
+    display: grid;
+    place-items: center;
+    transform-origin:
+      calc(var(--avatar-pin-left) + var(--avatar-pin-center-x))
+      calc(var(--avatar-pin-top) + var(--avatar-pin-center-y));
+  }
+
+  .avatar-lightbox[open] .avatar-lightbox__portrait-orbit { will-change: transform; }
+
+  .avatar-lightbox__photo {
+    box-sizing: content-box;
+    width: 9.375rem;
+    height: 12.3125rem;
+    /* Paint one continuous paper surface under the rotated photo. */
+    padding: calc(var(--space-1) + var(--space-1) / 2);
+    padding-block-end: var(--space-8);
+    background: var(--color-photo-paper);
+    box-shadow: var(--shadow-photo-stack);
+    object-fit: cover;
+    transform: rotate(9.08deg);
+    cursor: grab;
+    pointer-events: auto;
+    touch-action: none;
+    user-select: none;
+  }
+
+  .avatar-lightbox__photo[data-dragging] { cursor: grabbing; }
+
+  .avatar-lightbox__pin {
+    position: absolute;
+    z-index: 1;
+    inset: var(--avatar-pin-top) auto auto var(--avatar-pin-left);
+    width: 1.107rem;
+    height: 1.289rem;
+    cursor: default;
+    pointer-events: auto;
+  }
+
+  .avatar-lightbox__pin img {
+    position: absolute;
+    inset: .879rem auto auto .3615rem;
+    max-width: none;
+    transform: translate(-50%, -50%) rotate(26.92deg);
+  }
+
+  .avatar-lightbox__pin .avatar-lightbox__pin-head {
+    inset: var(--avatar-pin-center-y) auto auto var(--avatar-pin-center-x);
+    width: .7911rem;
+    height: .7911rem;
+    transform: translate(-50%, -50%) rotate(24.01deg);
+  }
+
+  .avatar-lightbox__location {
+    display: grid;
+    gap: var(--space-4);
+    width: 100%;
+    padding: var(--space-2);
+    font: var(--weight-regular) var(--text-meta)/var(--space-4) var(--font-mono);
+  }
+
+  .avatar-lightbox__location-row {
+    display: flex;
+    align-items: center;
+    gap: var(--space-3);
+    white-space: nowrap;
+  }
+
+  .avatar-lightbox__location-row img { flex: none; }
+
+  .avatar-lightbox__clock-face {
+    position: relative;
+    flex: none;
+    color: var(--color-avatar-lightbox-clock-line);
+  }
+
+  .avatar-lightbox__clock-face img {
+    /* Retain the Figma bezel and leave the live hands to the clock. */
+    mask-image: radial-gradient(circle at center, transparent 12px, black 12px);
+  }
+
+  .avatar-lightbox__clock-face::after {
+    position: absolute;
+    inset: 50% auto auto 50%;
+    width: 3px;
+    height: 3px;
+    border-radius: var(--radius-pill);
+    background: currentColor;
+    transform: translate(-50%, -50%);
+    content: "";
+  }
+
+  .avatar-lightbox__clock-hour,
+  .avatar-lightbox__clock-minute,
+  .avatar-lightbox__clock-second {
+    position: absolute;
+    inset: 50% auto auto 50%;
+    height: 1px;
+    border-radius: var(--radius-pill);
+    background: currentColor;
+    transform-origin: left center;
+    translate: 0 -50%;
+  }
+
+  .avatar-lightbox__clock-hour {
+    width: 7px;
+    transform: rotate(calc(var(--clock-hour-angle, 0deg) - 90deg));
+  }
+
+  .avatar-lightbox__clock-minute {
+    width: 10px;
+    transform: rotate(calc(var(--clock-minute-angle, 0deg) - 90deg));
+  }
+
+  .avatar-lightbox__clock-second {
+    width: 11px;
+    height: .5px;
+    transform: rotate(-90deg);
+  }
+
+  .avatar-lightbox__layout :global(.avatar-lightbox__card) {
+    display: flex;
+    min-width: 0;
+    padding: var(--space-1);
+    border-color: var(--color-avatar-lightbox-line);
+    background: var(--color-avatar-lightbox-frame);
+  }
+
+  .avatar-lightbox__card-body {
+    display: flex;
+    flex: 1;
+    flex-direction: column;
+    gap: var(--space-6);
+    min-width: 0;
+    padding: clamp(var(--space-3), 3vw, var(--space-5));
+    border: 1px solid var(--color-avatar-lightbox-line);
+    border-radius: var(--radius-md);
+    background: var(--color-avatar-lightbox-surface);
+  }
+
+  .avatar-lightbox__intro :global(.avatar-lightbox__weather) .avatar-lightbox__card-body {
+    padding-inline: clamp(var(--space-3), min(3vw, 13%), var(--space-5));
+  }
+
+  .avatar-lightbox h2 {
+    display: flex;
+    flex: none;
+    align-items: center;
+    gap: var(--space-1);
+    font: var(--weight-regular) var(--text-lead)/var(--space-5) var(--font-section-heading);
+  }
+
+  .avatar-lightbox h2 img { flex: none; }
+
+  .avatar-lightbox__temperature {
+    display: grid;
+    gap: var(--space-2);
+    margin-block-start: auto;
+    color: var(--color-avatar-lightbox-copy);
+    font-size: var(--text-lead);
+  }
+
+  .avatar-lightbox__temperature p:first-child {
+    color: var(--color-avatar-lightbox-text);
+    font-size: var(--text-display);
+    line-height: calc(var(--space-8) + var(--space-2));
+  }
+
+  .avatar-lightbox__social-slots {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-4) var(--space-3);
+  }
+
+  .avatar-lightbox__social-slots span {
+    width: calc(var(--space-8) + var(--space-2));
+    aspect-ratio: 1;
+    border-radius: var(--radius-avatar-lightbox-social);
+    background: var(--color-avatar-lightbox-social-placeholder);
+    box-shadow: inset 0 0 0 .5px var(--color-avatar-lightbox-social-line);
+  }
+
+  .avatar-lightbox__layout :global(.avatar-lightbox__availability) { min-height: 9.75rem; }
+
+  .avatar-lightbox__offline {
+    display: flex;
+    align-items: center;
+    gap: var(--space-2);
+    margin-block-start: auto;
+    color: var(--color-avatar-lightbox-copy);
+    font-size: var(--text-lead);
+  }
+
+  .avatar-lightbox__layout :global(.avatar-lightbox__fitness) { min-height: 17.25rem; }
+
+  .avatar-lightbox__status :global(.avatar-lightbox__fitness) .avatar-lightbox__card-body {
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .avatar-lightbox__status :global(.avatar-lightbox__fitness) h2 { align-self: start; }
+
+  .avatar-lightbox__rings {
+    position: relative;
+    overflow: clip;
+    width: 7.5rem;
+    height: 7.5rem;
+    flex: none;
+  }
+
+  .avatar-lightbox__ring-layer {
+    position: absolute;
+    inset: 0;
+    transform: rotate(var(--ring-rotation));
+  }
+
+  .avatar-lightbox__ring-layer img { position: absolute; inset: 0; }
+
+  .avatar-lightbox__ring-arrows {
+    position: relative;
+    display: grid;
+    justify-content: center;
+    gap: 1.739px;
+  }
+
+  .avatar-lightbox__steps {
+    display: flex;
+    align-items: center;
+    align-self: flex-end;
+    gap: var(--space-1);
+    color: var(--color-avatar-lightbox-text);
+    font-size: calc(var(--text-lead) + .125rem);
+    font-weight: var(--weight-medium);
+  }
+
+  .avatar-lightbox__activity-list {
+    display: grid;
+    gap: var(--space-5);
+    padding-inline: var(--space-2);
+    list-style: none;
+  }
+
+  .avatar-lightbox__activity-scroll:focus-visible {
+    outline-offset: -2px;
+  }
+
+  .avatar-lightbox__activity-entry {
+    display: grid;
+    grid-template-columns: 2.25rem minmax(0, 1fr);
+    gap: var(--space-3);
+  }
+
+  .avatar-lightbox__activity-date {
+    display: grid;
+    align-content: start;
+    font: var(--weight-regular) var(--space-5)/var(--space-6) var(--font-mono);
+  }
+
+  .avatar-lightbox__activity-date time {
+    color: var(--color-avatar-lightbox-copy);
+    font-size: var(--text-meta);
+    line-height: var(--space-4);
+  }
+
+  .avatar-lightbox__activity-copy,
+  .avatar-lightbox__reading-preview { display: grid; }
+
+  .avatar-lightbox__activity-copy {
+    gap: var(--space-3);
+    font-family: "PingFang SC", var(--font-sans);
+    overflow-wrap: anywhere;
+  }
+
+  .avatar-lightbox__reading-preview {
+    gap: var(--space-1);
+    padding: var(--space-2) var(--space-3);
+    border: 1px solid var(--color-avatar-lightbox-line);
+    border-radius: var(--radius-project-card-media);
+    font-size: var(--text-meta);
+    line-height: var(--space-4);
+  }
+
+  .avatar-lightbox__reading-preview p:first-child {
+    font-family: var(--font-sans);
+    line-height: 1.125rem;
+  }
+
+  .avatar-lightbox__reading-preview h3 {
+    color: var(--color-avatar-lightbox-text);
+    font-size: var(--text-body);
+    font-weight: var(--weight-regular);
+    line-height: var(--space-5);
+  }
+
+  @media (width < 23rem) {
+    .avatar-lightbox__location {
+      grid-template-columns: repeat(auto-fit, minmax(min(7rem, 100%), 1fr));
+    }
+  }
+
+  @media (min-width: 23rem) {
+    .avatar-lightbox__layout { --avatar-lightbox-layout-mode: compact; }
+
+    .avatar-lightbox__intro {
+      grid-template-columns:
+        min(var(--avatar-lightbox-portrait-width), calc((100% - var(--avatar-lightbox-intro-gap)) * .625))
+        minmax(7rem, 1fr);
+    }
+
+    .avatar-lightbox__status {
+      grid-template-columns: minmax(8rem, 168fr) minmax(0, 280fr);
+      align-items: start;
+    }
+
+    .avatar-lightbox__status :global(.avatar-lightbox__fitness) { grid-row: span 2; }
+  }
+
+  @media (min-width: 44rem) {
+    .avatar-lightbox__layout {
+      --avatar-lightbox-layout-mode: tablet;
+      padding-inline: var(--space-8);
+    }
+    .avatar-lightbox__intro { --avatar-lightbox-intro-gap: var(--space-6); }
+    .avatar-lightbox__portrait { height: 15rem; }
+    .avatar-lightbox__portrait-art { --avatar-lightbox-portrait-scale: .9; }
+  }
+
+  @media (width < 720px) {
+    .avatar-lightbox__layout {
+      padding-block-start: calc(var(--space-8) + var(--space-2) + env(safe-area-inset-top, 0px));
+    }
+
+    .avatar-lightbox__intro {
+      grid-template-columns: minmax(0, 1fr) max(7rem, calc(55% - var(--space-20)));
+    }
+
+    .avatar-lightbox__portrait { justify-self: center; }
+  }
+
+  @media (20rem <= width < 23rem) {
+    .avatar-lightbox__portrait-art { --avatar-lightbox-portrait-scale: .8; }
+  }
+
+  @media (23rem <= width < 720px) {
+    .avatar-lightbox__portrait { height: 15.5rem; }
+    .avatar-lightbox__portrait-art { --avatar-lightbox-portrait-scale: .94; }
+  }
+
+  @media (min-width: 720px) {
+    .avatar-lightbox__dismiss {
+      position: static;
+      margin-block-start: calc(var(--space-6) - var(--avatar-lightbox-close-inset));
+      padding-block-end: calc(var(--space-8) + var(--space-2));
+    }
+
+    .avatar-lightbox__dismiss :global(.avatar-lightbox__dismiss-backdrop) { display: none; }
+
+    .avatar-lightbox__layout {
+      --avatar-lightbox-layout-mode: split;
+      --avatar-lightbox-content-start: max(calc(var(--space-16) + env(safe-area-inset-top, 0px)), calc((100dvh - 46.25rem) / 2));
+      grid-template-columns: minmax(22rem, 472fr) minmax(0, 784fr);
+      align-items: start;
+      padding-block-start: calc(var(--avatar-lightbox-content-start) - var(--space-6) - var(--space-5));
+      padding-block-end: 0;
+    }
+
+    .avatar-lightbox__close-hint {
+      display: block;
+      grid-column: 1 / -1;
+      color: var(--color-muted);
+      justify-self: center;
+      text-align: center;
+      font-family: "PingFang SC", var(--font-sans);
+    }
+
+    .avatar-lightbox__layout :global(.avatar-lightbox__activity) {
+      --avatar-lightbox-activity-order: 1;
+      height: 43.75rem;
+    }
+    .avatar-lightbox__layout :global(.avatar-lightbox__activity) .avatar-lightbox__card-body {
+      padding-block-end: 0;
+    }
+
+    .avatar-lightbox__activity-scroll {
+      min-height: 0;
+      overflow-y: auto;
+      overscroll-behavior: contain;
+      padding-block-end: var(--space-5);
+      scrollbar-width: none;
+    }
+  }
+
+  @media (min-width: 72rem) {
+    .avatar-lightbox__layout {
+      --avatar-lightbox-layout-mode: wide;
+      padding-inline-start: max(min(5.5556vw, var(--space-20)), env(safe-area-inset-left, 0px));
+      padding-inline-end: max(min(5.5556vw, var(--space-20)), env(safe-area-inset-right, 0px));
+    }
+
+    .avatar-lightbox__intro { grid-template-columns: minmax(0, 280fr) minmax(7rem, 168fr); }
+
+    .avatar-lightbox__portrait {
+      width: min(calc(100% - var(--space-4)), var(--avatar-lightbox-portrait-width));
+      margin-inline-start: var(--space-4);
+    }
+
+    .avatar-lightbox__portrait-art {
+      inset-block-start: calc(50% - var(--space-3));
+      transform: translate(-50%, -50%);
+    }
+    .avatar-lightbox__layout :global(.avatar-lightbox__weather) { min-height: 15rem; }
+  }
+
+  @media (prefers-reduced-motion: no-preference) {
+    .avatar-lightbox__dismiss :global(.avatar-lightbox__close) {
+      transition:
+        transform var(--duration-quick) var(--ease-smooth-out),
+        color var(--duration-quick) var(--ease-smooth-out);
+    }
+
+    .avatar-lightbox__dismiss :global(.avatar-lightbox__close)::before {
+      transition:
+        opacity var(--duration-quick) var(--ease-smooth-out),
+        transform var(--duration-quick) var(--ease-smooth-out);
+    }
+
+    .avatar-lightbox__dismiss :global(.avatar-lightbox__close)::after {
+      transition: transform var(--duration-quick) var(--ease-smooth-out);
+    }
+
+    .avatar-lightbox[open]:not([data-closing]) {
+      --avatar-lightbox-motion-duration: var(--duration-very-slow);
+      --avatar-lightbox-stagger: 100ms;
+    }
+
+    .avatar-lightbox__intro :global(.avatar-lightbox__weather) { --avatar-lightbox-enter-order: 1; }
+    .avatar-lightbox__overview > :global(.avatar-lightbox__card) { --avatar-lightbox-enter-order: 2; }
+    .avatar-lightbox__status { --avatar-lightbox-enter-order: 3; }
+    .avatar-lightbox__layout :global(.avatar-lightbox__activity) {
+      --avatar-lightbox-enter-order: var(--avatar-lightbox-activity-order, 4);
+    }
+
+    .avatar-lightbox[open]::backdrop,
+    .avatar-lightbox[open] :is(.avatar-lightbox__close-hint, .avatar-lightbox__dismiss) {
+      transition: opacity var(--avatar-lightbox-motion-duration, var(--duration-fast)) var(--ease-smooth-out);
+    }
+
+    .avatar-lightbox[open] .avatar-lightbox__layout {
+      transition: transform var(--avatar-lightbox-motion-duration, var(--duration-fast)) var(--ease-smooth-out);
+    }
+
+    .avatar-lightbox[open] .avatar-lightbox__layout :global(.avatar-lightbox__module) {
+      transition: opacity var(--duration-fast) var(--ease-smooth-out)
+        calc(var(--avatar-lightbox-stagger, 0ms) * var(--avatar-lightbox-enter-order, 0));
+    }
+
+    .avatar-lightbox[open][data-closing]::backdrop,
+    .avatar-lightbox[open][data-closing] :is(.avatar-lightbox__close-hint, .avatar-lightbox__dismiss),
+    .avatar-lightbox[open][data-closing] .avatar-lightbox__layout :global(.avatar-lightbox__module) {
+      opacity: 0;
+    }
+
+    .avatar-lightbox[open][data-closing] .avatar-lightbox__layout {
+      transform: translateY(var(--space-2));
+    }
+
+    @starting-style {
+      .avatar-lightbox[open]::backdrop,
+      .avatar-lightbox[open] :is(.avatar-lightbox__close-hint, .avatar-lightbox__dismiss),
+      .avatar-lightbox[open] .avatar-lightbox__layout :global(.avatar-lightbox__module) {
+        opacity: 0;
+      }
+
+      .avatar-lightbox[open] .avatar-lightbox__layout {
+        transform: translateY(var(--space-2));
+      }
+    }
+  }
+</style>

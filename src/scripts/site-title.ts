@@ -27,22 +27,15 @@ export const syncSiteTitle = () => {
   });
   try {
     localStorage.setItem(storageKey, language);
-    const saved = sessionStorage.getItem("incessant-language-scroll");
-    if (saved) {
-      sessionStorage.removeItem("incessant-language-scroll");
-      const position = JSON.parse(saved) as { path: string; y: number };
-      if (position.path === withoutLanguage(location.pathname) && Number.isFinite(position.y) && !location.hash)
-        requestAnimationFrame(() => scrollTo({top: position.y, behavior: "instant"}));
-    }
   } catch { /* Language URLs work even when storage is unavailable. */ }
 };
 
 export const setTitleLanguage = (language: Language) => {
+  if (language === languageFromPath(location.pathname)) return syncSiteTitle();
   try {
     localStorage.setItem(storageKey, language);
-    sessionStorage.setItem("incessant-language-scroll", JSON.stringify({path: withoutLanguage(location.pathname), y: scrollY}));
+    sessionStorage.setItem("incessant-language-scroll", JSON.stringify({ path: withoutLanguage(location.pathname), y: scrollY, language }));
   } catch { /* Navigation does not depend on browser storage. */ }
-  if (language === languageFromPath(location.pathname)) return syncSiteTitle();
   const url = new URL(location.href);
   url.pathname = location.pathname.startsWith('/design-system') ? languagePath('/', language) : languagePath(location.pathname, language);
   location.assign(url.href);
@@ -52,8 +45,8 @@ syncSiteTitle();
 document.addEventListener("astro:after-swap", syncSiteTitle);
 
 document.addEventListener('click', event => {
-  const link = (event.target as Element | null)?.closest<HTMLAnchorElement>('[data-language-switch]');
+  const link = (event.target as Element | null)?.closest<HTMLAnchorElement>('a[data-language-switch]');
   if (!link || event.button !== 0 || event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) return;
   event.preventDefault();
   setTitleLanguage(languageFromPath(location.pathname) === 'en' ? 'zh-CN' : 'en');
-});
+}, { capture: true });

@@ -75,8 +75,11 @@ export function initRouteMotion() {
       .filter((target) => detailTransition !== "open" || target.parentElement?.hasAttribute("data-route-enter-body"));
     if (targets.length === 0) return;
     const styles = getComputedStyle(document.documentElement);
+    const durationProperty = document.documentElement.hasAttribute("data-language-reload")
+      ? "--duration-language-route-enter"
+      : "--duration-route-enter";
     motion = {
-      duration: durationInSeconds(styles.getPropertyValue("--duration-route-enter")),
+      duration: durationInSeconds(styles.getPropertyValue(durationProperty)),
       stagger: durationInSeconds(styles.getPropertyValue("--duration-route-stagger")),
       staggerMax: durationInSeconds(styles.getPropertyValue("--duration-route-stagger-max")),
       distance: detailTransition === "close" ? 0 : parseFloat(styles.getPropertyValue("--distance-route-enter")),

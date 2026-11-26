@@ -5,9 +5,7 @@ import { siteDescription, siteTitles } from "../lib/site-metadata";
 import SiteHeader from "../components/SiteHeader.astro";
 import SiteFooter from "../components/SiteFooter.astro";
 import { ClientRouter } from "astro:transitions";
-import "../styles/global.css";
-import "../styles/site.css";
-import "../styles/site-responsive.css";
+import "../styles/site-entry.css";
 
 interface Props {
   title?: string;
@@ -57,6 +55,23 @@ const isDetailRoute = /^\/(?:projects|writing)\/[^/]+\/?$/.test(Astro.url.pathna
       } catch {
         document.documentElement.dataset.theme = matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light";
       }
+      // Detect a pending language scroll before the body can paint.
+      try {
+        const key = "incessant-language-scroll";
+        const saved = sessionStorage.getItem(key);
+        if (saved) {
+          sessionStorage.removeItem(key);
+          const position = JSON.parse(saved);
+          const { lang, dataset } = document.documentElement;
+          const path = location.pathname.replace(/^\/en(?=\/|$)/, "") || "/";
+          if (position.path === path && (!position.language || position.language === lang)) {
+            if (position.language) dataset.languageReload = "";
+            if (Number.isFinite(position.y) && (position.y > 0 || location.hash)) {
+              dataset.languageScroll = String(position.y);
+            }
+          }
+        }
+      } catch { /* Storage is optional for language navigation. */ }
     </script>
     <link rel="icon" href="/favicon.svg?v=f9fb16d0d39c" type="image/svg+xml" />
     <link rel="apple-touch-icon" href="/favicon-leo.png?v=f9fb16d0d39c" />
@@ -97,6 +112,25 @@ const isDetailRoute = /^\/(?:projects|writing)\/[^/]+\/?$/.test(Astro.url.pathna
       <slot />
     </main>
     <SiteFooter />
+    <script is:inline>
+      {
+        const { dataset } = document.documentElement;
+        if (dataset.languageScroll !== undefined) {
+          // The full body is available, so the scroll can be applied before revealing it.
+          try {
+            if (location.hash) {
+              document.getElementById(decodeURIComponent(location.hash.slice(1)))?.scrollIntoView({ behavior: "instant" });
+            } else {
+              scrollTo({ top: Number(dataset.languageScroll), behavior: "instant" });
+            }
+          } catch {
+            // Leave malformed fragments to the browser.
+          } finally {
+            delete dataset.languageScroll;
+          }
+        }
+      }
+    </script>
     <script>
       import { initRouteMotion } from "../scripts/route-motion";
       import { initSmoothCorners } from "../scripts/smooth-corners";

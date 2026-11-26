@@ -25,6 +25,27 @@ html[data-theme-transition="circle-blur"] * {
     animation: route-page-in 420ms var(--ease-smooth-out) both;
   }
 
+  /* Keep the fixed dock fully visible while the page snapshots animate. */
+  html[data-astro-transition] .floating-nav {
+    view-transition-name: site-dock;
+  }
+
+  ::view-transition-group(site-dock) {
+    z-index: 5;
+    animation: none;
+  }
+
+  ::view-transition-old(site-dock),
+  ::view-transition-new(site-dock) {
+    animation: none;
+    mix-blend-mode: normal;
+  }
+
+  /* Hold the outgoing dock until the detail transition finishes. */
+  html[data-detail-transition]::view-transition-new(site-dock) {
+    display: none;
+  }
+
   html[data-detail-transition="open"]::view-transition-old(root) {
     z-index: 0;
     animation: detail-list-recede var(--duration-detail-route) ease-out both;
@@ -762,29 +783,25 @@ html[data-theme-transition="circle-blur"] * {
   }
 
   .home-intro__portrait {
+    position: relative;
     width: var(--portrait-size);
     height: var(--portrait-size);
-  }
-
-  :root[data-theme="dark"] .home-intro__portrait[data-portrait-theme="light"],
-  :root:not([data-theme="dark"]) .home-intro__portrait[data-portrait-theme="dark"] {
-    display: none;
-  }
-
-  .home-intro__portrait > .article-image-zoom-trigger {
-    position: relative;
-    width: 100%;
-    height: 100%;
-    min-width: 0;
-    min-height: 0;
+    padding: 0;
+    border: 0;
     border-radius: var(--radius-pill);
+    background: none;
     cursor: pointer;
   }
 
-  .home-intro__portrait > .article-image-zoom-trigger::before {
+  .home-intro__portrait::before {
     position: absolute;
     inset: calc(-1 * var(--space-1));
     content: "";
+  }
+
+  :root[data-theme="dark"] .home-intro__portrait-frame[data-portrait-theme="light"],
+  :root:not([data-theme="dark"]) .home-intro__portrait-frame[data-portrait-theme="dark"] {
+    display: none;
   }
 
   .home-intro__portrait-frame {

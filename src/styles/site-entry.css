@@ -1,0 +1,4 @@
+/* Astro swaps this stylesheet as a unit, keeping the cascade order on navigation. */
+@import "./global.css";
+@import "./site.css";
+@import "./site-responsive.css";
