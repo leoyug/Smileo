@@ -1,0 +1,56 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+import TextLink from "../components/TextLink.astro";
+---
+
+<BaseLayout title="动态" titleEn="Activity" description="Leo 的日常想法、进度与分享。" robots="noindex,follow">
+  <header class="page-intro reading-column">
+    <h1>动态</h1>
+  </header>
+  <section class="daily reading-column" aria-label="全部动态">
+    <div class="daily__original" data-daily-content>
+      <p>还没有公开动态。</p>
+    </div>
+    <p class="daily__translation">
+      动态以中文发布。 <TextLink href="/daily/" hreflang="zh-CN">阅读中文动态</TextLink>
+    </p>
+  </section>
+</BaseLayout>
+
+<style is:global>
+  .daily__translation,
+  :root[lang="en"] .daily__original { display: none; }
+  :root[lang="en"] .daily__translation { display: block; }
+
+  .daily__list {
+    display: grid;
+    gap: var(--space-8);
+    padding: 0;
+    list-style: none;
+  }
+
+  .daily__entry {
+    display: grid;
+    gap: var(--space-2);
+    overflow-wrap: anywhere;
+  }
+
+  .daily__date {
+    color: var(--color-muted);
+    font: var(--weight-regular) var(--text-meta)/var(--space-5) var(--font-mono);
+  }
+
+  .daily__body { white-space: pre-wrap; }
+
+  .daily__link {
+    display: inline-flex;
+    align-items: baseline;
+    justify-self: start;
+    flex-wrap: wrap;
+    gap: 0 var(--space-2);
+    max-width: 100%;
+  }
+
+  .daily__link small { color: var(--color-muted); }
+  .daily__pagination:not(:empty) { margin-block-start: var(--space-8); }
+</style>

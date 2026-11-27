@@ -1,5 +1,5 @@
 {
   "extends": "astro/tsconfigs/strict",
   "include": [".astro/types.d.ts", "**/*"],
-  "exclude": ["node_modules", "dist", "output", ".playwright-cli"]
+  "exclude": ["node_modules", "dist", "output", ".playwright-cli", ".wrangler", "worker"]
 }

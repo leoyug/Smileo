@@ -1,6 +1,7 @@
 {
   "$schema": "./node_modules/wrangler/config-schema.json",
   "name": "smileo",
+  "main": "./worker/index.ts",
   "account_id": "25dcd2f347bcef970fed9f7587d9755a",
   "compatibility_date": "2026-10-15",
   "workers_dev": false,
@@ -8,8 +9,33 @@
   "routes": [
     { "pattern": "smileoleo.com", "custom_domain": true }
   ],
+  "durable_objects": {
+    "bindings": [
+      { "name": "PRESENCE", "class_name": "Presence" },
+      { "name": "FITNESS", "class_name": "Fitness" },
+      { "name": "DAILY", "class_name": "Daily" }
+    ]
+  },
+  "migrations": [
+    { "tag": "v1", "new_sqlite_classes": ["Presence"] },
+    { "tag": "v2", "new_sqlite_classes": ["Fitness"] },
+    { "tag": "v3", "new_sqlite_classes": ["Daily"] }
+  ],
+  "vars": {
+    "DAILY_RSS_URL": "https://smileoleo.com/rss.xml",
+    "DAILY_GITHUB_USER": "leoyug"
+  },
+  "triggers": { "crons": ["0 1 * * *"] },
+  "secrets": { "required": ["PRESENCE_TOKEN", "FITNESS_SYNC_TOKEN"] },
+  "observability": {
+    "enabled": true,
+    "logs": { "enabled": true },
+    "traces": { "enabled": true }
+  },
   "assets": {
     "directory": "./dist",
+    "binding": "ASSETS",
+    "run_worker_first": ["/api/presence", "/api/presence/toggle", "/api/fitness", "/api/puls/*", "/api/daily", "/api/daily/telegram", "/daily", "/daily/*"],
     "html_handling": "auto-trailing-slash",
     "not_found_handling": "404-page"
   }

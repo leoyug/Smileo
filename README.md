@@ -123,7 +123,7 @@ npm run publish:prepare        # 构建并同步图片，不部署主站
 
 ## 主站托管（Workers Static Assets）
 
-`wrangler.jsonc` 将 `dist/` 作为纯静态资产发布到 `smileo`，通过 Custom Domain 连接 `smileoleo.com`。不需要 Astro 服务端适配器、Worker 代码或运行时密钥；`workers.dev` 和版本预览地址关闭。未知路径使用 `404.html` 并返回 404，目录页保留末尾斜杠，与构建的 canonical 一致。`public/_redirects` 提供旧照片地址的 301 和生产设计系统页的 302。
+`wrangler.jsonc` 将 Astro 生成的 `dist/` 作为静态资产发布到 `smileo`，通过 Custom Domain 连接 `smileoleo.com`。头像灯箱的状态和健身接口由同一个 Worker 提供，分别保存在各自的 Durable Object 中。`workers.dev` 和版本预览地址关闭。未知路径使用 `404.html` 并返回 404，目录页保留末尾斜杠，与构建的 canonical 一致。`public/_redirects` 提供旧照片地址的 301 和生产设计系统页的 302。
 
 首次部署前使用 `npx wrangler login` 登录具有该账号 Workers 和域名权限的 Cloudflare 账号。构建仍在本机完成，沿用 Node.js、Python 3（`fonttools`、`brotli`）和现有照片审计依赖，不引入远程构建。
 
@@ -134,6 +134,8 @@ npm run deploy:check # 只验证配置和产物，不上传、不修改域名
 npm run deploy:site  # 将当前 dist 上传并绑定主域名，不重新构建或同步媒体
 ```
 
+首次发布灯箱数据接口前，在权限为 `600` 的 `.dev.vars.site` 中分别配置随机生成的 `PRESENCE_TOKEN` 和 `FITNESS_SYNC_TOKEN`，每行一个变量。首次部署用 `npm run deploy:site -- --secrets-file .dev.vars.site` 将密钥随版本一起发布。后续常规部署沿用已配置的密钥。
+
 `deploy:site` 会公开当前构建；首次上线前须确认发布内容，并完成 PR 审阅及合并。构建后若修改内容或环境变量，重新执行准备步骤，避免发布旧产物。R2 上传凭证仅由本机同步工具使用，不写入 Wrangler 配置或 Workers 变量。
 
 `www.smileoleo.com` 在 Cloudflare zone 中配置 Single Redirect：匹配 `http.host eq "www.smileoleo.com"`，以 301 跳转到 `concat("https://smileoleo.com", http.request.uri.path)`，开启保留查询参数；为 `www` 添加指向 `192.0.2.1` 的代理 A 记录以承接跳转。此规则独立于静态资产，因为 `_redirects` 不支持按来源域名匹配。不要改动 R2 管理的 `photos` 记录。
@@ -141,6 +143,43 @@ npm run deploy:site  # 将当前 dist 上传并绑定主域名，不重新构建
 上线后检查主站 HTTPS、www 路径和查询参数、canonical、RSS、远程图片、旧照片地址以及真实 404。后续回退可重新构建并部署已验证的 Git 提交产物。
 
 官方参考：[静态站点与 404](https://developers.cloudflare.com/workers/static-assets/routing/static-site-generation/)、[静态资产重定向](https://developers.cloudflare.com/workers/static-assets/redirects/)、[Workers 自定义域名](https://developers.cloudflare.com/workers/configuration/routing/custom-domains/)、[域名跳转](https://developers.cloudflare.com/fundamentals/manage-domains/redirect-domain/)。
+
+### Telegram 动态
+
+用 [@BotFather](https://t.me/BotFather) 创建一个供 Smileo 发布动态的专用 Bot。把 Bot Token 保存到本机的 `.dev.vars.site`，变量名为 `DAILY_TELEGRAM_TOKEN`。向新 Bot 私聊发送 `/start` 后，在项目目录运行以下命令读取自己的 Telegram 用户 ID。
+
+```bash
+node --env-file=.dev.vars.site scripts/daily/telegram.mjs owner
+```
+
+在同一文件添加 `DAILY_TELEGRAM_OWNER_ID`，填入你自己的用户 ID。再用 `openssl rand -hex 32` 生成一个随机值，保存为 `DAILY_TELEGRAM_SECRET`。现有的状态和健身令牌继续保存在这个文件中。按上节流程构建并将密钥随版本部署到主站，然后注册 Webhook。
+
+```bash
+node --env-file=.dev.vars.site scripts/daily/telegram.mjs install
+node --env-file=.dev.vars.site scripts/daily/telegram.mjs status
+```
+
+在 Bot 私聊发一条独立的文字或链接，回执可直接查看和撤回。编辑原消息会更新正文。发送 `/recent` 可以找回最近五条发布记录。只有 Bot 回执里的「撤回」按钮会下架网站动态。
+
+Cloudflare 每天北京时间 09:00 检查本站文章 RSS 和 GitHub 的公开 Star。首次成功读取各来源时记下已有记录，从后续新增条目开始发送候选。如果 GitHub 的匿名请求持续限流，可在同一密钥文件配置 `DAILY_GITHUB_TOKEN` 后部署。回复候选卡片可以添加点评，点「发布」后才公开，点「忽略」会关闭该候选。
+
+灯箱读取最近五条公开动态，归档在 `/daily/`，每条动态有独立的永久地址。动态以中文发布。公开列表、详情和候选由独立的 Durable Object 保存，发帖后无需重新构建主站。
+
+### 网站状态快捷指令
+
+创建「切换网站状态」快捷指令。添加「获取 URL 内容」，向 `https://smileoleo.com/api/presence/toggle` 发送 `POST` 请求，加入 `Authorization` 请求头，值为 `Bearer <令牌>`。添加「显示通知」，内容使用上一动作返回的「已上线」或「已离线」。可以把它添加到 iPhone 控制中心。
+
+头像灯箱每次打开时通过 `GET /api/presence` 读取状态。初始状态为离线，状态持续到下一次成功切换。需要在本机联调时，运行 `npm run build`，再运行 `npx wrangler dev --local --env-file .dev.vars.site`。
+
+### PulsHealth 健身同步
+
+主站部署后，在 iPhone 的 PulsHealth 中打开 `Sync → Your Own Server → Connect Your Server`。已连接时，从 `Sync → Database` 查看或修改服务器。服务器 URL 填 `https://smileoleo.com/api/puls`，Token 填本机 `.dev.vars.site` 中的 `FITNESS_SYNC_TOKEN` 值。若 User ID 为空，填 `5ea4d000-0000-4000-8000-000000000001`。点 `Test Connection`，再点 `Add Database`。
+
+在同步设置中启用 `Activity Rings`，在 `Aggregates` 里选择 `Steps` 的每日合计（`Daily total`、`All Devices`）。其余健康类型保持关闭，历史范围选最近可用的一小段。授权读取后点 `Apply & Start Sync`，保持 iPhone 解锁且 App 打开，直到首次同步完成。以 `GET /api/fitness` 和头像灯箱核对三环进度和步数。
+
+接口按手机记录的日历日期合并三环和步数，每项保留最新一批数据。站点保存最近七个有同步记录的日期，优先展示最近一个同时有圆环进度和步数的日期。PulsHealth 的每日步数合计会在一天结束后上传。首份配对数据还未齐全时，缺项用空圆环或短横线表示。其他项目即使出现在上传批次里也会被丢弃。后台更新由 iOS 调度，手动同步可在 PulsHealth 内发起。详见 [PulsHealth 配对指南](https://pulshealth.com/docs/setup/) 和 [当日汇总规则](https://pulshealth.com/docs/swift-package/#how-aggregates-run)。
+
+`npm run dev` 的本机接口可读取 `output/.env.fitness-preview.json` 中的单日汇总，结构与 `/api/fitness` 一致。该文件由 Git 忽略，正式构建使用 Worker 的同步数据。
 
 ## 搜索收录与分享图片
 

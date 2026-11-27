@@ -1,6 +1,6 @@
 {
   "name": "smileo",
-  "version": "0.9.7",
+  "version": "0.9.8",
   "private": true,
   "type": "module",
   "scripts": {
@@ -14,7 +14,7 @@
     "test:batch": "node --test scripts/content-batch/store.test.mjs",
     "test:photo-slug": "node --test scripts/photo-slug/generate.test.mjs",
     "test:search": "node --test scripts/admin-search/search.test.mjs",
-    "check": "astro check && npm run photos:audit && npm run order:audit && npm run test:import && npm run test:order && npm run test:batch && npm run test:photo-slug && npm run test:search && npm run test:media && npm run test:motion && npm run test:cms && npm run test:i18n",
+    "check": "npm run worker:types && tsc -p worker && astro check && npm run photos:audit && npm run order:audit && npm run test:import && npm run test:order && npm run test:batch && npm run test:photo-slug && npm run test:search && npm run test:media && npm run test:motion && npm run test:cms && npm run test:i18n",
     "build": "npm run media:prepare && npm run fonts:subset && npm run check && astro build && npm run i18n:audit && node scripts/photos/prune-drafts.mjs",
     "preview": "astro preview",
     "media:prepare": "node scripts/media/prepare.mjs",
@@ -23,6 +23,7 @@
     "test:motion": "node --import tsx --test scripts/motion/css-time.test.mjs",
     "test:cms": "node --import tsx --test scripts/cms-projects/*.test.mjs",
     "publish:prepare": "npm run build && npm run media:sync",
+    "worker:types": "wrangler types .wrangler/worker-configuration.d.ts",
     "deploy:check": "wrangler deploy --dry-run --outdir output/workers-dry-run",
     "deploy:site": "wrangler deploy",
     "test:i18n": "node --import tsx --test scripts/i18n/locale.test.mjs",
@@ -36,6 +37,7 @@
     "@keystatic/astro": "^6.0.0",
     "@keystatic/core": "^0.6.9",
     "@lisse/core": "^0.7.2",
+    "@xmldom/xmldom": "0.9.12",
     "astro": "^6.0.0",
     "cuelume": "0.2.4",
     "cuelume-legacy": "npm:cuelume@0.2.2",

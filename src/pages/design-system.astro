@@ -361,7 +361,7 @@ const codeExample = `:root {
     <section>
       <SectionHeading title="头像灯箱" />
       <Button variant="secondary" data-avatar-lightbox-trigger aria-haspopup="dialog" aria-controls="demo-avatar-lightbox">查看 Leo 的个人状态</Button>
-      <AvatarLightbox id="demo-avatar-lightbox" />
+      <AvatarLightbox id="demo-avatar-lightbox" demo />
     </section>
     <section><SectionHeading title="可拖拽照片" description="最多展示七张照片；桌面端可在容器内拖拽照片，松手立即停止；移动端保留构图且关闭拖拽。" /><DraggablePhotoStack photos={photos.slice(0, 7)} /></section>
     <section><SectionHeading title="扇形照片" description="悬停或键盘聚焦显示照片的画面描述，长描述自动换行；首页由 CMS 勾选照片，按展示顺序最多显示 7 张。" /><PhotoFanStack photos={fanPhotos} /><PhotoFanStack photos={fanPhotos.slice(0, 1)} label="单张照片与长描述示例" /></section>

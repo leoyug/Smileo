@@ -2,25 +2,29 @@
 import Button from "./Button.astro";
 import Card from "./Card.astro";
 import ProgressiveBlur from "./ProgressiveBlur.astro";
+import TextLink from "./TextLink.astro";
+import { fitnessRingNames } from "../lib/avatar-fitness";
 
 interface Props {
   id: string;
+  demo?: boolean;
 }
 
-const { id } = Astro.props;
+const { id, demo = false } = Astro.props;
 const assets = "/assets/figma/avatar-lightbox";
-const rings = [
-  { name: "move", rotation: -110 },
-  { name: "exercise", rotation: 150 },
-  { name: "stand", rotation: 0 },
-] as const;
-const activityDates = [
-  ["19", "12:25"],
-  ["18", "16:12"],
-  ["16", "11:33"],
-  ["12", "09:53"],
-  ["04", "20:27"],
-] as const;
+const ringLayout = {
+  move: { radius: 53.478, iconTop: 0, label: "活动环" },
+  exercise: { radius: 38.696, iconTop: 14.782, label: "锻炼环" },
+  stand: { radius: 23.913, iconTop: 29.565, label: "站立环" },
+};
+const dailyPreview = {
+  entries: [
+    { id: "example-1", body: "示例 · 今天整理了最近几个界面的设计笔记，记下了两个以后还想试试的细节。", url: null, title: null, publishedAt: Date.parse("2026-11-26T04:25:00Z") },
+    { id: "example-2", body: "示例 · 分享一个阅读链接。", url: "https://example.com", title: "一则链接分享", publishedAt: Date.parse("2026-11-24T08:12:00Z") },
+    { id: "example-3", body: "示例 · 上个月的记录。", url: null, title: null, publishedAt: Date.parse("2026-10-28T12:27:00Z") },
+  ],
+  nextCursor: null,
+};
 ---
 
 <dialog id={id} class="avatar-lightbox" data-avatar-lightbox aria-label="Leo 的个人状态">
@@ -66,29 +70,33 @@ const activityDates = [
         <Card class="avatar-lightbox__module avatar-lightbox__card avatar-lightbox__availability" variant="media">
           <div class="avatar-lightbox__card-body">
             <h2><img src={`${assets}/presence.svg`} alt="" width="20" height="20" loading="lazy" />状态</h2>
-            <p class="avatar-lightbox__offline">
-              <img src={`${assets}/offline.svg`} alt="" width="8" height="8" loading="lazy" />
-              离线
+            <p class="avatar-lightbox__presence" data-avatar-presence="offline" role="status">
+              <span data-presence-offline>离线</span>
+              <span data-presence-online hidden>在线</span>
             </p>
           </div>
         </Card>
         <Card class="avatar-lightbox__module avatar-lightbox__card avatar-lightbox__fitness" variant="media">
-          <div class="avatar-lightbox__card-body">
+          <div class="avatar-lightbox__card-body" data-avatar-fitness>
             <h2><img src={`${assets}/fitness.svg`} alt="" width="20" height="20" loading="lazy" />健身</h2>
-            <div class="avatar-lightbox__rings" aria-hidden="true">
-              {rings.map(({ name, rotation }) => (
-                <div class="avatar-lightbox__ring-layer" style={`--ring-rotation: ${rotation}deg`}>
-                  <img src={`${assets}/ring-${name}.svg`} alt="" width="120" height="120" loading="lazy" />
-                  <img src={`${assets}/ring-${name}-cap.svg`} alt="" width="120" height="120" loading="lazy" />
-                </div>
+            <svg class="avatar-lightbox__rings" viewBox="0 0 120 120" width="120" height="120" aria-hidden="true">
+              {fitnessRingNames.map(name => (
+                <g class:list={["avatar-lightbox__ring", `avatar-lightbox__ring--${name}`]} data-fitness-ring={name}>
+                  <circle class="avatar-lightbox__ring-track" cx="60" cy="60" r={ringLayout[name].radius} />
+                  <circle class="avatar-lightbox__ring-progress" data-fitness-arc cx="60" cy="60" r={ringLayout[name].radius} pathLength="100" visibility="hidden" />
+                  <circle class="avatar-lightbox__ring-lap" data-fitness-lap cx="60" cy="60" r={ringLayout[name].radius} pathLength="100" visibility="hidden" />
+                  <image href={`${assets}/ring-${name}-arrow.svg`} x="53.478" y={ringLayout[name].iconTop} width="13.044" height="13.044" />
+                </g>
               ))}
-              <div class="avatar-lightbox__ring-arrows">
-                {rings.map(({ name }) => <img src={`${assets}/ring-${name}-arrow.svg`} alt="" />)}
-              </div>
-            </div>
+            </svg>
+            <ul class="sr-only" aria-live="polite" role="list">
+              {fitnessRingNames.map(name => (
+                <li data-fitness-value={name} hidden>{ringLayout[name].label} <span></span></li>
+              ))}
+            </ul>
             <p class="avatar-lightbox__steps">
               <img src={`${assets}/steps.svg`} alt="" width="24" height="24" loading="lazy" />
-              1458<span class="sr-only"> 步</span>
+              <span data-fitness-steps>—</span><span class="sr-only" data-fitness-steps-unit hidden>步</span>
             </p>
           </div>
         </Card>
@@ -115,26 +123,39 @@ const activityDates = [
 
     <Card class="avatar-lightbox__module avatar-lightbox__card avatar-lightbox__activity" variant="media">
       <div class="avatar-lightbox__card-body">
-        <h2 id={`${id}-activity`}><img src={`${assets}/reading.svg`} alt="" width="18" height="18" loading="lazy" />动态</h2>
+        <div class="avatar-lightbox__activity-head">
+          <h2 id={`${id}-activity`}><img src={`${assets}/reading.svg`} alt="" width="18" height="18" loading="lazy" />动态</h2>
+          <TextLink href="/daily/" class="avatar-lightbox__activity-archive" data-daily-archive hidden>全部动态</TextLink>
+        </div>
         <div class="avatar-lightbox__activity-scroll" data-avatar-activity role="region" aria-labelledby={`${id}-activity`} tabindex="0">
-          <ol class="avatar-lightbox__activity-list">
-            {activityDates.map(([day, time]) => (
+          <div class="avatar-lightbox__activity-status" data-daily-status role="status">
+            <p data-daily-loading hidden>正在加载动态…</p>
+            <p data-daily-empty hidden>还没有公开动态。</p>
+            <p data-daily-error hidden>暂时无法读取动态。</p>
+          </div>
+          <p class="avatar-lightbox__activity-language">动态以中文发布。 <TextLink href="/daily/" hreflang="zh-CN">阅读中文动态</TextLink></p>
+          <ol class="avatar-lightbox__activity-list" data-daily-list hidden></ol>
+          <template data-daily-template>
               <li class="avatar-lightbox__activity-entry">
                 <div class="avatar-lightbox__activity-date">
-                  <span>{day}</span>
-                  <time datetime={time}>{time}</time>
+                  <a href="/daily/" data-daily-date>
+                    <time>
+                      <small data-daily-month></small>
+                      <span data-daily-day></span>
+                      <small data-daily-clock></small>
+                    </time>
+                  </a>
                 </div>
                 <div class="avatar-lightbox__activity-copy">
-                  <p>分享下之前提过几次的 herdr-coordinator skill，这是我目前工作的主力工具之一，尤其适合长线任务。另一个是开发中的 vibench，现在所有单个需求都是用它来记录和实现的。</p>
-                  <div class="avatar-lightbox__reading-preview">
-                    <p>tinyhost.space</p>
-                    <h3>Herdr Coordinator 研读笔记</h3>
-                    <p>一份只协调、不执行的多 Agent编排提示词：全文与研读。</p>
-                  </div>
+                  <p data-daily-body></p>
+                  <TextLink href="/daily/" class="avatar-lightbox__reading-preview" data-daily-link>
+                    <span data-daily-link-title></span><small data-daily-link-domain></small>
+                  </TextLink>
+                  <TextLink href="/daily/" class="avatar-lightbox__activity-more" data-daily-read>阅读完整动态</TextLink>
                 </div>
               </li>
-            ))}
-          </ol>
+          </template>
+          {demo && <script is:inline type="application/json" data-daily-preview set:html={JSON.stringify(dailyPreview)} />}
         </div>
       </div>
     </Card>
@@ -150,6 +171,8 @@ const activityDates = [
 <script>
   import { cssTimeToMilliseconds } from "../lib/css-time";
   import { bindAvatarPortrait } from "../scripts/avatar-lightbox-portrait";
+  import { bindAvatarFitness } from "../scripts/avatar-lightbox-fitness";
+  import { bindAvatarActivity } from "../scripts/avatar-lightbox-activity";
 
   const initialized = new WeakSet<HTMLDialogElement>();
   const localTime = new Intl.DateTimeFormat("en-GB", {
@@ -207,7 +230,7 @@ const activityDates = [
 
     const modules = [...layout.querySelectorAll<HTMLElement>(
       ".avatar-lightbox__card, .avatar-lightbox__portrait-art, .avatar-lightbox__location-row",
-    )];
+    )].map((element) => ({ element, motionElement: element.closest(".avatar-lightbox__module") }));
     const socialSlots = layout.querySelector<HTMLElement>(".avatar-lightbox__social-slots");
     const clock = layout.querySelector<HTMLElement>("[data-avatar-clock]");
     const reduced = matchMedia("(prefers-reduced-motion: reduce)");
@@ -228,12 +251,14 @@ const activityDates = [
         clock ? getComputedStyle(clock).gridTemplateColumns.split(" ").length : 0,
       ].join(":");
       const layoutTop = layout.getBoundingClientRect().top;
-      const measurements = modules.map((module) => {
-        const rect = module.getBoundingClientRect();
-        const translate = animations.has(module) ? getComputedStyle(module).translate : "none";
+      const measurements = modules.map(({ element, motionElement }) => {
+        const rect = element.getBoundingClientRect();
+        const translate = animations.has(element) ? getComputedStyle(element).translate : "none";
         const [offsetX = 0, offsetY = 0] = translate === "none" ? [] : translate.split(" ").map(parseFloat);
-        // Measure relative to the layout so scrolling and the dialog entrance do not affect the card offset.
-        return { x: rect.left - offsetX, y: rect.top - layoutTop - offsetY, offsetX, offsetY };
+        const transform = motionElement ? getComputedStyle(motionElement).transform : "none";
+        const entranceY = transform === "none" ? 0 : new DOMMatrixReadOnly(transform).m42;
+        // Keep the staggered entrance and scroll position out of the responsive layout measurements.
+        return { x: rect.left - offsetX, y: rect.top - layoutTop - offsetY - entranceY, offsetX, offsetY };
       });
       const reflowed = previousMode !== "" && previousMode !== mode;
       const from = previousPositions;
@@ -246,20 +271,20 @@ const activityDates = [
 
       const duration = cssTimeToMilliseconds(styles.getPropertyValue("--duration-fast"));
       const easing = styles.getPropertyValue("--ease-smooth-out").trim();
-      modules.forEach((module, index) => {
+      modules.forEach(({ element }, index) => {
         const { x, y, offsetX, offsetY } = measurements[index];
         const dx = from[index].x + offsetX - x;
         const dy = from[index].y + offsetY - y + scrollOffset;
-        animations.get(module)?.cancel();
-        animations.delete(module);
+        animations.get(element)?.cancel();
+        animations.delete(element);
         if (Math.abs(dx) < 1 && Math.abs(dy) < 1) return;
 
-        const animation = module.animate([{ translate: `${dx}px ${dy}px` }, { translate: "0px 0px" }], {
+        const animation = element.animate([{ translate: `${dx}px ${dy}px` }, { translate: "0px 0px" }], {
           duration, easing, fill: "backwards",
         });
-        animations.set(module, animation);
+        animations.set(element, animation);
         animation.addEventListener("finish", () => {
-          if (animations.get(module) === animation) animations.delete(module);
+          if (animations.get(element) === animation) animations.delete(element);
         }, { once: true });
       });
     };
@@ -293,18 +318,44 @@ const activityDates = [
     return start;
   }
 
+  async function refreshAvatarPresence(dialog: HTMLDialogElement, signal: AbortSignal) {
+    const presence = dialog.querySelector<HTMLElement>("[data-avatar-presence]");
+    const offline = presence?.querySelector<HTMLElement>("[data-presence-offline]");
+    const online = presence?.querySelector<HTMLElement>("[data-presence-online]");
+    if (!presence || !offline || !online) return;
+
+    try {
+      const response = await fetch("/api/presence", { cache: "no-store", signal });
+      if (!response.ok) return;
+      const data: { status?: unknown } | null = await response.json();
+      const status = data?.status;
+      if (signal.aborted || (status !== "online" && status !== "offline")) return;
+      if (presence.dataset.avatarPresence === status) return;
+
+      presence.dataset.avatarPresence = status;
+      offline.hidden = status === "online";
+      online.hidden = status === "offline";
+    } catch {
+      // Keep the last displayed state if the request fails or the dialog closes.
+    }
+  }
+
   function bindAvatarLightboxes() {
     document.querySelectorAll<HTMLDialogElement>("[data-avatar-lightbox]").forEach((dialog) => {
       if (initialized.has(dialog)) return;
       initialized.add(dialog);
       const refreshClock = bindAvatarClock(dialog);
       const stopPortrait = bindAvatarPortrait(dialog);
+      const refreshFitness = bindAvatarFitness(dialog);
+      const refreshActivity = bindAvatarActivity(dialog);
       const activity = dialog.querySelector<HTMLElement>("[data-avatar-activity]");
       const layout = dialog.querySelector<HTMLElement>("[data-avatar-layout]");
       const startLayoutMotion = bindAvatarLayoutMotion(dialog, layout);
+      let dataRequest: AbortController | undefined;
 
       const requestClose = () => {
         if (!dialog.open || dialog.hasAttribute("data-closing")) return;
+        dataRequest?.abort();
         stopPortrait?.();
         dialog.setAttribute("data-closing", "");
 
@@ -331,6 +382,11 @@ const activityDates = [
           dialog.scrollTop = 0;
           if (activity) activity.scrollTop = 0;
           refreshClock?.();
+          dataRequest?.abort();
+          dataRequest = new AbortController();
+          void refreshAvatarPresence(dialog, dataRequest.signal);
+          void refreshFitness?.(dataRequest.signal);
+          void refreshActivity?.(dataRequest.signal);
           startLayoutMotion?.();
         });
       });
@@ -699,13 +755,26 @@ const activityDates = [
 
   .avatar-lightbox__layout :global(.avatar-lightbox__availability) { min-height: 9.75rem; }
 
-  .avatar-lightbox__offline {
+  .avatar-lightbox__presence {
     display: flex;
     align-items: center;
     gap: var(--space-2);
     margin-block-start: auto;
     color: var(--color-avatar-lightbox-copy);
     font-size: var(--text-lead);
+  }
+
+  .avatar-lightbox__presence::before {
+    width: var(--space-2);
+    aspect-ratio: 1;
+    flex: none;
+    border-radius: var(--radius-pill);
+    background: var(--color-avatar-lightbox-caption);
+    content: "";
+  }
+
+  .avatar-lightbox__presence[data-avatar-presence="online"]::before {
+    background: var(--color-accent);
   }
 
   .avatar-lightbox__layout :global(.avatar-lightbox__fitness) { min-height: 17.25rem; }
@@ -718,27 +787,33 @@ const activityDates = [
   .avatar-lightbox__status :global(.avatar-lightbox__fitness) h2 { align-self: start; }
 
   .avatar-lightbox__rings {
-    position: relative;
-    overflow: clip;
     width: 7.5rem;
     height: 7.5rem;
     flex: none;
   }
 
-  .avatar-lightbox__ring-layer {
-    position: absolute;
-    inset: 0;
-    transform: rotate(var(--ring-rotation));
+  .avatar-lightbox__ring--move { --fitness-ring-color: var(--color-avatar-fitness-move); }
+  .avatar-lightbox__ring--exercise { --fitness-ring-color: var(--color-avatar-fitness-exercise); }
+  .avatar-lightbox__ring--stand { --fitness-ring-color: var(--color-avatar-fitness-stand); }
+
+  .avatar-lightbox__ring circle {
+    fill: none;
+    stroke-width: 13.044;
+    transform: rotate(-90deg);
+    transform-origin: center;
   }
 
-  .avatar-lightbox__ring-layer img { position: absolute; inset: 0; }
-
-  .avatar-lightbox__ring-arrows {
-    position: relative;
-    display: grid;
-    justify-content: center;
-    gap: 1.739px;
+  .avatar-lightbox__ring-track { stroke: var(--color-avatar-lightbox-line); }
+  .avatar-lightbox__ring[data-synced] .avatar-lightbox__ring-track {
+    stroke: color-mix(in srgb, var(--fitness-ring-color) 20%, var(--color-avatar-lightbox-surface));
   }
+  .avatar-lightbox__ring-progress { stroke: var(--fitness-ring-color); }
+  .avatar-lightbox__ring-lap {
+    stroke: color-mix(in srgb, var(--fitness-ring-color) 85%, var(--color-avatar-lightbox-text));
+  }
+  :is(.avatar-lightbox__ring-progress, .avatar-lightbox__ring-lap) { stroke-linecap: round; }
+  .avatar-lightbox__ring image { visibility: hidden; }
+  .avatar-lightbox__ring[data-progress] image { visibility: visible; }
 
   .avatar-lightbox__steps {
     display: flex;
@@ -749,6 +824,27 @@ const activityDates = [
     font-size: calc(var(--text-lead) + .125rem);
     font-weight: var(--weight-medium);
   }
+
+  .avatar-lightbox__activity-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--space-3);
+  }
+
+  .avatar-lightbox__activity-archive,
+  .avatar-lightbox__activity-more {
+    color: var(--color-avatar-lightbox-text);
+    font-size: var(--text-meta);
+  }
+
+  .avatar-lightbox__activity-status,
+  .avatar-lightbox__activity-language { color: var(--color-avatar-lightbox-copy); }
+
+  .avatar-lightbox__activity-language,
+  [data-avatar-activity] [hidden],
+  [data-daily-archive][hidden] { display: none; }
+  :global(html[lang="en"]) .avatar-lightbox__activity-language { display: block; }
 
   .avatar-lightbox__activity-list {
     display: grid;
@@ -768,45 +864,55 @@ const activityDates = [
   }
 
   .avatar-lightbox__activity-date {
-    display: grid;
-    align-content: start;
+    color: var(--color-avatar-lightbox-copy);
     font: var(--weight-regular) var(--space-5)/var(--space-6) var(--font-mono);
   }
 
-  .avatar-lightbox__activity-date time {
-    color: var(--color-avatar-lightbox-copy);
+  .avatar-lightbox__activity-date time { display: grid; }
+  .avatar-lightbox__activity-date a { text-decoration: none; }
+  .avatar-lightbox__activity-date a:hover,
+  .avatar-lightbox__activity-date a:focus-visible {
+    color: var(--color-avatar-lightbox-text);
+    text-decoration: underline;
+  }
+
+  .avatar-lightbox__activity-date small {
     font-size: var(--text-meta);
     line-height: var(--space-4);
   }
 
-  .avatar-lightbox__activity-copy,
-  .avatar-lightbox__reading-preview { display: grid; }
-
   .avatar-lightbox__activity-copy {
-    gap: var(--space-3);
+    display: grid;
+    justify-items: start;
+    gap: var(--space-2);
+    color: var(--color-avatar-lightbox-text);
     font-family: "PingFang SC", var(--font-sans);
     overflow-wrap: anywhere;
   }
 
+  .avatar-lightbox__activity-copy [data-daily-body] { white-space: pre-wrap; }
+
   .avatar-lightbox__reading-preview {
-    gap: var(--space-1);
-    padding: var(--space-2) var(--space-3);
-    border: 1px solid var(--color-avatar-lightbox-line);
-    border-radius: var(--radius-project-card-media);
-    font-size: var(--text-meta);
-    line-height: var(--space-4);
-  }
-
-  .avatar-lightbox__reading-preview p:first-child {
-    font-family: var(--font-sans);
-    line-height: 1.125rem;
-  }
-
-  .avatar-lightbox__reading-preview h3 {
+    display: inline-flex;
+    align-items: baseline;
+    flex-wrap: wrap;
+    gap: 0 var(--space-2);
     color: var(--color-avatar-lightbox-text);
-    font-size: var(--text-body);
-    font-weight: var(--weight-regular);
-    line-height: var(--space-5);
+  }
+
+  .avatar-lightbox__reading-preview small {
+    color: var(--color-avatar-lightbox-copy);
+    font-size: var(--text-meta);
+  }
+
+  @media (width < 45rem) {
+    .avatar-lightbox__activity-entry { grid-template-columns: minmax(0, 1fr); gap: var(--space-1); }
+    .avatar-lightbox__activity-date time {
+      display: flex;
+      align-items: baseline;
+      gap: var(--space-2);
+    }
+    .avatar-lightbox__activity-date { font-size: var(--text-meta); }
   }
 
   @media (width < 23rem) {
@@ -891,7 +997,6 @@ const activityDates = [
     }
 
     .avatar-lightbox__layout :global(.avatar-lightbox__activity) {
-      --avatar-lightbox-activity-order: 1;
       height: 43.75rem;
     }
     .avatar-lightbox__layout :global(.avatar-lightbox__activity) .avatar-lightbox__card-body {
@@ -954,41 +1059,92 @@ const activityDates = [
     .avatar-lightbox__overview > :global(.avatar-lightbox__card) { --avatar-lightbox-enter-order: 2; }
     .avatar-lightbox__status { --avatar-lightbox-enter-order: 3; }
     .avatar-lightbox__layout :global(.avatar-lightbox__activity) {
-      --avatar-lightbox-enter-order: var(--avatar-lightbox-activity-order, 4);
+      --avatar-lightbox-enter-order: 4;
     }
 
     .avatar-lightbox[open]::backdrop,
-    .avatar-lightbox[open] :is(.avatar-lightbox__close-hint, .avatar-lightbox__dismiss) {
+    .avatar-lightbox[open] .avatar-lightbox__dismiss {
       transition: opacity var(--avatar-lightbox-motion-duration, var(--duration-fast)) var(--ease-smooth-out);
     }
 
-    .avatar-lightbox[open] .avatar-lightbox__layout {
-      transition: transform var(--avatar-lightbox-motion-duration, var(--duration-fast)) var(--ease-smooth-out);
+    .avatar-lightbox[open] .avatar-lightbox__close-hint {
+      transition:
+        opacity var(--avatar-lightbox-motion-duration, var(--duration-fast)) var(--ease-smooth-out),
+        transform var(--avatar-lightbox-motion-duration, var(--duration-fast)) var(--ease-smooth-out);
     }
 
     .avatar-lightbox[open] .avatar-lightbox__layout :global(.avatar-lightbox__module) {
-      transition: opacity var(--duration-fast) var(--ease-smooth-out)
-        calc(var(--avatar-lightbox-stagger, 0ms) * var(--avatar-lightbox-enter-order, 0));
+      transition:
+        opacity var(--avatar-lightbox-fade-duration, var(--duration-fast)) var(--ease-smooth-out),
+        transform var(--avatar-lightbox-motion-duration, var(--duration-fast)) var(--ease-smooth-out);
+      transition-delay: calc(var(--avatar-lightbox-stagger, 0ms) * var(--avatar-lightbox-enter-order, 0));
     }
 
     .avatar-lightbox[open][data-closing]::backdrop,
-    .avatar-lightbox[open][data-closing] :is(.avatar-lightbox__close-hint, .avatar-lightbox__dismiss),
-    .avatar-lightbox[open][data-closing] .avatar-lightbox__layout :global(.avatar-lightbox__module) {
+    .avatar-lightbox[open][data-closing] .avatar-lightbox__dismiss {
       opacity: 0;
     }
 
-    .avatar-lightbox[open][data-closing] .avatar-lightbox__layout {
+    .avatar-lightbox[open][data-closing] .avatar-lightbox__close-hint,
+    .avatar-lightbox[open][data-closing] .avatar-lightbox__layout :global(.avatar-lightbox__module) {
+      opacity: 0;
       transform: translateY(var(--space-2));
     }
 
     @starting-style {
       .avatar-lightbox[open]::backdrop,
-      .avatar-lightbox[open] :is(.avatar-lightbox__close-hint, .avatar-lightbox__dismiss),
-      .avatar-lightbox[open] .avatar-lightbox__layout :global(.avatar-lightbox__module) {
+      .avatar-lightbox[open] .avatar-lightbox__dismiss {
         opacity: 0;
       }
 
-      .avatar-lightbox[open] .avatar-lightbox__layout {
+      .avatar-lightbox[open] .avatar-lightbox__close-hint,
+      .avatar-lightbox[open] .avatar-lightbox__layout :global(.avatar-lightbox__module) {
+        opacity: 0;
+        transform: translateY(var(--space-2));
+      }
+    }
+  }
+
+  @media (min-width: 720px) and (prefers-reduced-motion: no-preference) {
+    .avatar-lightbox[open]:not([data-closing]) {
+      --avatar-lightbox-motion-duration: calc(var(--duration-very-slow) * 1.2);
+      --avatar-lightbox-fade-duration: calc(var(--duration-fast) * 1.2);
+      --avatar-lightbox-stagger: 120ms;
+      --avatar-lightbox-activity-panel-duration: 210ms;
+    }
+
+    .avatar-lightbox[open] .avatar-lightbox__layout :global(.avatar-lightbox__activity) {
+      transition:
+        opacity var(--duration-fast) var(--ease-smooth-out),
+        transform var(--duration-fast) var(--ease-smooth-out);
+    }
+
+    .avatar-lightbox[open]:not([data-closing]) .avatar-lightbox__layout :global(.avatar-lightbox__activity) {
+      transition-duration: var(--avatar-lightbox-activity-panel-duration);
+    }
+
+    .avatar-lightbox[open][data-closing] .avatar-lightbox__layout :global(.avatar-lightbox__activity) {
+      transform: none;
+    }
+
+    .avatar-lightbox[open] .avatar-lightbox__activity-entry {
+      transition:
+        opacity var(--avatar-lightbox-fade-duration, var(--duration-fast)) var(--ease-smooth-out),
+        transform var(--avatar-lightbox-motion-duration, var(--duration-fast)) var(--ease-smooth-out);
+    }
+
+    .avatar-lightbox[open]:not([data-closing]) .avatar-lightbox__activity-entry {
+      transition-delay: calc(var(--avatar-lightbox-activity-panel-duration) + 10ms + 35ms * var(--avatar-lightbox-activity-index));
+    }
+
+    .avatar-lightbox[open][data-closing] .avatar-lightbox__activity-entry {
+      opacity: 0;
+      transform: translateY(var(--space-2));
+    }
+
+    @starting-style {
+      .avatar-lightbox[open] .avatar-lightbox__activity-entry {
+        opacity: 0;
         transform: translateY(var(--space-2));
       }
     }

@@ -1,5 +1,6 @@
 import { defineConfig } from "astro/config";
 import { loadEnv } from "vite";
+import { readFile } from "node:fs/promises";
 import { createRequire } from "node:module";
 import { fileURLToPath } from "node:url";
 import react from "@astrojs/react";
@@ -17,6 +18,33 @@ import { searchDiscovery } from "./scripts/seo/integration.mjs";
 
 const require = createRequire(import.meta.url);
 const environment = loadEnv(process.argv[2] === "dev" ? "development" : "production", process.cwd(), "");
+
+const localFitnessPreview = () => ({
+  name: "local-fitness-preview",
+  apply: "serve",
+  configureServer(server) {
+    // Vite excludes .env-prefixed files from its static file serving.
+    const previewFile = new URL("./output/.env.fitness-preview.json", import.meta.url);
+    const loopbackAddresses = new Set(["127.0.0.1", "::1", "::ffff:127.0.0.1"]);
+    server.middlewares.use(async (request, response, next) => {
+      if (request.method !== "GET" || request.url?.split("?")[0] !== "/api/fitness"
+        || !loopbackAddresses.has(request.socket.remoteAddress)) {
+        return next();
+      }
+
+      let body;
+      try {
+        body = await readFile(previewFile, "utf8");
+      } catch (error) {
+        if (error.code !== "ENOENT") return next(error);
+        body = JSON.stringify({ snapshot: null });
+      }
+      response.setHeader("Content-Type", "application/json; charset=utf-8");
+      response.setHeader("Cache-Control", "no-store");
+      response.end(body);
+    });
+  },
+});
 
 const prepareUploadedPhotos = () => ({
   name: "prepare-uploaded-photos",
@@ -59,7 +87,7 @@ export default defineConfig({
   vite: {
     // Keep check/build from replacing the running dev server's optimized dependencies.
     cacheDir: fileURLToPath(new URL(`./node_modules/.vite/${process.argv[2] ?? "astro"}/`, import.meta.url)),
-    plugins: [prepareUploadedPhotos(), collectionSearch()],
+    plugins: [prepareUploadedPhotos(), collectionSearch(), localFitnessPreview()],
     // Keep CMS adapters live while prebundling their underlying native controls.
     optimizeDeps: {
       exclude: ["@keystar/ui/table", "@keystar/ui/list-view", "@keystar/ui/text-field", "@keystar/ui/number-field", "@keystar/ui/picker", "@keystar/ui/combobox"],

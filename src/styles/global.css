@@ -419,6 +419,9 @@
     --color-avatar-lightbox-text: var(--primitive-color-gray-50);
     --color-avatar-lightbox-social-placeholder: #727272;
     --color-avatar-lightbox-social-line: rgb(250 250 250 / 50%);
+    --color-avatar-fitness-move: #fa114f;
+    --color-avatar-fitness-exercise: #a6ff00;
+    --color-avatar-fitness-stand: #00fff6;
     --radius-avatar-lightbox-social: .625rem;
     --avatar-lightbox-backdrop-opacity: 80%;
   }
